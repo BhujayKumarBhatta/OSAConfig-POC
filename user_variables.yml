@@ -1,6 +1,6 @@
 ---
 ## set security hardening to false during upgrade
-apply_security_hardening: False
+apply_security_hardening: False 
 
 ## Debug and Verbose options.
 debug: false
