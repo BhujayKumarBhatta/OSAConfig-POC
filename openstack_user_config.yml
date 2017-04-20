@@ -1,0 +1,353 @@
+---
+
+cidr_networks:
+   container: 10.0.0.0/24
+   tunnel: 10.0.1.0/24
+   storage: 10.0.2.0/24
+
+used_ips:
+   - 10.0.0.1
+   - "10.0.0.1,10.0.0.120"
+   - "10.0.1.1,10.0.1.100"
+   - "10.0.2.1,10.0.2.100"
+
+global_overrides:
+  internal_lb_vip_address: 10.0.0.14
+  external_lb_vip_address: 14.142.104.140
+  tunnel_bridge: "br-vxlan"
+  management_bridge: "br-mgmt"
+  provider_networks:
+    - network:
+        container_bridge: "br-mgmt"
+        container_type: "veth"
+        container_interface: "eth1"
+        ip_from_q: "container"
+        type: "raw"
+        group_binds:
+          - all_containers
+          - hosts
+        is_container_address: true
+        is_ssh_address: true
+    - network:
+        container_bridge: "br-vxlan"
+        container_type: "veth"
+        container_interface: "eth10"
+        ip_from_q: "tunnel"
+        type: "vxlan"
+        range: "1:1000"
+        net_name: "vxlan"
+        group_binds:
+          - neutron_linuxbridge_agent
+    - network:
+        container_bridge: "br-vlan"
+        container_type: "veth"
+        container_interface: "eth12"
+        #host_bind_override: "eth12" #?????? this ovverrides is trying to search eth2 on compute node 
+        host_bind_override: eno2
+        type: "flat"
+        net_name: "flat"
+        group_binds:
+          - neutron_linuxbridge_agent
+    - network:
+        container_bridge: "br-vlan"
+        container_type: "veth"
+        container_interface: "eth11"
+        type: "vlan"
+        range: "1:1"
+        net_name: "vlan"
+        group_binds:
+          - neutron_linuxbridge_agent
+    - network:
+        container_bridge: "br-storage"
+        container_type: "veth"
+        container_interface: "eth2"
+        ip_from_q: "storage"
+        type: "raw"
+        group_binds:
+          - glance_api
+          - cinder_api
+          - cinder_volume
+          - nova_compute
+
+###
+### Infrastructure
+###
+
+# galera, memcache, rabbitmq, utility
+shared-infra_hosts:
+  infra1:
+    ip: 10.0.0.13
+  infra2:
+    ip: 10.0.0.15
+  infra3:
+    ip: 10.0.0.12  
+    
+   
+
+# repository (apt cache, python packages, etc)
+repo-infra_hosts:
+  infra1:
+    ip: 10.0.0.13
+  infra2:
+    ip: 10.0.0.15
+  infra3:
+    ip: 10.0.0.12  
+
+# load balancer
+haproxy_hosts:
+  haproxy1:
+    ip: 10.0.0.50
+  haproxy2:
+    ip: 10.0.0.52
+    port: 2223
+
+# rsyslog server
+log_hosts:
+  logserver1:
+    ip: 10.0.0.57
+
+###
+### OpenStack
+###
+
+# keystone
+identity_hosts:
+  infra1:
+    ip: 10.0.0.13
+  infra2:
+    ip: 10.0.0.15
+  infra3:
+    ip: 10.0.0.12  
+
+# cinder api services
+storage-infra_hosts:
+  infra1:
+    ip: 10.0.0.13
+  infra2:
+    ip: 10.0.0.15
+  infra3:
+    ip: 10.0.0.12  
+# glance
+image_hosts:
+  infra1:
+    ip: 10.0.0.13
+    container_vars:
+      limit_container_types: glance
+      glance_nfs_client:
+        - server: "10.0.2.57"
+          remote_path: "/images"
+          local_path: "/var/lib/glance/images"
+          type: "nfs"
+          options: "_netdev,auto"
+  infra2:
+    ip: 10.0.0.15
+    container_vars:
+      limit_container_types: glance
+      glance_nfs_client:
+        - server: "10.0.2.57"
+          remote_path: "/images"
+          local_path: "/var/lib/glance/images"
+          type: "nfs"
+          options: "_netdev,auto"   
+  infra3:
+    ip: 10.0.0.12
+    container_vars:
+      limit_container_types: glance
+      glance_nfs_client:
+        - server: "10.0.2.57"
+          remote_path: "/images"
+          local_path: "/var/lib/glance/images"
+          type: "nfs"
+          options: "_netdev,auto"      
+
+# nova api, conductor, etc services
+compute-infra_hosts:
+  infra1:
+    ip: 10.0.0.13
+  infra2:
+    ip: 10.0.0.15
+  infra3:
+    ip: 10.0.0.12  
+
+# heat
+orchestration_hosts:
+  infra1:
+    ip: 10.0.0.13
+  infra2:
+    ip: 10.0.0.15
+  infra3:
+    ip: 10.0.0.12  
+
+# horizon
+dashboard_hosts:
+  infra1:
+    ip: 10.0.0.13
+  infra2:
+    ip: 10.0.0.15
+  infra3:
+    ip: 10.0.0.12  
+
+# neutron server, agents (L3, etc)
+network_hosts:
+  infra1:
+    ip: 10.0.0.13
+  infra2:
+    ip: 10.0.0.15
+  infra3:
+    ip: 10.0.0.12  
+# ceilometer (telemetry API)
+metering-infra_hosts:
+  infra1:
+    ip: 10.0.0.13
+  infra2:
+    ip: 10.0.0.15
+  infra3:
+    ip: 10.0.0.12  
+
+# aodh (telemetry alarm service)
+metering-alarm_hosts:
+  infra1:
+    ip: 10.0.0.13
+  infra2:
+    ip: 10.0.0.15
+  infra3:
+    ip: 10.0.0.12  
+
+# gnocchi (telemetry metrics storage)
+metrics_hosts:
+  infra1:
+    ip: 10.0.0.13
+  infra2:
+    ip: 10.0.0.15
+  infra3:
+    ip: 10.0.0.12  
+
+
+# nova hypervisors
+compute_hosts:
+  compute1:
+    ip: 10.0.0.33
+  compute2:
+    ip: 10.0.0.34
+  compute3:
+    ip: 10.0.0.35
+  compute4:  
+    ip: 10.0.0.36
+  newton-kvm1:
+    ip: 10.0.0.32   
+# ceilometer compute agent (telemetry)
+metering-compute_hosts:
+  compute1:
+    ip: 10.0.0.33
+  compute2:
+    ip: 10.0.0.34
+  compute3:
+    ip: 10.0.0.35
+  compute4:  
+    ip: 10.0.0.36
+  newton-kvm1:
+    ip: 10.0.0.32  
+      
+# The infra nodes where the Ceph mon services will run
+ceph-mon_hosts:
+  infra1:
+    ip: 10.0.0.13
+  infra2:
+    ip: 10.0.0.15
+  infra3:
+    ip: 10.0.0.12 
+
+# The nodes that the Ceph OSD disks will be running on
+ceph-osd_hosts:
+  aio1:
+    ip: 172.29.236.100
+  osd1:
+    ip: 10.0.0.84
+  osd2:
+    ip: 10.0.0.86
+  osd3:
+    ip: 10.0.0.87
+  osd5:
+    ip: 10.0.0.85
+# cinder storage host (ceph-backed)
+storage_hosts:
+ infra1:
+  ip: 10.0.0.13
+  container_vars:
+   cinder_backends:
+     limit_container_types: cinder_volume
+     rbd:
+       volume_group: cinder-volumes
+       volume_driver: cinder.volume.drivers.rbd.RBDDriver
+       volume_backend_name: ceph
+       rbd_pool: volumes
+       rbd_ceph_conf: /etc/ceph/ceph.conf
+       rbd_user: cinder
+ infra2:
+  ip: 10.0.0.15
+  container_vars:
+   cinder_backends:
+     limit_container_types: cinder_volume
+     rbd:
+       volume_group: cinder-volumes
+       volume_driver: cinder.volume.drivers.rbd.RBDDriver
+       volume_backend_name: ceph
+       rbd_pool: volumes
+       rbd_ceph_conf: /etc/ceph/ceph.conf
+       rbd_user: cinder
+ infra3:
+  ip: 10.0.0.12
+  container_vars:
+   cinder_backends:
+     limit_container_types: cinder_volume
+     rbd:
+       volume_group: cinder-volumes
+       volume_driver: cinder.volume.drivers.rbd.RBDDriver
+       volume_backend_name: ceph
+       rbd_pool: volumes
+       rbd_ceph_conf: /etc/ceph/ceph.conf
+       rbd_user: cinder
+
+#storage_hosts:
+#  storage1:
+#    ip: 10.0.0.12
+#    container_vars:
+#      cinder_backends:
+#        limit_container_types: cinder_volume
+#        lvm:
+#          volume_group: cinder-volumes
+#          volume_driver: cinder.volume.drivers.lvm.LVMVolumeDriver
+#          volume_backend_name: LVM_iSCSI
+#          iscsi_ip_address: "10.0.0.12"
+#storage_hosts:
+#  storage1:
+#    ip: 10.0.0.13
+#    container_vars:
+#      cinder_backends:
+#        limit_container_types: cinder_volume
+#        lvm:
+#          volume_group: cinder-volumes
+#          volume_driver: cinder.volume.drivers.lvm.LVMVolumeDriver
+#          volume_backend_name: LVM_iSCSI
+#          iscsi_ip_address: "10.0.0.12"
+##storage_hosts:
+#  infra2:
+#    ip: 10.0.0.13
+#    container_vars:
+#      cinder_bacskends:
+#        limit_container_types: cinder_volume
+#        cinder_nfs_client:
+#          nfs_shares_config: /etc/cinder/nfs_shares
+#          shares:
+#            - ip: "10.0.2.15"
+#              share: "/vol/cinder"
+#  infra1:
+#    ip: 10.0.0.12
+#    container_vars:
+#      cinder_backends:
+#        limit_container_types: cinder_volume
+#        cinder_nfs_client:
+#          nfs_shares_config: /etc/cinder/nfs_shares
+#          shares:
+#            - ip: "10.0.2.15"
+#              share: "/vol/cinder"

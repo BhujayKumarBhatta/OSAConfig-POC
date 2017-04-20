@@ -1,0 +1,5 @@
+---
+container_skel:
+  ceph_osd:
+    properties:
+      is_metal: true
