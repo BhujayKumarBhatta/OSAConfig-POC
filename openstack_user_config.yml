@@ -252,13 +252,13 @@ metering-compute_hosts:
     ip: 10.0.0.32  
       
 # The infra nodes where the Ceph mon services will run
-ceph-mon_hosts:
-  infra1:
-    ip: 10.0.0.13
-  infra2:
-    ip: 10.0.0.15
-  infra3:
-    ip: 10.0.0.12 
+#ceph-mon_hosts:
+#  infra1:
+#    ip: 10.0.0.13
+#  infra2:
+#    ip: 10.0.0.15
+#  infra3:
+#    ip: 10.0.0.12 
 
 ## The nodes that the Ceph OSD disks will be running on
 #ceph-osd_hosts:
