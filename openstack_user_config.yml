@@ -228,10 +228,10 @@ metrics_hosts:
 
 # nova hypervisors
 compute_hosts:
-  compute1:
-    ip: 10.0.0.33
-  compute2:
-    ip: 10.0.0.34
+#  compute1:
+#    ip: 10.0.0.33
+#  compute2:
+#    ip: 10.0.0.34
   compute3:
     ip: 10.0.0.35
   compute4:  
@@ -240,10 +240,10 @@ compute_hosts:
     ip: 10.0.0.32   
 # ceilometer compute agent (telemetry)
 metering-compute_hosts:
-  compute1:
-    ip: 10.0.0.33
-  compute2:
-    ip: 10.0.0.34
+#  compute1:
+#    ip: 10.0.0.33
+#  compute2:
+#    ip: 10.0.0.34
   compute3:
     ip: 10.0.0.35
   compute4:  
@@ -260,18 +260,18 @@ ceph-mon_hosts:
   infra3:
     ip: 10.0.0.12 
 
-# The nodes that the Ceph OSD disks will be running on
-ceph-osd_hosts:
-  aio1:
-    ip: 172.29.236.100
-  osd1:
-    ip: 10.0.0.84
-  osd2:
-    ip: 10.0.0.86
-  osd3:
-    ip: 10.0.0.87
-  osd5:
-    ip: 10.0.0.85
+## The nodes that the Ceph OSD disks will be running on
+#ceph-osd_hosts:
+#  aio1:
+#    ip: 172.29.236.100
+#  osd1:
+#    ip: 10.0.0.84
+#  osd2:
+#    ip: 10.0.0.86
+#  osd3:
+#    ip: 10.0.0.87
+#  osd5:
+#    ip: 10.0.0.85
 # cinder storage host (ceph-backed)
 storage_hosts:
  infra1:
