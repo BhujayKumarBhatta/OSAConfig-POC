@@ -84,6 +84,11 @@ keystone_ceilometer_enabled: True
 #    backend_url: "memcached://10.0.0.151:11211"
 #  notification:
 #    workload_partitioning: True
+#ceilometer_event_pipeline_yaml_overrides:
+#  publishers:
+#         - database://
+#         - gnocchi://
+#         - notifier://
 #ceilometer_pipeline_yaml_overrides: 
 #ceilometer_aodh_enabled: false
 #ceilometer_gnocchi_enabled: false
