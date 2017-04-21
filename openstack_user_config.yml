@@ -308,6 +308,15 @@ storage_hosts:
        rbd_ceph_conf: /etc/ceph/ceph.conf
        rbd_user: cinder
 
+# The infra nodes that will be running the Unbound DNS caching resolvers
+#unbound_hosts:
+#  infra1:
+#    ip: 172.20.236.111
+#  infra2:
+#    ip: 172.20.236.112
+#  infra3:
+#    ip: 172.20.236.113
+
 #storage_hosts:
 #  storage1:
 #    ip: 10.0.0.12

@@ -70,18 +70,19 @@ cinder_service_backup_ceph_pool: backups
 ceilometer_db_type: mongodb
 ceilometer_db_ip: 10.0.0.57
 ceilometer_db_port: 27017
-swift_ceilometer_enabled: False
+swift_ceilometer_enabled: False2
+
 heat_ceilometer_enabled: True
 cinder_ceilometer_enabled: True
 glance_ceilometer_enabled: True
 nova_ceilometer_enabled: True
 neutron_ceilometer_enabled: True
 keystone_ceilometer_enabled: True
-ceilometer_ceilometer_conf_overrides:
-  coordination:
-    backend_url: "memcached://10.0.0.151:11211"
-  notification:
-    workload_partitioning: True
+#ceilometer_ceilometer_conf_overrides:
+#  coordination:
+#    backend_url: "memcached://10.0.0.151:11211"
+#  notification:
+#    workload_partitioning: True
 #ceilometer_event_pipeline_yaml_overrides:
 #  publishers:
 #         - database://
@@ -91,3 +92,4 @@ ceilometer_ceilometer_conf_overrides:
 #ceilometer_aodh_enabled: false
 #ceilometer_gnocchi_enabled: false
 
+horizon_enable_sahara_ui: True
