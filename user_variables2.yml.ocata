@@ -54,6 +54,7 @@ ceph_mons:
 # When nova_libvirt_images_rbd_pool is defined, ceph will be installed on nova
 # hosts.
 nova_libvirt_images_rbd_pool: vms
+nova_force_config_drive: True
 
 glance_default_store: rbd 
 #glance_default_store: file
