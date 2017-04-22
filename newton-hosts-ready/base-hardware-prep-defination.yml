@@ -58,10 +58,10 @@ target_hosts:
           - bond2.202 : {address: ,netmask: ,broadcast:  ,gateway: ,dns: ,part_of_vlan: True} 
             
         bridges: 
-          - br-mgmt: {brPort: bond1, address: 10.0.0.15 ,netmask: 255.255.255.0 ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,bridge_description: }
-          - br-storage: {brPort: bond1.101, address: 10.0.2.15 ,netmask: 255.255.255.0 ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, bridge_description: }
-          - br-vlan: {brPort: bond2, address: 10.0.8.15,netmask: 255.255.255.0,broadcast: ,gateway: ,dns: ,part_of_vlan: True, bridge_description: }
-          - br-vxlan: {brPort: bond2.202, address: 10.0.1.15,netmask: 255.255.255.0,broadcast: ,gateway: ,dns: ,part_of_vlan: True, bridge_description: }
+          - {brName: br-mgmt, brPort: bond1, address: 10.0.0.15 ,netmask: 255.255.255.0 ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,bridge_description: }
+          - {brName: br-storage,brPort: bond1.101, address: 10.0.2.15 ,netmask: 255.255.255.0 ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, bridge_description: }
+          - {brName: br-vlan,brPort: bond2, address: 10.0.8.15,netmask: 255.255.255.0,broadcast: ,gateway: ,dns: ,part_of_vlan: True, bridge_description: }
+          - {brName: br-vxlan,brPort: bond2.202, address: 10.0.1.15,netmask: 255.255.255.0,broadcast: ,gateway: ,dns: ,part_of_vlan: True, bridge_description: }
        
  
  
