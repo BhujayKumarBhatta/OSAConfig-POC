@@ -13,9 +13,9 @@ iface {{ bonditem.bondNic }} inet manual
     bond-master {{ bonditem.bondName }}
     bond-primary {{ bonditem.bondNic }}
 {% endfor %}
-
 ################### Create Bond ##############################################
 {% for bonditem in target_hosts[ansible_hostname]['bond'] %}
+## {{ bonditem.description }}
 auto {{ bonditem.bondName }}
 iface {{ bonditem.bondName }} inet manual
     bond-slaves {{ bonditem.bondNic }}
@@ -25,15 +25,16 @@ iface {{ bonditem.bondName }} inet manual
     bond-updelay 200
 {% endfor %}
 
-######################Create VLAN Sub Intrefaces from bond######################
+######################Create VLAN Sub Intrefaces from bond or physical NIC ######################
 {% for vNicitem in target_hosts[ansible_hostname]['vNic'] %}
+### {{ vNicitem.description }}
 auto {{ vNicitem.vNicName }}
 iface {{ vNicitem.vNicName }} inet manual
     vlan-raw-device {{ vNicitem.vNicParent }}
 {% endfor %}
-
 #######################Create Bridges #######################################################
 {% for britem in target_hosts[ansible_hostname]['bridges'] %}
+# {{ britem.description }}
 auto {{ britem.brName }}
 {% if britem.address %}
 iface {{ britem.brName }} inet static
@@ -61,8 +62,5 @@ iface {{ britem.brName }} inet manual
     bridge_fd 0
     bridge_ports {{ britem.brPort }}    
  {% endif  %} 
- 
- 
-{% endfor %}
-
+ {% endfor %}
 ### EOF #######
