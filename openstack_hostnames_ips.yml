@@ -35,10 +35,6 @@
         "ansible_ssh_host": "10.0.0.161", 
         "container_address": "10.0.0.161"
     }, 
-    "infra1_ceph-mon_container-d3e29b8f": {
-        "ansible_ssh_host": "10.0.0.138", 
-        "container_address": "10.0.0.138"
-    }, 
     "infra1_cinder_api_container-f6d29538": {
         "ansible_ssh_host": "10.0.0.239", 
         "container_address": "10.0.0.239"
@@ -147,10 +143,6 @@
         "ansible_ssh_host": "10.0.0.175", 
         "container_address": "10.0.0.175"
     }, 
-    "infra2_ceph-mon_container-9c77d26e": {
-        "ansible_ssh_host": "10.0.0.143", 
-        "container_address": "10.0.0.143"
-    }, 
     "infra2_cinder_api_container-bdd169cf": {
         "ansible_ssh_host": "10.0.0.125", 
         "container_address": "10.0.0.125"
@@ -258,10 +250,6 @@
     "infra3_ceilometer_collector_container-f7a776ed": {
         "ansible_ssh_host": "10.0.0.224", 
         "container_address": "10.0.0.224"
-    }, 
-    "infra3_ceph-mon_container-de00bc75": {
-        "ansible_ssh_host": "10.0.0.230", 
-        "container_address": "10.0.0.230"
     }, 
     "infra3_cinder_api_container-b99a694c": {
         "ansible_ssh_host": "10.0.0.192", 
