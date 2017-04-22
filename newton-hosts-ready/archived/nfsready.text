@@ -1,0 +1,19 @@
+sudo apt install nfs-kernel-server
+
+mkdir /images
+
+vi /etc/exports 
+
+/images         *(rw,sync,no_subtree_check)
+
+
+sudo systemctl start nfs-kernel-server.service
+
+
+#auto eno2
+#iface eno2 inet static
+#        address 10.0.2.15
+#        netmask 255.255.255.0
+#        network 10.0.2.0
+#        broadcast 10.0.2.255
+

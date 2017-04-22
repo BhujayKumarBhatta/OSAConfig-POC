@@ -1,0 +1,74 @@
+auto lo
+iface lo inet loopback
+
+#Pyhisical Interface Primary 
+auto enp5s0
+iface enp5s0 inet manual
+    vlan-raw-device enp5s0
+####################################################################################################
+
+# Container/Host management bridge
+auto br-mgmt
+iface br-mgmt inet static
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports enp5s0
+    address 10.0.0.34
+    netmask 255.255.255.0
+
+#####################################################################################################
+# Storage network VLAN interface (optional).Only the COMPUTE and STORAGE nodes must have an IP address
+# on this bridge. When used by infrastructure nodes, the
+# IP addresses are assigned to containers which use this
+# bridge.
+##########################################################################################################
+auto enp5s0.10
+iface enp5s0.10 inet manual
+    vlan-raw-device enp5s0
+# Storage bridge (optional)
+auto br-storage
+iface br-storage inet static
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports enp5s0.10
+    address 10.0.2.34
+    netmask 255.255.255.0
+######################################################################################################
+  
+  #Physical Interface for VLAN, VXLAN and Storage
+auto enp9s0
+iface enp9s0 inet manual
+    vlan-raw-device enp9s0
+#########################################################################################################
+
+#OpenStack Networking VLAN bridge
+auto br-vlan
+iface br-vlan inet manual
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports enp9s0
+
+#################################################################################################
+Only the COMPUTE and NETWORK nodes must have an IP address
+# on this bridge. When used by infrastructure nodes, the
+# IP addresses are assigned to containers which use this
+# bridge.
+#######################################################################################
+#For br-vxlan 
+auto enp9s0.10
+iface enp9s0.10 inet manual
+    vlan-raw-device enp9s0
+auto br-vxlan
+#OpenStack Networking VXLAN (tunnel/overlay) bridge
+iface br-vxlan inet static
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports enp9s0.10
+    address 10.0.1.34
+    netmask 255.255.255.0 
+  
+source /etc/network/interfaces.d/*.cfg

@@ -1,0 +1,39 @@
+---
+- hosts: base_hw_prep_for_openstack
+  vars_files: 
+    - base-hardware-prep-defination.yml    
+  become: true
+  
+  roles:
+   - role: configure-proxy-apt
+     when: "ansible_hostname not in  haproxy_server_hostnames" 
+   - role: configure-chrony
+   - role: install-apt-pkg   
+   - role: configure-nfs-server
+     when: "ansible_hostname  in nfs_server_hostnames"
+   - role: configure-iommu-for-nova-compute
+     when: "ansible_hostname in  nova_compute_server_hostnames"
+   - role: create-interfaces-bridges
+     when: "ansible_hostname in network_interface_build_needed_for_servers"
+   #- role: reboot-servers # why this role didn't work
+    # when: "ansible_hostname in servers_to_reboot" 
+  tasks:  
+  - name: Rebooting  the server  ----watch out you may disconnected if configuration is not proper
+    shell: sleep 2 && shutdown -r now
+    async: 1
+    poll: 0
+    ignore_errors: true
+    when: "ansible_hostname in servers_to_reboot"
+  - name: waiting for server to come back after reboot
+    local_action: wait_for host={{ ansible_ssh_host }} state=started port=22 delay=30 timeout=3000 
+    retries: 50
+#  - name: 'Waiting OS boot and SSH readiness'
+#    local_action:
+#    wait_for: 
+#         port: 22        
+#         host: "{{ ansible_ssh_host }}"
+#         delay: 1
+#         timeout: 3000
+#    delay: 30
+#    retries: 50
+

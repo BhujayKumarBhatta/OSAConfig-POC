@@ -1,0 +1,64 @@
+# {{ ansible_managed }}
+source /etc/network/interfaces.d/*
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+#############################################################
+{% for pi in  network_interfaces %}
+
+{% if pi.forHost==ansible_hostname %}
+
+# {{ pi.description }}
+auto {{ pi.name }}
+{% if pi.address %}
+iface {{ pi.name }} inet static
+	address {{ pi.address }}
+    netmask {{ pi.netmask }}
+    broadcast {{ pi.broadcast }}
+{% if pi.gateway %}
+    gateway {{ pi.gateway }}
+{% endif %}
+{% if pi.dns %}
+    dns-nameservers {{ pi.dns }}
+{% endif %}
+{% endif %}
+{% if not pi.address %}
+iface {{ pi.name }} inet manual
+{% endif %}
+{% if  pi.part_of_vlan %}
+	vlan-raw-device {{ pi.parent_name }}
+{% endif %}
+
+
+{% if pi.part_of_bridge %}
+# {{ pi.bridge_description }}
+auto {{ pi.bridge_name }}
+{% if pi.bridge_address %}
+iface {{ pi.bridge_name }} inet static
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports {{ pi.name }}
+	address {{ pi.bridge_address }}
+    netmask {{ pi.bridge_netmask }}
+    broadcast {{ pi.bridge_broadcast }}
+{% if pi.bridge_gateway %}
+    gateway {{ pi.bridge_gateway }}
+{% endif %}
+{% if pi.bridge_dns %}
+    dns-nameservers {{ pi.bridge_dns }}
+{% endif %}
+{% endif %}
+{% if not pi.bridge_address %}
+iface {{ pi.bridge_name }} inet manual
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports {{ pi.name }}
+{% endif %}
+{% endif %}
+############################################
+	 
+	{% endif %}
+{% endfor %}

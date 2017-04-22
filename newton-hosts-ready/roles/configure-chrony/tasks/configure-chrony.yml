@@ -1,0 +1,17 @@
+---
+- name: install Chrony package
+  apt:
+    name: chrony
+    state: present
+    allow_unauthenticated: yes    
+- name: Configure Chrony 
+  template:
+    src: chrony.conf.j2
+    dest: /etc/chrony/chrony.conf
+    backup: yes
+  register: chronycofigstat  
+- name: Restart Chrony
+  service: 
+    name: chrony
+    state: restarted
+  when: chronycofigstat.changed

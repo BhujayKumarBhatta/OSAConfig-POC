@@ -1,0 +1,62 @@
+# {{ ansible_managed }}
+source /etc/network/interfaces.d/*
+# The loopback network interface
+auto lo
+iface lo inet loopback
+#############################################################
+{% for item in  network_interfaces %}
+{% if item.forHost==ansible_hostname %}
+# {{ item.description }}
+auto {{ item.name }}
+{% if item.address %}
+iface {{ item.name }} inet static
+	address {{ item.address }}
+    netmask {{ item.netmask }}
+    broadcast {{ item.broadcast }}
+{% if item.gateway %}
+    gateway {{ item.gateway }}
+{% endif %}
+{% if item.dns %}
+    dns-nameservers {{ item.dns }}
+{% endif %}
+{% endif %}
+{% if not item.address %}
+iface {{ item.name }} inet manual
+{% endif %}
+{% if  item.part_of_vlan %}
+	vlan-raw-device {{ item.parent_name }}
+{% endif %}
+#++++++++++++++++++++++++++++++++
+{% if item.part_of_bridge %}
+# {{ item.bridge_description }}
+auto {{ item.bridge_name }}
+{% if item.bridge_address %}
+iface {{ item.bridge_name }} inet static
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports {{ item.name }}
+	address {{ item.bridge_address }}
+    netmask {{ item.bridge_netmask }}
+{% if item.bridge_broadcast %}
+    broadcast {{ item.bridge_broadcast }}
+{% endif %}      
+{% if item.bridge_gateway %}
+    gateway {{ item.bridge_gateway }}
+{% endif %}
+{% if item.bridge_dns %}
+    dns-nameservers {{ item.bridge_dns }}
+{% endif %}
+{% endif %}
+{% if not item.bridge_address %}
+iface {{ item.bridge_name }} inet manual
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports {{ item.name }}
+{% endif %}
+{% endif %}
+############################################
+	 {% endif %}
+{% endfor %}
+### EOF#######

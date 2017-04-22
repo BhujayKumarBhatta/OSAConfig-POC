@@ -1,0 +1,4 @@
+{% for n in nfs_share_names %}
+{{ n }}         *(rw,no_root_squash,sync,no_subtree_check)
+{% endfor %}
+

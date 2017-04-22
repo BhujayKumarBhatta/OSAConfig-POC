@@ -1,0 +1,76 @@
+auto lo
+iface lo inet loopback
+
+#Pyhisical Interface Primary 
+auto eno1
+iface eno1 inet manual
+    vlan-raw-device eno1
+
+
+# Container/Host management bridge
+auto br-mgmt
+iface br-mgmt inet static
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports eno1
+    address 10.0.0.12
+    netmask 255.255.255.0
+
+######################################################################
+#####################################################################################################
+# Storage network VLAN interface (optional)
+auto eno1.10
+iface eno1.10 inet manual
+    vlan-raw-device eno1
+# Storage bridge (optional)
+auto br-storage
+iface br-storage inet manual
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports eno1.10
+######################################################################################################
+
+
+#######################################################################
+#Physical Interface for VLAN, VXLAN and Storage
+auto eno2
+iface eno2 inet manual
+    vlan-raw-device eno2
+#OpenStack Networking VLAN bridge
+auto br-vlan
+iface br-vlan inet manual
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports eno2
+
+#################################################################################################
+#For br-vxlan 
+auto eno2.10
+iface eno2.10 inet manual
+    vlan-raw-device eno2
+auto br-vxlan
+#OpenStack Networking VXLAN (tunnel/overlay) bridge
+iface br-vxlan inet manual
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports eno2.10
+
+#####################################################################################################
+# Storage network VLAN interface (optional)
+#auto eno2.20
+#iface eno2.20 inet manual
+#    vlan-raw-device eno2
+# Storage bridge (optional)
+#auto br-storage
+#iface br-storage inet manual
+#    bridge_stp off
+#    bridge_waitport 0
+#    bridge_fd 0
+#    bridge_ports eno2.20
+######################################################################################################
+
+source /etc/network/interfaces.d/*.cfg

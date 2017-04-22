@@ -1,0 +1,32 @@
+---
+- name: install all apt packages
+  apt: 
+    name: "{{ item }}"
+    state: present
+    allow_unauthenticated: yes
+  with_items:
+   - bridge-utils
+   - vlan 
+   - ifenslave 
+   - ifenslave-2.6    
+   - tcpdump
+- name: Loading the 8021.q and bonding modules
+  modprobe: 
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - 8021q
+    - bonding
+- name: Also adding 8021.q and bonding modules /etc/modules
+  command: "{{ item }}"
+  with_items:
+   - echo '8021q' >> /etc/modules
+   - echo 'bonding' >> /etc/modules
+- name: Configure the network interfaces and bridges
+  template:      
+       src: base-hw-network.cfg.j2
+       dest: /etc/network/interfaces
+       backup: yes
+  with_items: "{{ network_interfaces }}"
+  when: "item.forHost==ansible_host"
+    

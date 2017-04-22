@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+source /etc/network/interfaces.d/*
+# The loopback network interface
+auto lo
+iface lo inet loopback
+#############################################################
+{% for item in target_hosts: %}
+{% if item.hostname==ansible_hsotname %}
+1st OK
+ {% endif %}
+{% endfor %}
+

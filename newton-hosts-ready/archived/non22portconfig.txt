@@ -1,0 +1,10 @@
+#this file need to copied as  config  under the ansible deployment user .ssh folder
+
+Host 10.0.0.52
+        User root
+        Port 2223
+
+Host *
+        User root
+        Port 22
+

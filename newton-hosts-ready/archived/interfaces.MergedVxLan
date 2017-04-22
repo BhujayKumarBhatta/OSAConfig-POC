@@ -1,0 +1,65 @@
+
+
+# Container/Host management VLAN interface
+auto eno1
+iface eno1 inet manual
+    vlan-raw-device eno1
+
+
+# Container/Host management bridge
+auto br-mgmt
+iface br-mgmt inet static
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports eno1
+    address 10.0.0.13
+    netmask 255.255.255.0
+#    gateway 172.29.236.1
+#    dns-nameservers 8.8.8.8 8.8.4.4
+######################################################################################################
+
+#Physical Interface for VLAN, VXLAN and Storage
+auto eno4
+iface eno4 inet manual
+    vlan-raw-device eno4
+#########################################################################################################
+
+#For br-vlan 
+auto eno4.10
+iface eno4.10 inet manual
+    vlan-raw-device eno4
+#OpenStack Networking VLAN bridge
+auto br-vlan
+iface br-vlan inet manual
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports eno4.10
+
+################################################################################################
+#For br-vxlan 
+auto eno4.30
+iface eno4.30 inet manual
+    vlan-raw-device eno4
+auto br-vxlan
+#OpenStack Networking VXLAN (tunnel/overlay) bridge
+iface br-vxlan inet manual
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports eno4.30
+#####################################################################################################
+# Storage network VLAN interface (optional)
+auto eno4.20
+iface eno4.20 inet manual
+    vlan-raw-device eno4
+# Storage bridge (optional)
+auto br-storage
+iface br-storage inet manual
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports eno4.20
+
+source /etc/network/interfaces.d/*.cfg

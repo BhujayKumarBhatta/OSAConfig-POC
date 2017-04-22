@@ -1,0 +1,35 @@
+# Include IP address and host names in the hosts file . This are taken from the varibale file    
+- name: Add host addresses  to /etc/hosts
+  blockinfile:
+      dest: /etc/hosts
+      block: "{{ host_table_entry }}"
+
+# Insert proxy servers address in the /etc/environment .  This are taken from the varibale file    
+- name: Insert proxy server details in the /etc/environment 
+  blockinfile:
+      dest: /etc/environment
+      block: "{{ etc_environment_entry }}"
+
+- name: Create apt.conf file where proxy for apt need to be mentioned
+  file: path=/etc/apt/apt.conf  state=touch mode="u+rw,g-wx,o-wx"
+
+- name: Insert apt proxy configuration in /etc/apt/apt.conf 
+  blockinfile:
+      dest: /etc/apt/apt.conf
+      block: "{{ apt_proxy_entry }}"
+
+#- name: Create .pip directory in home where  pip.conf  need to be placed
+#  file: path=.pip  state=directory mode="u+rw,g-wx,o-wx"
+#
+#- name: Create pip.conf file where proxy for pip need to be mentioned
+#  file: path=.pip/pip.conf  state=touch mode="u+rw,g-wx,o-wx"
+#
+#- name: Insert pip proxy configuration in .pip/pip.conf 
+#  blockinfile:
+#      dest: .pip/pip.conf
+#      block: "{{ pip_proxy_entry }}"
+      
+- name: Run the equivalent of "apt-get update"  and apt dist-upgrade as a separate step
+  apt:
+    update_cache: yes
+    upgrade: dist

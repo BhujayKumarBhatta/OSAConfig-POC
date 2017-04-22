@@ -1,0 +1,12 @@
+---
+- name: Enabling IOMMU in the kernel through grub
+  lineinfile: 
+    destfile: /etc/default/grub
+    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="intel_iommu=on"'
+    backup: yes
+  register: grubfilestat
+- name: Updating grub
+  command: update-grub
+  when: grubfilestat.changed
+  

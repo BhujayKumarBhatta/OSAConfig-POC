@@ -1,0 +1,46 @@
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+auto eno1
+iface eno1 inet static
+
+auto br-mgmt
+iface br-mgmt inet static
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports eno1
+    address 10.0.0.50
+    netmask 255.255.255.0
+    network 10.0.0.0
+    broadcast 10.0.0.255
+
+
+# The primary network interface
+auto eno2
+iface eno2 inet static
+
+auto br-internet
+iface br-internet inet static
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports eno2
+    address 14.142.104.139
+    netmask 255.255.255.248
+    network 14.142.104.136
+    broadcast 14.142.104.143
+    gateway 14.142.104.137
+    # dns-* options are implemented by the resolvconf package, if installed
+    dns-nameservers 115.112.18.21 115.112.18.131
+
+
+
+source /etc/network/interfaces.d/*.cfg

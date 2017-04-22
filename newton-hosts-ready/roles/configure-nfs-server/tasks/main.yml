@@ -1,0 +1,2 @@
+---
+- include: configure-nfs-server.yml
