@@ -5,16 +5,64 @@ auto lo
 iface lo inet loopback
 #############################################################
 
-{% for b in target_hosts[ansible_hostname]['bridges'] %}
 
-{{ b.brName }}
-
-{% endfor %}
-
+################## Assign Physical NIC to Bonds #################################
 {% for bonditem in target_hosts[ansible_hostname]['bond'] %}
-
 auto {{ bonditem.bondNic }} 
 iface {{ bonditem.bondNic }} inet manual
     bond-master {{ bonditem.bondName }}
     bond-primary {{ bonditem.bondNic }}
 {% endfor %}
+
+################### Create Bond ##############################################
+{% for bonditem in target_hosts[ansible_hostname]['bond'] %}
+auto {{ bonditem.bondName }}
+iface {{ bonditem.bondName }} inet manual
+    bond-slaves {{ bonditem.bondNic }}
+    bond-mode active-backup
+    bond-miimon 100
+    bond-downdelay 200
+    bond-updelay 200
+{% endfor %}
+
+######################Create VLAN Sub Intrefaces from bond######################
+{% for vNicitem in target_hosts[ansible_hostname]['vNic'] %}
+auto {{ vNicitem.vNicName }}
+iface {{ vNicitem.vNicName }} inet manual
+    vlan-raw-device {{ vNicitem.vNicParent }}
+{% endfor %}
+
+#######################Create Bridges #######################################################
+{% for britem in target_hosts[ansible_hostname]['bridges'] %}
+auto {{ britem.brName }}
+{% if britem.address %}
+iface {{ britem.brName }} inet static
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports {{ britem.brPort }}
+    address {{ britem.address }}
+    netmask {{ britem.netmask }}
+    {% if britem.broadcast %}
+    broadcast {{ britem.broadcast }}
+    {% endif %}      
+    {% if britem.gateway %}
+    gateway {{ britem.gateway }}
+    {% endif %}
+    {% if item.dns %}
+    dns-nameservers {{ item.dns }}
+    {% endif %}
+ {% endif  %}
+ 
+{% if not britem.address %}
+iface {{ britem.brName }} inet manual
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports {{ britem.brPort }}    
+ {% endif  %} 
+ 
+ 
+{% endfor %}
+
+### EOF #######

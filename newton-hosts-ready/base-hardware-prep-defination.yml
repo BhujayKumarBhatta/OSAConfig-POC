@@ -47,8 +47,8 @@ target_hosts:
           - {bondName: bond2, bondNic: eno2, address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True}     
             
         vNic:
-          - {vNicName: bond1.101,address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True} 
-          - {vNicName: bond2.202,address: ,netmask: ,broadcast:  ,gateway: ,dns: ,part_of_vlan: True} 
+          - {vNicName: bond1.101, vNicParent: bond1, address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True} 
+          - {vNicName: bond2.202,vNicParent: bond1, address: ,netmask: ,broadcast:  ,gateway: ,dns: ,part_of_vlan: True} 
             
         bridges: 
           - {brName: br-mgmt, brPort: bond1, address: 10.0.0.15 ,netmask: 255.255.255.0 ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,bridge_description: }
