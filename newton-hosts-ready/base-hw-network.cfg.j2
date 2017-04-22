@@ -4,4 +4,9 @@ source /etc/network/interfaces.d/*
 auto lo
 iface lo inet loopback
 #############################################################
-{{ target_hosts['infra2']['bridges'][0].brName }}
+
+{% for b in target_hosts['infra2']['bridges'] %}
+
+{{ b.brName }}
+
+{% endfor %}
