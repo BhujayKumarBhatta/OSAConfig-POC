@@ -8,14 +8,14 @@ iface lo inet loopback
 {% for nicitem in target_hosts[ansible_hostname]['nic'] %}
 ## {{ nicitem.description }}
 auto {{ nicitem.nicName }}
-{% if not nicitem.address %}} 
+{% if not nicitem.address %} 
 iface {{ nicitem.nicName }} inet manual
 {% endif %}
 {% if nicitem.bonded_with %}
     bond-master {{ nicitem.bonded_with }}
     bond-primary {{ nicitem.nicName }}
 {% endif %}
-{% if not nicitem.address %}} 
+{% if  nicitem.address %}
 iface {{ nicitem.nicName }} inet static
 	address {{ nicitem.address }}
     netmask {{ nicitem.netmask }}
