@@ -4,14 +4,13 @@ source /etc/network/interfaces.d/*
 auto lo
 iface lo inet loopback
 #############################################################
-
-
 ################## Assign Physical NIC to Bonds #################################
-{% for bonditem in target_hosts[ansible_hostname]['bond'] %}
-auto {{ bonditem.bondNic }} 
-iface {{ bonditem.bondNic }} inet manual
-    bond-master {{ bonditem.bondName }}
-    bond-primary {{ bonditem.bondNic }}
+{% for nicitem in target_hosts[ansible_hostname]['nic'] %}
+## {{ nic.description }}
+auto {{ nicitem.nicName }} 
+iface {{ nicitem.nicName }} inet manual
+    bond-master {{ nicitem.bonded_with }}
+    bond-primary {{ nicitem.nicName }}
 {% endfor %}
 ################### Create Bond ##############################################
 {% for bonditem in target_hosts[ansible_hostname]['bond'] %}
@@ -24,7 +23,6 @@ iface {{ bonditem.bondName }} inet manual
     bond-downdelay 200
     bond-updelay 200
 {% endfor %}
-
 ######################Create VLAN Sub Intrefaces from bond or physical NIC ######################
 {% for vNicitem in target_hosts[ansible_hostname]['vNic'] %}
 ### {{ vNicitem.description }}
@@ -54,8 +52,7 @@ iface {{ britem.brName }} inet static
     dns-nameservers {{ britem.dns }}
     {% endif %}
  {% endif  %}
- 
-{% if not britem.address %}
+ {% if not britem.address %}
 iface {{ britem.brName }} inet manual
     bridge_stp off
     bridge_waitport 0

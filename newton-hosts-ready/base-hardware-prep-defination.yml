@@ -39,16 +39,16 @@ servers_to_reboot:
 target_hosts:
  infra2:
    nic: 
-     - {nicName: eno1,address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+     - {nicName: eno1,bonded_with: bond1, address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: physical interface part of bond1 connected to switch ....}
-     - {nicName: eno2,address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+     - {nicName: eno2,bonded_with: bond2,address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: physical interface part of bond 2 connected to switch ....}         
                 
    bond: 
      - {bondName: bond1,bondNic: eno1, address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True , 
-             description: Used by br-mgmt and parent for VALN 101 sub int for br-storage}
+             description: bond1 using NIC eno1 }
      - {bondName: bond2, bondNic: eno2, address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, 
-             description: Used by br-vlan and parent for VALN 202 sub int for br-vxlan}     
+             description: bond 2 using NIC eno2 }     
             
    vNic:
      - {vNicName: bond1.101, vNicParent: bond1, address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
