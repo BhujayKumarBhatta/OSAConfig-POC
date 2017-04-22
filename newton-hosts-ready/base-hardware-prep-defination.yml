@@ -37,34 +37,40 @@ servers_to_reboot:
 #network interface defination for compute6 (Actual Hostname) 
 
 target_hosts:
-  hostname: infra2
-  ssh_ip: 10.0.0.15
-  nic: 
-   - eno1: {address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True}
-   - eno2: {address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True}         
-   - eno3: {address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True}         
-   - eno4: {address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True}        
-  bond: 
-    - bond1:      
-        - eno1
-        - eno3
-      property: {address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True}        
-    - bond2:      
-        - eno2
-        - eno4
-      property: {address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True}
-      
-  vNic:
-    - bond1.101 : {address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True} 
-    - bond2.202 : {address: ,netmask: ,broadcast:  ,gateway: ,dns: ,part_of_vlan: True} 
-      
-  bridges: 
-    - br-mgmt: {brPort: bond1, address: 10.0.0.15 ,netmask: 255.255.255.0 ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,bridge_description: }
-    - br-storage: {brPort: bond1.101, address: 10.0.2.15 ,netmask: 255.255.255.0 ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, bridge_description: }
-    - br-vlan: {brPort: bond2, address: 10.0.8.15,netmask: 255.255.255.0,broadcast: ,gateway: ,dns: ,part_of_vlan: True, bridge_description: }
-    - br-vxlan: {brPort: bond2.202, address: 10.0.1.15,netmask: 255.255.255.0,broadcast: ,gateway: ,dns: ,part_of_vlan: True, bridge_description: }
+  infra2:
+        nic: 
+         - eno1: {address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True}
+         - eno2: {address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True}         
+         - eno3: {address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True}         
+         - eno4: {address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True}        
+        bond: 
+          - bond1:      
+              - eno1
+              - eno3
+            property: {address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True}        
+          - bond2:      
+              - eno2
+              - eno4
+            property: {address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True}
+            
+        vNic:
+          - bond1.101 : {address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True} 
+          - bond2.202 : {address: ,netmask: ,broadcast:  ,gateway: ,dns: ,part_of_vlan: True} 
+            
+        bridges: 
+          - br-mgmt: {brPort: bond1, address: 10.0.0.15 ,netmask: 255.255.255.0 ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,bridge_description: }
+          - br-storage: {brPort: bond1.101, address: 10.0.2.15 ,netmask: 255.255.255.0 ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, bridge_description: }
+          - br-vlan: {brPort: bond2, address: 10.0.8.15,netmask: 255.255.255.0,broadcast: ,gateway: ,dns: ,part_of_vlan: True, bridge_description: }
+          - br-vxlan: {brPort: bond2.202, address: 10.0.1.15,netmask: 255.255.255.0,broadcast: ,gateway: ,dns: ,part_of_vlan: True, bridge_description: }
+       
+ 
+ 
+ 
+ 
+ 
+ 
      
-
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 network_interfaces:  
      - {forHost: compute6, description: Primary and First physical interface, name: eno1,address: ,netmask: ,broadcast: ,
         gateway: ,dns: ,part_of_vlan: True,parent_name: eno1,part_of_bridge: True,
