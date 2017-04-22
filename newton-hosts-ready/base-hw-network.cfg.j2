@@ -5,7 +5,7 @@ auto lo
 iface lo inet loopback
 #############################################################
 
-{% for b in target_hosts['ansible_hostname']['bridges'] %}
+{% for b in target_hosts[ansible_hostname]['bridges'] %}
 
 {{ b.brName }}
 
