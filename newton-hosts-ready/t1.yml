@@ -6,7 +6,7 @@
      
   tasks: 
   - debug: 
-     msg: "{{ target_hosts['infra2']['nic' ]}}"
+     msg: "{{ target_hosts['infra2']['bridges']['br-mgmt']}}"
   - name: Configure the network interfaces and bridges
     template:      
        src: base-hw-network.cfg.j2
