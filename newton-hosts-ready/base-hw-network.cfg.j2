@@ -13,7 +13,7 @@ iface lo inet loopback
 
 {% for bonditem in target_hosts[ansible_hostname]['bond'] %}
 
-auto bonditem.bondNic
-iface bonditem.bondNic inet manual
-    bond-master bondName
-    bond-primary bonditem.bondNic
+auto {{ bonditem.bondNic }} 
+iface {{ bonditem.bondNic }} inet manual
+    bond-master {{ bonditem.bondName }}
+    bond-primary {{ bonditem.bondNic }}
