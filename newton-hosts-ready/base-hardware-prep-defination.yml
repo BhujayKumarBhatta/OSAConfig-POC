@@ -39,23 +39,16 @@ servers_to_reboot:
 target_hosts:
   infra2:
         nic: 
-         - eno1: {address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True}
-         - eno2: {address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True}         
-         - eno3: {address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True}         
-         - eno4: {address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True}        
+         - {nicName: eno1,address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True}
+         - {nicName: eno2,address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True}         
+                
         bond: 
-          - bond1:      
-              - eno1
-              - eno3
-            property: {address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True}        
-          - bond2:      
-              - eno2
-              - eno4
-            property: {address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True}
+          - {bondName: bond1,bondNic: eno1, address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True}
+          - {bondName: bond2, bondNic: eno2, address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True}     
             
         vNic:
-          - bond1.101 : {address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True} 
-          - bond2.202 : {address: ,netmask: ,broadcast:  ,gateway: ,dns: ,part_of_vlan: True} 
+          - {vNicName: bond1.101,address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True} 
+          - {vNicName: bond2.202,address: ,netmask: ,broadcast:  ,gateway: ,dns: ,part_of_vlan: True} 
             
         bridges: 
           - {brName: br-mgmt, brPort: bond1, address: 10.0.0.15 ,netmask: 255.255.255.0 ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,bridge_description: }
