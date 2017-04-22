@@ -5,7 +5,7 @@
   become: true
      
   tasks: 
-  - debug: {{ target_hosts }} 
+  - debug: "{{ target_hosts }}"
   - name: Configure the network interfaces and bridges
     template:      
        src: base-hw-network.cfg.j2
