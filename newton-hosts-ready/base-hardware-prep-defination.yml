@@ -45,16 +45,16 @@ target_hosts:
      - {bondName: bond2, bondNic: eno2, address: ,netmask: ,broadcast: ,gateway: ,dns: , 
              description: bond 2 using NIC eno2 }             
    vNic:
-     - {vNicName: eno1.101, vNicParent: eno1, address: ,netmask: ,broadcast: ,gateway: ,dns: ,
+     - {vNicName: eno1.10, vNicParent: eno1, address: ,netmask: ,broadcast: ,gateway: ,dns: ,
              description: used by br-storage bridge } 
-     - {vNicName: bond2.202,vNicParent: bond1, address: ,netmask: ,broadcast:  ,gateway: ,dns: , 
+     - {vNicName: bond2.10,vNicParent: bond1, address: ,netmask: ,broadcast:  ,gateway: ,dns: , 
              description: used by br-vxlan bridge}            
    bridges: 
-     - {brName: br-storage,brPort: eno1.101, address: 10.0.2.15 ,netmask: 255.255.255.0 ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+     - {brName: br-storage,brPort: eno1.10, address: 10.0.2.15 ,netmask: 255.255.255.0 ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Openstack Storage }
      - {brName: br-vlan,brPort: bond2, address: 10.0.8.15,netmask: 255.255.255.0,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Provider Network flat or vlan , To be connected to external router gateway}
-     - {brName: br-vxlan,brPort: bond2.202, address: 10.0.1.15,netmask: 255.255.255.0,broadcast: ,gateway: ,dns: ,part_of_vlan: True, 
+     - {brName: br-vxlan,brPort: bond2.10, address: 10.0.1.15,netmask: 255.255.255.0,broadcast: ,gateway: ,dns: ,part_of_vlan: True, 
              description: Used for tenant network , virtual network}
        
  
