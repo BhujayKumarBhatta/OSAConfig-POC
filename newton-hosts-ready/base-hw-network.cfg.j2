@@ -49,8 +49,8 @@ iface {{ britem.brName }} inet static
     {% if britem.gateway %}
     gateway {{ britem.gateway }}
     {% endif %}
-    {% if item.dns %}
-    dns-nameservers {{ item.dns }}
+    {% if britem.dns %}
+    dns-nameservers {{ britem.dns }}
     {% endif %}
  {% endif  %}
  
