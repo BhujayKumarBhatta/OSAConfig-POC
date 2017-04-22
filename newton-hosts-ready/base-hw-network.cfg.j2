@@ -18,16 +18,16 @@ iface {{ nicitem.nicName }} inet manual
 {% if  nicitem.address %}
 iface {{ nicitem.nicName }} inet static
 	address {{ nicitem.address }}
-    netmask {{ nicitem.netmask }}
-    {% if nicitem.broadcast %}
-    broadcast {{ nicitem.broadcast }}
-    {% endif %}      
-    {% if nicitem.gateway %}
-    gateway {{ nicitem.gateway }}
-    {% endif %}
-    {% if nicitem.dns %}
-    dns-nameservers {{ nicitem.dns }}
-    {% endif %}
+	netmask {{ nicitem.netmask }}
+{% if nicitem.broadcast %}
+	broadcast {{ nicitem.broadcast }}
+{% endif %}      
+{% if nicitem.gateway %}
+	gateway {{ nicitem.gateway }}
+{% endif %}
+{% if nicitem.dns %}
+	dns-nameservers {{ nicitem.dns }}
+{% endif %}
 {% endif %}
 {% endfor %}
 ################### Create Bond ##############################################
@@ -60,22 +60,22 @@ iface {{ britem.brName }} inet static
     bridge_ports {{ britem.brPort }}
     address {{ britem.address }}
     netmask {{ britem.netmask }}
-    {% if britem.broadcast %}
+{% if britem.broadcast %}
     broadcast {{ britem.broadcast }}
-    {% endif %}      
-    {% if britem.gateway %}
+{% endif %}      
+{% if britem.gateway %}
     gateway {{ britem.gateway }}
-    {% endif %}
-    {% if britem.dns %}
+{% endif %}
+{% if britem.dns %}
     dns-nameservers {{ britem.dns }}
-    {% endif %}
- {% endif  %}
- {% if not britem.address %}
+{% endif %}
+{% endif  %}
+{% if not britem.address %}
 iface {{ britem.brName }} inet manual
     bridge_stp off
     bridge_waitport 0
     bridge_fd 0
     bridge_ports {{ britem.brPort }}    
- {% endif  %} 
- {% endfor %}
+{% endif  %} 
+{% endfor %}
 ### EOF #######
