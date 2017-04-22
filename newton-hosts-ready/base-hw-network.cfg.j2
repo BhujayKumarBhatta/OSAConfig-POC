@@ -17,3 +17,4 @@ auto {{ bonditem.bondNic }}
 iface {{ bonditem.bondNic }} inet manual
     bond-master {{ bonditem.bondName }}
     bond-primary {{ bonditem.bondNic }}
+{% endfor %}
