@@ -6,7 +6,7 @@
      
   tasks: 
   - debug: 
-     msg: "{{ target_hosts }}"
+     msg: "{{ target_hosts['hostname'] }}"
   - name: Configure the network interfaces and bridges
     template:      
        src: base-hw-network.cfg.j2
