@@ -4,9 +4,4 @@ source /etc/network/interfaces.d/*
 auto lo
 iface lo inet loopback
 #############################################################
-{% for item in target_hosts: %}
-{% if item.hostname==ansible_hsotname %}
-1st OK
- {% endif %}
-{% endfor %}
-
+{{ target_hosts['infra2']['bridges'][0].brName }}
