@@ -5,8 +5,15 @@ auto lo
 iface lo inet loopback
 #############################################################
 
-{% for b in target_hosts['infra2']['bridges'] %}
+{% for b in target_hosts['ansible_hostname']['bridges'] %}
 
 {{ b.brName }}
 
 {% endfor %}
+
+{% for bonditem in target_hosts[ansible_hostname]['bond'] %}
+
+auto bonditem.bondNic
+iface bonditem.bondNic inet manual
+    bond-master bondName
+    bond-primary bonditem.bondNic
