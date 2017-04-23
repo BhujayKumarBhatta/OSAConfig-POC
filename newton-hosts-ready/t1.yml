@@ -14,4 +14,7 @@
     
   - debug:
       msg: "{{ sname }}"
+      
+- hosts: localhost
+  shell: "ssh@{{ sname }}"
 
