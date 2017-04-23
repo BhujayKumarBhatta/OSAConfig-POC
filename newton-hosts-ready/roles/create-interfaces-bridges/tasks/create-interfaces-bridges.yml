@@ -23,7 +23,7 @@
    - echo '8021q' >> /etc/modules
    - echo 'bonding' >> /etc/modules
 - debug:
-     msg: "{{ target_hosts[ansible_hostname]['hostname'] }}"
+     msg: "{{ target_hosts[ansible_hostname]['hostname'] }}  {{ ansible_host }}   {{ ansible_hostname }}"
   tags: test   
 - name: Configure the network interfaces and bridges
   template:      
@@ -31,6 +31,7 @@
        dest: /etc/network/interfaces
        backup: yes
 #  with_items: "{{ network_interfaces }}"
-  when: "{{ target_hosts[ansible_hostname]['hostname'] }}=={{ ansible_host }}"
+#  when: target_hosts[ansible_hostname]['hostname'] == ansible_host
+  when: target_hosts[ansible_hostname] is defined
   tags: configure-network
     
