@@ -27,14 +27,15 @@
   - debug:
       msg: "{{ ansible_ssh_host }}"
   - name: waiting for server to come back after reboot
-    local_action: wait_for host={{ ansible_ssh_host }} state=started port=22 delay=1 timeout=3000 
+    #local_action: wait_for host={{ ansible_ssh_host }} state=started port=22 delay=1 timeout=3000 
+    local_action: shell "ssh root@{{ ansible_host }}"        
     retries: 50
-  - name: 'Waiting OS boot and SSH readiness'
-    wait_for: 
-         port: 22        
-         host: "{{ ansible_ssh_host }}"
-         delay: 1
-         timeout: 3000
-    delay: 30
-    retries: 50
+#  - name: 'Waiting OS boot and SSH readiness'
+#    wait_for: 
+#         port: 22        
+#         host: "{{ ansible_ssh_host }}"
+#         delay: 1
+#         timeout: 3000
+#    delay: 30
+#    retries: 50
 
