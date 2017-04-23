@@ -30,12 +30,14 @@ nova_compute_server_hostnames:
   - newton-kvm1
 servers_to_reboot:
   - toavoidnull
-#  - infra2
+  - infra2
 #################################################################################
 # network interface defination - 
 # leave bonded_with: empty  if insted of bond physical interface is wanted
 # more interface can be added to a bond , add interface and associate them with bond and leave the bond_primary: blank
 # vNic or subinterfaces can be created from interfaces or bond just by giving appropriate vNicName and vNicParent
+# to run the network configuration role only run 
+#ansible-playbook -i inventory-base-hw-prep base-hw-prep.yml  --tags configure-network
 
 target_hosts:
  infra2:
