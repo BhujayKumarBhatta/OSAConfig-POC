@@ -20,8 +20,8 @@
   tasks:  
   - name: Rebooting  the server  ----watch out you may disconnected if configuration is not proper
     shell: sleep 1 && shutdown -r now
-    async: 1
-    poll: 0
+    async: 180
+    poll: 20
     ignore_errors: true
     when: "ansible_hostname in servers_to_reboot"
   - debug:
