@@ -39,6 +39,8 @@ servers_to_reboot:
 
 target_hosts:
  infra2:
+   hostname: infra2
+   ssh_ip: 10.0.0.15
    nic: 
      - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,broadcast: ,gateway: ,dns: ,
              description: physical interface eno1 , part of bond1 }
