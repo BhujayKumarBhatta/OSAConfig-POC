@@ -30,5 +30,5 @@
   - debug:
       msg: "{{ hostvars['just_restarted']['ansible_host']}}"
   - name: SSH  to the restasrteed server 
-    shell: "ssh@{{ hostvars['just_restarted']['ansible_host']}}"
+    shell: "ssh root@{{ hostvars['just_restarted']['ansible_host']}}"
 
