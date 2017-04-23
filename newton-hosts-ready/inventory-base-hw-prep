@@ -2,3 +2,4 @@
 #newtonhost1
 #newton-kvm1
 infra2
+compute2	ansible_ssh_host=10.0.0.32
