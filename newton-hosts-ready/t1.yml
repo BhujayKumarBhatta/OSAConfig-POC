@@ -17,5 +17,7 @@
       
 - hosts: localhost
   tasks:
+  - debug:
+      msg: "{{ sname }}"
   - shell: "ssh@{{ sname }}"
 
