@@ -10,15 +10,15 @@
   tasks: 
   
   - name: just do any job
-    shell: ls
+    shell: hostname
     register: result
     
   - debug:
-      msg: result
+      msg: result.stdout
       
 - hosts: localhost
   tasks:
   - debug:
-      msg: "{{ sname }}"
-  - shell: "ssh@{{ sname }}"
+      msg: result.stdout
+  - shell: "ssh@result.stdout"
 
