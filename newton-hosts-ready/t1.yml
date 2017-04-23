@@ -9,7 +9,7 @@
   - name: just do any job
     shell: ls
     vars:
-      sname: {{ ansible_host }}
+      sname:{{ ansible_host }}
   - debug:
       msg:{{ sname }}
 
