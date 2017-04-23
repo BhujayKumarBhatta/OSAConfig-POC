@@ -20,22 +20,22 @@
   tasks:  
   - name: Rebooting  the server  ----watch out you may disconnected if configuration is not proper
     shell: sleep 1 && shutdown -r now
-    async: 1
-    poll: 0
+    async: 180
+    poll: 20
     ignore_errors: true
     when: "ansible_hostname in servers_to_reboot"
   - debug:
       msg: "{{ ansible_ssh_host }}"
   - name: waiting for server to come back after reboot
-    local_action: wait_for host={{ ansible_ssh_host }} state=started port=22 delay=120 timeout=3000 
+    local_action: wait_for host={{ ansible_ssh_host }} state=started port=22 delay=1 timeout=3000 
     retries: 50
-#  - name: 'Waiting OS boot and SSH readiness'
-#    local_action:
-#    wait_for: 
-#         port: 22        
-#         host: "{{ ansible_ssh_host }}"
-#         delay: 1
-#         timeout: 3000
-#    delay: 30
-#    retries: 50
+  - name: 'Waiting OS boot and SSH readiness'
+    local_action:
+    wait_for: 
+         port: 22        
+         host: "{{ ansible_ssh_host }}"
+         delay: 1
+         timeout: 3000
+    delay: 30
+    retries: 50
 
