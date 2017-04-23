@@ -30,7 +30,7 @@ nova_compute_server_hostnames:
   - newton-kvm1
 servers_to_reboot:
   - toavoidnull
-#  - newton-kvm1
+  - infra2
 #################################################################################
 #network interface defination
 
