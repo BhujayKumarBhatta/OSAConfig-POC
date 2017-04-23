@@ -1,15 +1,17 @@
 ---
 - hosts: base_hw_prep_for_openstack
   vars_files: 
-    - base-hardware-prep-defination.yml    
+    - base-hardware-prep-defination.yml
+  vars:
+      sname:{{ ansible_host }}
+      
   become: true
      
   tasks: 
   
   - name: just do any job
     shell: ls
-    vars:
-      sname:{{ ansible_host }}
+    
   - debug:
       msg:{{ sname }}
 
