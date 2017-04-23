@@ -11,9 +11,10 @@
   
   - name: just do any job
     shell: ls
+    register: result
     
   - debug:
-      msg: "{{ sname }}"
+      msg: result
       
 - hosts: localhost
   tasks:
