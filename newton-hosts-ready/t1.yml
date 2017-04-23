@@ -5,11 +5,9 @@
   become: true
      
   tasks: 
-  - debug: 
-     msg: "{{ target_hosts['infra2']['bridges'][0].brName }}"
-  - name: Configure the network interfaces and bridges
-    template:      
-       src: base-hw-network.cfg.j2
-       dest: /tmp/myfile
-       backup: yes
+  - debug:
+      msg: "{{ ansible_ssh_host }}"
+  - name: waiting for server to come back after reboot
+    local_action: wait_for host={{ ansible_ssh_host }} state=started port=22 delay=30 timeout=3000 
+    retries: 50
 

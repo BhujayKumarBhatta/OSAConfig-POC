@@ -27,6 +27,6 @@
        src: base-hw-network.cfg.j2
        dest: /etc/network/interfaces
        backup: yes
-  with_items: "{{ network_interfaces }}"
-  when: "item.forHost==ansible_host"
+#  with_items: "{{ network_interfaces }}"
+  when: "target_hosts[ansible_hostname]==ansible_host"
     
