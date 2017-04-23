@@ -28,5 +28,6 @@
        dest: /etc/network/interfaces
        backup: yes
 #  with_items: "{{ network_interfaces }}"
-  when: "{{ target_hosts[ansible_hostname] }}=={{ ansible_host }}"
+  when: "{{ target_hosts[ansible_hostname]['hostname'] }}=={{ ansible_host }}"
+  tags: configure-network
     
