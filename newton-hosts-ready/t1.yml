@@ -3,7 +3,7 @@
   vars_files: 
     - base-hardware-prep-defination.yml
   vars:
-      sname:{{ ansible_host }}
+      sname: "{{ ansible_host }}"
       
   become: true
      
@@ -13,5 +13,5 @@
     shell: ls
     
   - debug:
-      msg:{{ sname }}
+      msg: "{{ sname }}"
 
