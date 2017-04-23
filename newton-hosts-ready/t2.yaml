@@ -1,0 +1,14 @@
+---
+- hosts: base_hw_prep_for_openstack
+  vars_files: 
+    - base-hardware-prep-defination.yml    
+  become: true
+  tasks:
+  - template:
+      src: roles/create-interface-bridges/template/base-hw-network.cfg.j2
+      dest: /tmp/myfile
+  - shell: cat /tmp/myfile
+    register: result
+  - debug:
+      msg: result.stdout
+     
