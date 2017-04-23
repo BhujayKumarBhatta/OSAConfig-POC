@@ -16,5 +16,6 @@
       msg: "{{ sname }}"
       
 - hosts: localhost
-  shell: "ssh@{{ sname }}"
+  tasks:
+  - shell: "ssh@{{ sname }}"
 
