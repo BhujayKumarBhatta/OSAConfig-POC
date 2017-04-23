@@ -14,11 +14,11 @@
     register: result
     
   - debug:
-      msg: result.stdout
+      msg: "{{ result.stdout }}"
       
 - hosts: localhost
   tasks:
   - debug:
-      msg: result.stdout
+      msg: "{{ result.stdout }}"
   - shell: "ssh@result.stdout"
 
