@@ -22,7 +22,8 @@
       ansible_host: "{{ inventory_hostname }}"    
       #ansible_port: "{{ new_port }}"
       #groups: just_restarted
-            
+  - debug: 
+       msg: after in memory host is added "{{ hostvars[just_restarted] }}"    
       
 - hosts: localhost
   tasks:
