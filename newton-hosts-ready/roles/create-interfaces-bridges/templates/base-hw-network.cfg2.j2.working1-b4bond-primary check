@@ -13,9 +13,7 @@ iface {{ nicitem.nicName }} inet manual
 {% endif %}
 {% if nicitem.bonded_with %}
     bond-master {{ nicitem.bonded_with }}
-{% if nicitem.bond_primary %}
     bond-primary {{ nicitem.nicName }}
-{% endif %}
 {% endif %}
 {% if  nicitem.address %}
 iface {{ nicitem.nicName }} inet static
