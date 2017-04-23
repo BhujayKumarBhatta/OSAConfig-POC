@@ -28,6 +28,6 @@
 - hosts: localhost
   tasks:
   - debug:
-      msg: "{{ hostvars['just_restarted']['ansible_host'}}"
+      msg: "{{ hostvars['just_restarted']['ansible_host']}}"
   #- shell: "ssh@result.stdout"
 
