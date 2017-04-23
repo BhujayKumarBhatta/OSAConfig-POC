@@ -18,26 +18,29 @@
    #- role: reboot-servers # why this role didn't work
     # when: "ansible_hostname in servers_to_reboot" 
   tasks:  
-  - name: Rebooting  the server  ----watch out you may disconnected if configuration is not proper
-    shell: sleep 1 && shutdown -r now
+  - name: Add new  Instance  name to ansible  Inventory  
+    add_host:
+      name: just_restarted
+      ansible_host: "{{ inventory_hostname }}"    
+      #ansible_port: "{{ new_port }}"
+      #hostname: "{{ new_ip }}"
+      #groups: just_restarted_g
+
+############## Starting a different play from control host to restart and wait till ssh is avilable
+- hosts: localhost
+  tasks:
+  - debug:
+      msg: "{{ hostvars['just_restarted']['ansible_host']}}"
+  - name: Reboot the remote server from control host
+    shell: "ssh root@{{ hostvars['just_restarted']['ansible_host']}} shutdown -r now"
     async: 180
     poll: 20
     ignore_errors: true
-    when: "ansible_hostname in servers_to_reboot"
-    vars:
-     sname: {{ ansible_host }}
-  - debug:
-      msg: sname
-  - name: waiting for server to come back after reboot
-    #local_action: wait_for host={{ ansible_ssh_host }} state=started port=22 delay=1 timeout=3000 
-    local_action: shell "ssh root@{{ ansible_ssh_host }}"        
+  - name: 'Waiting OS boot and SSH readiness'
+    wait_for: 
+         port: 22        
+         host: "{{ hostvars['just_restarted']['ansible_host']}}"
+         delay: 1
+         timeout: 3000
+    delay: 30
     retries: 50
-#  - name: 'Waiting OS boot and SSH readiness'
-#    wait_for: 
-#         port: 22        
-#         host: "{{ ansible_ssh_host }}"
-#         delay: 1
-#         timeout: 3000
-#    delay: 30
-#    retries: 50
-
