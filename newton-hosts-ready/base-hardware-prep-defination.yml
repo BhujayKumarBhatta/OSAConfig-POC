@@ -56,7 +56,7 @@ target_hosts:
              description: used by br-vxlan bridge}            
    bridges: 
      - {brName: br-mgmt,brPort: bond1, address: 10.0.0.15 ,netmask: 255.255.255.0 ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
-             description: USed for Openstack Storage }
+             description: USed for Openstack Managment, SSH and api access }
      - {brName: br-storage,brPort: bond.10, address: 10.0.2.15 ,netmask: 255.255.255.0 ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Openstack Storage }
      - {brName: br-vlan,brPort: bond2, address: ,netmask: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
