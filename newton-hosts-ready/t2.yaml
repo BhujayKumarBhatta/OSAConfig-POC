@@ -5,7 +5,7 @@
   become: true
   tasks:
   - template:
-      src: roles/create-interface-bridges/template/base-hw-network.cfg.j2
+      src: roles/create-interfaces-bridges/templates/base-hw-network.cfg.j2
       dest: /tmp/myfile
   - shell: cat /tmp/myfile
     register: result
