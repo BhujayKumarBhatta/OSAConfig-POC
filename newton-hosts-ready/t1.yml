@@ -21,13 +21,13 @@
       #hostname: "{{ new_ip }}"
       ansible_host: "{{ inventory_hostname }}"    
       #ansible_port: "{{ new_port }}"
-      #groups: just_restarted
+      groups: just_restarted_g
   - debug: 
-       msg: after in memory host is added "{{ hostvars[just_restarted] }}"    
+       msg: after in memory host is added "{{ hostvars['just_restarted'] }}"    
       
 - hosts: localhost
   tasks:
   - debug:
-      msg: "{{ hostvars[just_restarted] }}"
+      msg: "{{ hostvars['just_restarted'] }}"
   #- shell: "ssh@result.stdout"
 
