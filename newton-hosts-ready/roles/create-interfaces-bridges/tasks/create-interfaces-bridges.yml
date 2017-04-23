@@ -22,6 +22,9 @@
   with_items:
    - echo '8021q' >> /etc/modules
    - echo 'bonding' >> /etc/modules
+- debug:
+     msg: "{{ target_hosts[ansible_hostname]['hostname'] }}"
+  tags: test   
 - name: Configure the network interfaces and bridges
   template:      
        src: base-hw-network.cfg.j2
