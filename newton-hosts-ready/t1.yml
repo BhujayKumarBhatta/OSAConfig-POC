@@ -5,9 +5,11 @@
   become: true
      
   tasks: 
+  
+  - name: just do any job
+    shell: ls
+    vars:
+      sname: {{ ansible_host }}
   - debug:
-      msg: "{{ ansible_ssh_host }}"
-  - name: waiting for server to come back after reboot
-    local_action: wait_for host={{ ansible_ssh_host }} state=started port=22 delay=30 timeout=3000 
-    retries: 50
+      msg:{{ sname }}
 
