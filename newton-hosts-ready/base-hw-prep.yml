@@ -16,7 +16,7 @@
      when: "'novacompute'  in target_hosts[ansible_hostname]['roles']"
    - role: create-interfaces-bridges #tag configure-network  
    
-- hosts: locahost
+- hosts: localhost
   vars_files: 
     - base-hardware-prep-defination.yml    
   become: true
