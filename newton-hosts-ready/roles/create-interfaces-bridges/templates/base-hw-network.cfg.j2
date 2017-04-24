@@ -39,3 +39,18 @@ iface {{ nicitem.nicName }} inet static
 {% endif %}
 {% endfor %}
 {% endif %}
+################### Create Bond ##############################################
+{% if target_hosts[ansible_hostname]['bond'] is defined  %}
+{% for bonditem in target_hosts[ansible_hostname]['bond'] %}
+{% if bonditem.bondName %}
+## DESCRIPTION: {{ bonditem.description }}
+auto {{ bonditem.bondName }}
+iface {{ bonditem.bondName }} inet manual
+    bond-slaves {{ bonditem.bondNic }}
+    bond-mode active-backup
+    bond-miimon 100
+    bond-downdelay 200
+    bond-updelay 200
+{% endif %}
+{% endfor %}
+{% endif %}
