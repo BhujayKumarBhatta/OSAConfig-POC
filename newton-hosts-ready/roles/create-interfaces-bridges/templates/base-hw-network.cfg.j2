@@ -36,8 +36,8 @@ iface {{ nicitem.nicName }} inet static
 	dns-nameservers {{ nicitem.dns }}
 {% endif %}
 {% endif %}
-{% endfor %}
 {% endif %}
+{% endfor %}
 {% endif %}
 ################### Create Bond ##############################################
 {% if target_hosts[ansible_hostname]['bond'] is defined  %}
