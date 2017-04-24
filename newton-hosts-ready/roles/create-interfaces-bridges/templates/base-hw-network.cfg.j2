@@ -7,7 +7,7 @@ iface lo inet loopback
 ################## Create Physical NIC and Assign Physical NIC to Bonds if bond exists  #################################
 {% if target_hosts[ansible_hostname]['nic'] is defined %}
 {% for nicitem in target_hosts[ansible_hostname]['nic'] %}
-{% if nicitem.Name %}
+{% if nicitem.nicName %}
 ## DESCRIPTION: {{ nicitem.description }}
 auto {{ nicitem.nicName }}
 {% if not nicitem.address %} 
