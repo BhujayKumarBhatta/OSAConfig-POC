@@ -9,10 +9,10 @@
       dest: /tmp/myfile
   - shell: cat /tmp/myfile
     register: result
-  - debug:
-      msg: result.stdout
+#  - debug:
+#      msg: result.stdout
   - add_host:
-      #name: just_restarted
+      name: "{{ inventory_hostname }}" 
       ansible_host: "{{ inventory_hostname }}"    
       #ansible_port: "{{ new_port }}"
       #hostname: "{{ new_ip }}"
