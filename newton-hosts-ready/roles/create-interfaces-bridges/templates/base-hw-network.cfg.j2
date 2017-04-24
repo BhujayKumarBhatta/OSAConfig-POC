@@ -97,13 +97,13 @@ iface {{ britem.brName }} inet static
     address {{ britem.address }}
     netmask {{ britem.netmask }}
 {% if britem.network %}
-   network {{ britem.network }}
+    network {{ britem.network }}
 {% endif %}
 {% if britem.broadcast %}
-   broadcast {{ britem.broadcast }}
-{% endif %}      
+    broadcast {{ britem.broadcast }}
+{% endif %}
 {% if britem.gateway %}
-   gateway {{ britem.gateway }}
+    gateway {{ britem.gateway }}
 {% endif %}
 {% if britem.dns %}
     dns-nameservers {{ britem.dns }}
