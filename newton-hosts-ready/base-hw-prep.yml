@@ -19,7 +19,7 @@
 - hosts: localhost
   vars_files: 
     - base-hardware-prep-defination.yml    
-  become: true
+  #become: true
   roles:   
    - role: reboot-servers #tag rebootserver
      
