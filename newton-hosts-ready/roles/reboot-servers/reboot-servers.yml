@@ -1,3 +1,4 @@
+---
 - name: Server will be rebooted and waited in the following order, faster server may restart before ansible wait is shown as completed
   debug:
       msg: "{{ item }}"
