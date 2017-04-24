@@ -52,7 +52,6 @@ iface {{ bonditem.bondName }} inet manual
 auto {{ vNicitem.vNicName }}
 iface {{ vNicitem.vNicName }} inet manual
     vlan-raw-device {{ vNicitem.vNicParent }}
-{% endfor %}
 {% if  vNicitem.address %}
 iface {{ vNicitem.nicName }} inet static
 	address {{ vNicitem.address }}
@@ -70,6 +69,7 @@ iface {{ vNicitem.nicName }} inet static
 	dns-nameservers {{ vNicitem.dns }}
 {% endif %}
 {% endif %}
+{% endfor %}
 #######################Create Bridges #######################################################
 {% for britem in target_hosts[ansible_hostname]['bridges'] %}
 # {{ britem.description }}
