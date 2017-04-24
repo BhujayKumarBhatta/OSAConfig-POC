@@ -82,3 +82,41 @@ iface {{ vNicitem.nicName }} inet static
 {% endif %}
 {% endfor %}
 {% endif %}
+#######################Create Bridges #######################################################
+{% if target_hosts[ansible_hostname]['bridges'] is defined %}
+{% for britem in target_hosts[ansible_hostname]['bridges'] %}
+{% if britem.brName %}
+##DESCRIPTION:  {{ britem.description }}
+auto {{ britem.brName }}
+{% if britem.address %}
+iface {{ britem.brName }} inet static
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports {{ britem.brPort }}
+    address {{ britem.address }}
+    netmask {{ britem.netmask }}
+{% if britem.network %}
+	network {{ britem.network }}
+{% endif %}
+{% if britem.broadcast %}
+    broadcast {{ britem.broadcast }}
+{% endif %}      
+{% if britem.gateway %}
+    gateway {{ britem.gateway }}
+{% endif %}
+{% if britem.dns %}
+    dns-nameservers {{ britem.dns }}
+{% endif %}
+{% endif  %}
+{% if not britem.address %}
+iface {{ britem.brName }} inet manual
+    bridge_stp off
+    bridge_waitport 0
+    bridge_fd 0
+    bridge_ports {{ britem.brPort }}    
+{% endif  %}
+{% endif  %}
+{% endfor %}
+{% endif %}
+### EOF #######
