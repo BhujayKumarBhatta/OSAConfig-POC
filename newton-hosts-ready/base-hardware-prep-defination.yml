@@ -60,7 +60,9 @@ target_hosts:
              description: bond 1 using NIC eno1 }  
      - {bondName: bond2, bondNic: eno2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
              description: bond 2 using NIC eno2 }             
-   vNic: None
+   vNic: 
+     - {vNicName: , vNicParent: , address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description:  } 
                
    bridges: 
      - {brName: br-mgmt,brPort: bond1, address: 10.0.0.50 ,netmask: 255.255.255.0 ,network: 10.0.0.0,
