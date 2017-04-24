@@ -4,6 +4,7 @@ network_interface_build_needed_for_servers:
   - firstlinetoavoidnull
   - infra2
   - compute6
+  - dcim2
 #  - newton-kvm1
 
 haproxy_server_hostnames: 
