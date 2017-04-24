@@ -14,7 +14,13 @@
      when: "'nfs'  in target_hosts[ansible_hostname]['roles']"
    - role: configure-iommu-for-nova-compute
      when: "'novacompute'  in target_hosts[ansible_hostname]['roles']"
-   - role: create-interfaces-bridges #tag configure-network     
+   - role: create-interfaces-bridges #tag configure-network  
+   
+- hosts: locahost
+  vars_files: 
+    - base-hardware-prep-defination.yml    
+  become: true
+  roles:   
    - role: reboot-servers #tag rebootserver
      
   
