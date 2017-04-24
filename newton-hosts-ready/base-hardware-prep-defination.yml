@@ -31,7 +31,7 @@ nova_compute_server_hostnames:
   - compute4
   - newton-kvm1
 servers_to_reboot:
-  - None
+#  - None
 #  - compute6
 #  - dcim2
 #################################################################################
