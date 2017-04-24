@@ -3,7 +3,7 @@
   vars_files: 
     - base-hardware-prep-defination.yml    
   become: true
-  gather_facts: no
+  gather_facts: yes
   tasks:
 #  - template:
 #      src: roles/create-interfaces-bridges/templates/base-hw-network.cfg.j2
@@ -27,23 +27,25 @@
 #      msg: "{{ hostvars[item]['ansible_host']}}"
 #    with_items: groups['just_restarted_g']
   - debug:
-      msg: "{{ item }}"
-    with_items: "{{ servers_to_reboot }}"
-    tags: rebootserverlist
-  - name: Reboot the remote server from control host
-    shell: "ssh root@{{ item }} shutdown -r now"
-    async: 180
-    poll: 20
-    with_items: "{{ servers_to_reboot }}"
-    ignore_errors: true
-    tags: rebootserver
-  - name: 'Waiting OS boot and SSH readiness'
-    wait_for: 
-         port: 22        
-         host: "{{ item }}"
-         delay: 1
-         timeout: 3000
-    delay: 30
-    retries: 50
-    with_items: "{{ servers_to_reboot }}"
-    tags: rebootserver
+      msg: "{{ servers_to_reboot }}"
+#  - debug:
+#      msg: "{{ item }}"
+#    with_items: "{{ servers_to_reboot }}"
+#    tags: rebootserverlist
+#  - name: Reboot the remote server from control host
+#    shell: "ssh root@{{ item }} shutdown -r now"
+#    async: 180
+#    poll: 20
+#    with_items: "{{ servers_to_reboot }}"
+#    ignore_errors: true
+#    tags: rebootserver
+#  - name: 'Waiting OS boot and SSH readiness'
+#    wait_for: 
+#         port: 22        
+#         host: "{{ item }}"
+#         delay: 1
+#         timeout: 3000
+#    delay: 30
+#    retries: 50
+#    with_items: "{{ servers_to_reboot }}"
+#    tags: rebootserver
