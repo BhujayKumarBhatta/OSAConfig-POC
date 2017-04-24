@@ -11,8 +11,8 @@ haproxy_server_hostnames:
   - dcim
   - dcim2
 chrony_master_server_hostnames: 
-  - dcim
-  - dcim2
+  - tavoidnull
+
 Chrony_master_server_uplink_names: |
   server 0.north-america.pool.ntp.org offline maxpoll 10 minpoll 8
   server 1.north-america.pool.ntp.org offline maxpoll 10 minpoll 8
