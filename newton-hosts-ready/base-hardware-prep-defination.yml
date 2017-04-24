@@ -71,7 +71,8 @@ target_hosts:
  infra2:
    hostname: infra2
    ssh_ip: 10.0.0.15
-   role: controller
+   roles: controller
+   change_network_interface_file: True
    nic: 
      - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: physical interface eno1 , part of bond1 }
@@ -99,7 +100,8 @@ target_hosts:
  compute6:
    hostname: compute6
    ssh_ip: 10.0.0.36
-   role: novacompute
+   roles: novacompute
+   change_network_interface_file: True
    nic: 
      - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: physical interface eno1 , part of bond1 }
