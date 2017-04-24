@@ -22,10 +22,10 @@
 ############## Starting a different play from control host to restart and wait till ssh is avilable
 - hosts: localhost
   tasks:
-  - debug:
-      msg: "{{ hostvars[groups['just_restarted_g'][0]]['ansible_host']}}"
-      msg: "{{ hostvars[item]['ansible_host']}}"
-    with_items: groups['just_restarted_g']
+#  - debug:
+#      msg: "{{ hostvars[groups['just_restarted_g'][0]]['ansible_host']}}"
+#      msg: "{{ hostvars[item]['ansible_host']}}"
+#    with_items: groups['just_restarted_g']
   - debug:
       msg: "{{ item }}"
     with_items: "{{ servers_to_reboot }}"
