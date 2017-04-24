@@ -26,10 +26,10 @@
   become: true
   gather_facts: yes
   tasks:
-  - debug:
-      msg: "{{ hostvars[groups['just_restarted_g'][0]]['ansible_host']}}"
-      msg: "{{ hostvars[item]['ansible_host']}}"
-    with_items: groups['just_restarted_g']
+#  - debug:
+#      msg: "{{ hostvars[groups['just_restarted_g'][0]]['ansible_host']}}"
+#      msg: "{{ hostvars[item]['ansible_host']}}"
+#    with_items: groups['just_restarted_g']
   - debug:
       msg: "{{ servers_to_reboot }}"
 #  - debug:
