@@ -4,6 +4,7 @@ network_interface_build_needed_for_servers:
   - firstlinetoavoidnull
   - infra2
   - compute6
+  - dcim2
 #  - newton-kvm1
 
 haproxy_server_hostnames: 
@@ -39,11 +40,40 @@ servers_to_reboot:
 # vNic or subinterfaces can be created from interfaces or bond just by giving appropriate vNicName and vNicParent
 # to run the network configuration role only run 
 #ansible-playbook -i inventory-base-hw-prep base-hw-prep.yml  --tags configure-network
+#multiple dns entries to be enterted with a space ex dns: 115.112.18.21 115.112.18.131
 
 target_hosts:
+ dcim2:
+   hostname: dcim2 
+   ssh_ip: 10.0.0.50
+   roles:
+     - haproxy
+     - squidproxy
+     - ntpmaster 
+   nic: 
+     - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface eno1 , part of bond1 }
+     - {nicName: eno2,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface part of bond 2 connected to switch ....}                  
+   bond: 
+     - {bondName: bond1, bondNic: eno1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 1 using NIC eno1 }  
+     - {bondName: bond2, bondNic: eno2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 2 using NIC eno2 }             
+   vNic: None
+               
+   bridges: 
+     - {brName: br-mgmt,brPort: bond1, address: 10.0.0.50 ,netmask: 255.255.255.0 ,network: 10.0.0.0,
+        broadcast: 10.0.0.255,gateway: ,dns: ,part_of_vlan: True,
+             description: USed for Openstack Managment, SSH and api access }
+     - {brName: br-internet,brPort: bond2, address: 14.142.104.139 ,netmask: 255.255.255.248 ,network: 14.142.104.136, 
+         broadcast: 14.142.104.143, gateway: 14.142.104.137,dns: 115.112.18.21 115.112.18.131,part_of_vlan: True,
+             description: USed for internet connection }
+      
  infra2:
    hostname: infra2
    ssh_ip: 10.0.0.15
+   role: controller
    nic: 
      - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,broadcast: ,gateway: ,dns: ,
              description: physical interface eno1 , part of bond1 }
@@ -71,6 +101,7 @@ target_hosts:
  compute6:
    hostname: compute6
    ssh_ip: 10.0.0.36
+   role: novacompute
    nic: 
      - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,broadcast: ,gateway: ,dns: ,
              description: physical interface eno1 , part of bond1 }
