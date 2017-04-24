@@ -3,15 +3,18 @@
   apt:
     name: chrony
     state: present
-    allow_unauthenticated: yes    
+    allow_unauthenticated: yes   
+  tags: chrony 
 - name: Configure Chrony 
   template:
     src: chrony.conf.j2
     dest: /etc/chrony/chrony.conf
-    backup: yes
-  register: chronycofigstat  
+    backup: yes  
+  register: chronycofigstat
+  tags: chrony  
 - name: Restart Chrony
   service: 
     name: chrony
     state: restarted
   when: chronycofigstat.changed
+  tags: chrony

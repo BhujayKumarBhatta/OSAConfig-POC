@@ -8,6 +8,7 @@
    - role: configure-proxy-apt
      when: "ansible_hostname not in  haproxy_server_hostnames" 
    - role: configure-chrony
+     when: "ntpmaster not in  target_hosts[ansible_hostname]['roles']"
    - role: install-apt-pkg   
    - role: configure-nfs-server
      when: "ansible_hostname  in nfs_server_hostnames"
