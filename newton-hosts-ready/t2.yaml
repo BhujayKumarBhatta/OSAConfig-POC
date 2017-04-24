@@ -5,20 +5,20 @@
   become: true
   gather_facts: no
   tasks:
-  - template:
-      src: roles/create-interfaces-bridges/templates/base-hw-network.cfg.j2
-      dest: /tmp/myfile
-  - shell: cat /tmp/myfile
-    register: result
-#  - debug:
-#      msg: result.stdout
-  - add_host:
-      name: "{{ inventory_hostname }}" 
-      ansible_host: "{{ inventory_hostname }}"    
-      #ansible_port: "{{ new_port }}"
-      #hostname: "{{ new_ip }}"
-      groups: just_restarted_g
-
+#  - template:
+#      src: roles/create-interfaces-bridges/templates/base-hw-network.cfg.j2
+#      dest: /tmp/myfile
+#  - shell: cat /tmp/myfile
+#    register: result
+##  - debug:
+##      msg: result.stdout
+#  - add_host:
+#      name: "{{ inventory_hostname }}" 
+#      ansible_host: "{{ inventory_hostname }}"    
+#      #ansible_port: "{{ new_port }}"
+#      #hostname: "{{ new_ip }}"
+#      groups: just_restarted_g
+#
 ############## Starting a different play from control host to restart and wait till ssh is avilable
 - hosts: localhost
   tasks:
