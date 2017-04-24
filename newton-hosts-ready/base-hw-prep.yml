@@ -14,7 +14,7 @@
    - role: ntpmaster #tag ntp
      when: "'ntpmaster'  in target_hosts[ansible_hostname]['roles']" 
       
-   - role: eanble-firewall #enable-firewall
+   - role: enable-firewall #enable-firewall
      when: "'firewall'  in target_hosts[ansible_hostname]['roles']"
      
    - role: configure-chrony #tag chrony
