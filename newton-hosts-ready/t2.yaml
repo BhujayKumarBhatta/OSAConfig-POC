@@ -11,4 +11,29 @@
     register: result
   - debug:
       msg: result.stdout
+  add_host:
+      #name: just_restarted
+      ansible_host: "{{ inventory_hostname }}"    
+      #ansible_port: "{{ new_port }}"
+      #hostname: "{{ new_ip }}"
+      groups: just_restarted_g
+
+############## Starting a different play from control host to restart and wait till ssh is avilable
+- hosts: localhost
+  tasks:
+  - debug:
+      msg: "{{ hostvars['just_restarted_g'][0]['ansible_host']}}"
+#  - name: Reboot the remote server from control host
+#    shell: "ssh root@{{ hostvars['just_restarted']['ansible_host']}} shutdown -r now"
+#    async: 180
+#    poll: 20
+#    ignore_errors: true
+#  - name: 'Waiting OS boot and SSH readiness'
+#    wait_for: 
+#         port: 22        
+#         host: "{{ hostvars['just_restarted']['ansible_host']}}"
+#         delay: 1
+#         timeout: 3000
+#    delay: 30
+#    retries: 50
      
