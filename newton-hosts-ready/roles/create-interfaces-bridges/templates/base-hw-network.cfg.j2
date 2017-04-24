@@ -21,6 +21,9 @@ iface {{ nicitem.nicName }} inet manual
 iface {{ nicitem.nicName }} inet static
 	address {{ nicitem.address }}
 	netmask {{ nicitem.netmask }}
+{% if nicitem.network %}
+	network {{ nicitem.network }}
+{% endif %}
 {% if nicitem.broadcast %}
 	broadcast {{ nicitem.broadcast }}
 {% endif %}      
@@ -50,6 +53,23 @@ auto {{ vNicitem.vNicName }}
 iface {{ vNicitem.vNicName }} inet manual
     vlan-raw-device {{ vNicitem.vNicParent }}
 {% endfor %}
+{% if  vNicitem.address %}
+iface {{ vNicitem.nicName }} inet static
+	address {{ vNicitem.address }}
+	netmask {{ vNicitem.netmask }}
+{% if vNicitem.network %}
+	network {{ vNicitem.network }}
+{% endif %}
+{% if vNicitem.broadcast %}
+	broadcast {{ vNicitem.broadcast }}
+{% endif %}      
+{% if vNicitem.gateway %}
+	gateway {{ vNicitem.gateway }}
+{% endif %}
+{% if vNicitem.dns %}
+	dns-nameservers {{ vNicitem.dns }}
+{% endif %}
+{% endif %}
 #######################Create Bridges #######################################################
 {% for britem in target_hosts[ansible_hostname]['bridges'] %}
 # {{ britem.description }}
@@ -62,6 +82,9 @@ iface {{ britem.brName }} inet static
     bridge_ports {{ britem.brPort }}
     address {{ britem.address }}
     netmask {{ britem.netmask }}
+{% if britem.network %}
+	network {{ britem.network }}
+{% endif %}
 {% if britem.broadcast %}
     broadcast {{ britem.broadcast }}
 {% endif %}      
