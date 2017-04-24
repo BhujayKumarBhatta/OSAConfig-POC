@@ -42,7 +42,7 @@
     poll: 20
     with_items: "{{ servers_to_reboot }}"
     ignore_errors: true
-    when: "servers_to_reboot is not null"
+    when: "None not in servers_to_reboot"
     
   - name: 'Waiting OS boot and SSH readiness'
     wait_for: 
@@ -53,5 +53,5 @@
     delay: 30
     retries: 50
     with_items: "{{ servers_to_reboot }}"
-    when: "servers_to_reboot is not null"
+    when: "None not in servers_to_reboot"
     tags: rebootserver
