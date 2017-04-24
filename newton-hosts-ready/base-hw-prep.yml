@@ -5,16 +5,29 @@
   become: true
   
   roles:
+   - role: install-apt-pkg
+   - role: create-interfaces-bridges #tag configure-network 
+   
+   - role: squidproxy #tag squidproxy
+     when: "'squidproxy'  in target_hosts[ansible_hostname]['roles']"
+     
+   - role: ntpmaster #tag ntp
+     when: "'ntpmaster'  in target_hosts[ansible_hostname]['roles']" 
+      
+   - role: eanble-firewall #enable-firewall
+     when: "'firewall'  in target_hosts[ansible_hostname]['roles']"
+     
+   - role: configure-chrony #tag chrony
+     when: "'ntpmaster' not in target_hosts[ansible_hostname]['roles']"  
+     
    - role: configure-proxy-apt
      when: "'haproxy' not in target_hosts[ansible_hostname]['roles']"
-   - role: configure-chrony #tag chrony
-     when: "'ntpmaster' not in target_hosts[ansible_hostname]['roles']"
-   - role: install-apt-pkg   
-   - role: configure-nfs-server
-     when: "'nfs'  in target_hosts[ansible_hostname]['roles']"
+      
    - role: configure-iommu-for-nova-compute
      when: "'novacompute'  in target_hosts[ansible_hostname]['roles']"
-   - role: create-interfaces-bridges #tag configure-network  
+   
+   - role: configure-nfs-server
+     when: "'nfs'  in target_hosts[ansible_hostname]['roles']" 
    
 - hosts: localhost
   vars_files: 

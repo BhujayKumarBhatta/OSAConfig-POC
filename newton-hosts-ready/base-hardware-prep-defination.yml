@@ -36,7 +36,8 @@ target_hosts:
    roles:
      - haproxy
      - squidproxy
-     - ntpmaster 
+     - ntpmaster
+     - firewall 
    change_network_interface_file: True
    nic: 
      - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,

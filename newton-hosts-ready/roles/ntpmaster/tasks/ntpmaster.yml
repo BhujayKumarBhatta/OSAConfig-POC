@@ -1,0 +1,20 @@
+---
+- name: install ntp package
+  apt:
+    name: ntp
+    state: present
+    allow_unauthenticated: yes   
+  
+- name: Configure ntp master server
+  file:
+    src: ntp.conf.dcim
+    dest: /etc/ntp.conf
+    backup: yes  
+  register: ntpcofigstat
+   
+- name: Restart ntp
+  service: 
+    name: ntp
+    state: restarted
+  when: ntpcofigstat.changed
+  tags: ntpmaster

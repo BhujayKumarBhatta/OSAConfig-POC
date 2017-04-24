@@ -1,0 +1,18 @@
+---
+- name: install squid package
+  package: name=squid state=latest
+- name: Configure Squid by copying the preconfigured file in /etc/squid/squid.conf
+  copy:
+   backup: yes
+   src: squid.conf.dcim
+   dest: /etc/squid/squid.conf
+- name: start squid service
+  service:
+   name: squid
+   state: restarted
+- name: open firewall port 3128  - considering the same server is using a ufw host based firewall
+  command: "{{item}}"
+  with_items:
+     - ufw allow 3128
+     - ufw allow out 3128
+  tags: squidproxy
