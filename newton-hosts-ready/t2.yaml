@@ -22,7 +22,7 @@
 - hosts: localhost
   tasks:
   - debug:
-      msg: "{{ hostvars['just_restarted_g'][0]['ansible_host']}}"
+      msg: "{{ hostvars[groups['just_restarted_g'][0]]['ansible_host']}}"
 #  - name: Reboot the remote server from control host
 #    shell: "ssh root@{{ hostvars['just_restarted']['ansible_host']}} shutdown -r now"
 #    async: 180
