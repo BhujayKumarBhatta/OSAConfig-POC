@@ -5,8 +5,9 @@ auto lo
 iface lo inet loopback
 #############################################################
 ################## Create Physical NIC and Assign Physical NIC to Bonds if bond exists  #################################
-{% if (target_hosts[ansible_hostname]['nic'] is defined) and (nicitem.nicName) %}
+{% if target_hosts[ansible_hostname]['nic'] is defined %}
 {% for nicitem in target_hosts[ansible_hostname]['nic'] %}
+{% if nicitem.Name %}
 ## DESCRIPTION: {{ nicitem.description }}
 auto {{ nicitem.nicName }}
 {% if not nicitem.address %} 
@@ -37,9 +38,11 @@ iface {{ nicitem.nicName }} inet static
 {% endif %}
 {% endfor %}
 {% endif %}
+{% endif %}
 ################### Create Bond ##############################################
-{% if ((target_hosts[ansible_hostname]['bond'] is defined ) and (bonditem.bondName)) %}
+{% if target_hosts[ansible_hostname]['bond'] is defined  %}
 {% for bonditem in target_hosts[ansible_hostname]['bond'] %}
+{% if bonditem.bondName %}
 ## DESCRIPTION: {{ bonditem.description }}
 auto {{ bonditem.bondName }}
 iface {{ bonditem.bondName }} inet manual
@@ -50,9 +53,11 @@ iface {{ bonditem.bondName }} inet manual
     bond-updelay 200
 {% endfor %}
 {% endif %}
+{% endif %}
 ######################Create VLAN Sub Intrefaces from bond or physical NIC ######################
-{% if  ((target_hosts[ansible_hostname]['vNic'] is defined) and (vNicitem.vNicName)) %}
+{% if  target_hosts[ansible_hostname]['vNic'] is defined  %}
 {% for vNicitem in target_hosts[ansible_hostname]['vNic'] %}
+{% if vNicitem.vNicName %}
 ## DESCRIPTION {{ vNicitem.description }}
 auto {{ vNicitem.vNicName }}
 iface {{ vNicitem.vNicName }} inet manual
@@ -74,11 +79,13 @@ iface {{ vNicitem.nicName }} inet static
 	dns-nameservers {{ vNicitem.dns }}
 {% endif %}
 {% endif %}
+{% endif %}
 {% endfor %}
 {% endif %}
 #######################Create Bridges #######################################################
-{% if ((target_hosts[ansible_hostname]['bridges'] is defined) and (britem.brName)) %}
+{% if target_hosts[ansible_hostname]['bridges'] is defined %}
 {% for britem in target_hosts[ansible_hostname]['bridges'] %}
+{% if britem.brName %}
 ##DESCRIPTION:  {{ britem.description }}
 auto {{ britem.brName }}
 {% if britem.address %}
@@ -108,7 +115,8 @@ iface {{ britem.brName }} inet manual
     bridge_waitport 0
     bridge_fd 0
     bridge_ports {{ britem.brPort }}    
-{% endif  %} 
+{% endif  %}
+{% endif  %}
 {% endfor %}
 {% endif %}
 ### EOF #######
