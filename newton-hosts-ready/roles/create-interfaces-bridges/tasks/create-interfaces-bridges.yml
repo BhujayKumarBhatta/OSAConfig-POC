@@ -10,6 +10,7 @@
    - ifenslave 
    - ifenslave-2.6    
    - tcpdump
+  tags: configure-network
 - name: Loading the 8021.q and bonding modules
   modprobe: 
     name: "{{ item }}"
@@ -17,11 +18,13 @@
   with_items:
     - 8021q
     - bonding
+  tags: configure-network
 - name: Also adding 8021.q and bonding modules /etc/modules
   command: "{{ item }}"
   with_items:
    - echo '8021q' >> /etc/modules
    - echo 'bonding' >> /etc/modules
+  tags: configure-network
 - debug:
      msg: "{{ target_hosts[ansible_hostname]['hostname'] }}  {{ ansible_host }}   {{ ansible_hostname }}"
   tags: test   
@@ -34,4 +37,11 @@
 #  when: target_hosts[ansible_hostname]['hostname'] == ansible_host
   when: target_hosts[ansible_hostname] is defined
   tags: configure-network
-    
+- name: Add this host in in memory inventory group 
+  add_host:
+      name: "{{ inventory_hostname }}" 
+      ansible_host: "{{ inventory_hostname }}"    
+      #ansible_port: "{{ new_port }}"
+      #hostname: "{{ new_ip }}"
+      groups: hosts_with_net_changed
+      tags: configure-network    
