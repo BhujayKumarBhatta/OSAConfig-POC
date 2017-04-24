@@ -33,6 +33,8 @@ nova_compute_server_hostnames:
 servers_to_reboot:
   - toavoidnull
   - infra2
+  - compute6
+  - dcim2
 #################################################################################
 # network interface defination - 
 # leave bonded_with: empty  if insted of bond physical interface is wanted
