@@ -11,7 +11,7 @@
     register: result
   - debug:
       msg: result.stdout
-  add_host:
+  - add_host:
       #name: just_restarted
       ansible_host: "{{ inventory_hostname }}"    
       #ansible_port: "{{ new_port }}"
