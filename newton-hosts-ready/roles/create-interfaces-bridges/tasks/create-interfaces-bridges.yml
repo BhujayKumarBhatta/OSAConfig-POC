@@ -33,9 +33,7 @@
        src: base-hw-network.cfg.j2
        dest: /etc/network/interfaces
        backup: yes
-#  with_items: "{{ network_interfaces }}"
-#  when: target_hosts[ansible_hostname]['hostname'] == ansible_host
-  when: target_hosts[ansible_hostname] is defined
+  when: "(target_hosts[ansible_hostname] is defined) and (target_hosts[ansible_hostname]['change_network_interface_file'] != 'True')"
   tags: configure-network
 - name: Add this host in in memory inventory group 
   add_host:

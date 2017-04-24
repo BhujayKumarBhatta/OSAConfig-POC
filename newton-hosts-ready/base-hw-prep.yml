@@ -7,41 +7,14 @@
   roles:
    - role: configure-proxy-apt
      when: "ansible_hostname not in  haproxy_server_hostnames" 
-   - role: configure-chrony
+   - role: configure-chrony #tag chrony
      when: "ntpmaster not in  target_hosts[ansible_hostname]['roles']"
    - role: install-apt-pkg   
    - role: configure-nfs-server
      when: "ansible_hostname  in nfs_server_hostnames"
    - role: configure-iommu-for-nova-compute
      when: "ansible_hostname in  nova_compute_server_hostnames"
-   - role: create-interfaces-bridges
-     when: "ansible_hostname in network_interface_build_needed_for_servers"
-   #- role: reboot-servers # why this role didn't work
-    # when: "ansible_hostname in servers_to_reboot" 
-  tasks:  
-  - name: Add new  Instance  name to ansible  Inventory  
-    add_host:
-      name: just_restarted
-      ansible_host: "{{ inventory_hostname }}"    
-      #ansible_port: "{{ new_port }}"
-      #hostname: "{{ new_ip }}"
-      groups: just_restarted_g
-
-############## Starting a different play from control host to restart and wait till ssh is avilable
-- hosts: localhost
-  tasks:
-  - debug:
-      msg: "{{ hostvars['just_restarted']['ansible_host']}}"
-  - name: Reboot the remote server from control host
-    shell: "ssh root@{{ hostvars['just_restarted']['ansible_host']}} shutdown -r now"
-    async: 180
-    poll: 20
-    ignore_errors: true
-  - name: 'Waiting OS boot and SSH readiness'
-    wait_for: 
-         port: 22        
-         host: "{{ hostvars['just_restarted']['ansible_host']}}"
-         delay: 1
-         timeout: 3000
-    delay: 30
-    retries: 50
+   - role: create-interfaces-bridges #tag configure-network     
+   - role: reboot-servers #tag rebootserver
+     
+  

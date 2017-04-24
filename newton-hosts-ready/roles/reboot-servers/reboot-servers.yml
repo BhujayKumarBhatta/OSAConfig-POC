@@ -1,9 +1,24 @@
----
-- name: Rebooting  the server  ----watch out you may disconnected if configuration is not proper
-  shell: sleep 2 && shutdown -r now
-  async: 1
-  poll: 0
+- name: Server will be rebooted and waited in the following order, faster server may restart before ansible wait is shown as completed
+  debug:
+      msg: "{{ item }}"
+  with_items: "{{ servers_to_reboot }}"
+
+- name: Reboot the remote server from control host
+  shell: "ssh root@{{ item }} shutdown -r now"
+  async: 180
+  poll: 20
+  with_items: "{{ servers_to_reboot }}"
   ignore_errors: true
-- name: waiting for server to come back after reboot
-  local_action: wait_for host={{ ansible_ssh_host }} state=started port=22 delay=120 timeout=300 connect_timeout=15
+  when: "servers_to_reboot !=''"
+    
+- name: 'Waiting OS boot and SSH readiness'
+  wait_for: 
+         port: 22        
+         host: "{{ item }}"
+         delay: 1
+         timeout: 3000
+  delay: 30
   retries: 50
+  with_items: "{{ servers_to_reboot }}"
+  when: "servers_to_reboot !=''"
+  tags: rebootserver

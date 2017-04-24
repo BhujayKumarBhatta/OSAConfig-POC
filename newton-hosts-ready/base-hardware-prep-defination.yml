@@ -1,11 +1,5 @@
 # include the host name in inventory-base-hw-prep and run with -i option as below
 # ansible-playbook base-hw-prep.yml  -i inventory-base-hw-prep
-network_interface_build_needed_for_servers:
-  - firstlinetoavoidnull
-  - infra2
-  - compute6
-  - dcim2
-#  - newton-kvm1
 
 haproxy_server_hostnames: 
   - dcim
@@ -51,6 +45,7 @@ target_hosts:
      - haproxy
      - squidproxy
      - ntpmaster 
+   change_network_interface_file: True
    nic: 
      - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: physical interface eno1 , part of bond1 }
