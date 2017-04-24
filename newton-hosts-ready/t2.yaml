@@ -3,7 +3,7 @@
   vars_files: 
     - base-hardware-prep-defination.yml    
   become: true
-  gather_facts: yes
+  gather_facts: no
   tasks:
 #  - template:
 #      src: roles/create-interfaces-bridges/templates/base-hw-network.cfg.j2
@@ -24,7 +24,7 @@
   vars_files: 
     - base-hardware-prep-defination.yml    
   become: true
-  gather_facts: yes
+  gather_facts: no
   tasks:
 #  - debug:
 #      msg: "{{ hostvars[groups['just_restarted_g'][0]]['ansible_host']}}"
