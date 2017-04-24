@@ -35,14 +35,15 @@
   - debug:
       msg: "{{ item }}"
     with_items: "{{ servers_to_reboot }}"
-    tags: rebootserverlist
+    
   - name: Reboot the remote server from control host
     shell: "ssh root@{{ item }} shutdown -r now"
     async: 180
     poll: 20
     with_items: "{{ servers_to_reboot }}"
     ignore_errors: true
-    tags: rebootserver
+    when: "servers_to_reboot is not null"
+    
   - name: 'Waiting OS boot and SSH readiness'
     wait_for: 
          port: 22        
@@ -52,4 +53,5 @@
     delay: 30
     retries: 50
     with_items: "{{ servers_to_reboot }}"
+    when: "servers_to_reboot is not null"
     tags: rebootserver
