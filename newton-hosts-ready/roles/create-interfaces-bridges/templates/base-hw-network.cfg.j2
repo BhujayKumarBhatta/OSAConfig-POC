@@ -54,3 +54,31 @@ iface {{ bonditem.bondName }} inet manual
 {% endif %}
 {% endfor %}
 {% endif %}
+######################Create VLAN Sub Intrefaces from bond or physical NIC ######################
+{% if  target_hosts[ansible_hostname]['vNic'] is defined  %}
+{% for vNicitem in target_hosts[ansible_hostname]['vNic'] %}
+{% if vNicitem.vNicName %}
+## DESCRIPTION {{ vNicitem.description }}
+auto {{ vNicitem.vNicName }}
+iface {{ vNicitem.vNicName }} inet manual
+    vlan-raw-device {{ vNicitem.vNicParent }}
+{% if  vNicitem.address %}
+iface {{ vNicitem.nicName }} inet static
+	address {{ vNicitem.address }}
+	netmask {{ vNicitem.netmask }}
+{% if vNicitem.network %}
+	network {{ vNicitem.network }}
+{% endif %}
+{% if vNicitem.broadcast %}
+	broadcast {{ vNicitem.broadcast }}
+{% endif %}      
+{% if vNicitem.gateway %}
+	gateway {{ vNicitem.gateway }}
+{% endif %}
+{% if vNicitem.dns %}
+	dns-nameservers {{ vNicitem.dns }}
+{% endif %}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
