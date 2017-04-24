@@ -1,0 +1,28 @@
+---
+- name: install ufw package
+  apt:
+    name: ufw
+    state: present
+    allow_unauthenticated: yes   
+  
+- name: copy the ufwrules.sh to server to open reverse proxy custom http port
+  template:
+   src: ufwrules.j2
+   dest: /tmp/ufwrules.sh
+   mode: 0744
+  register: ufwrulefilestat
+   
+- name: Execute the rule file script to insert rule
+  command: "{{item}}"
+  args:
+   chdir: /tmp 
+  with_items:
+     - /tmp/ufwrules.sh
+
+- name: enable firewall one rules are inserted
+  ufw: 
+    state: enabled
+    rule: limit
+    port: ssh
+    proto: tcp     
+  tags: enable-firewall

@@ -1,0 +1,22 @@
+#!/bin/bash
+sudo ufw default deny incoming on br-internet
+sudo ufw default allow outgoing on br-internet
+ufw allow in on br-mgmt
+ufw allow out on br-mgmt
+ufw allow  in on br-internet from 220.225.15.126
+ufw allow in on br-internet from any to any  port https
+ufw allow out on br-internet from any to any  port https
+ufw allow in on br-internet from any to any  port http
+ufw allow out on br-internet from any to any  port http
+ufw allow in on br-internet from any to any  port http
+ufw allow out on br-internet from any to any  port http
+ufw allow in on br-internet from any to any  port 123 proto udp
+ufw allow out on br-internet from any to any  port 123 proto udp
+ufw allow in on br-internet from any to any  port 2223
+ufw allow in on br-internet from any to any  port 6080
+ufw allow in on br-internet from any to any  port 6081
+ufw allow in on br-internet from any to any  port 6082
+ufw allow in on br-internet from any to any  port 8080
+ufw allow in on br-internet from any to any  port 4433
+
+
