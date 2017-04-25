@@ -3,6 +3,7 @@
   vars_files: 
     - base-hardware-prep-defination.yml    
   become: true
+  gather_facts: yes
   
   roles:
    - role: install-apt-pkg
