@@ -2,7 +2,7 @@
 - name: install all apt packages
   apt: 
     name: "{{ item }}"
-    state: present
+    state: present 
     allow_unauthenticated: yes
   with_items:
    - bridge-utils
