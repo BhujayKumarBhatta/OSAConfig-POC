@@ -6,7 +6,7 @@ apply_security_hardening: False
 debug: false
 validate_certs: false
 percona_package_download_validate_certs: false
-galera_server_package_state: "present"
+galera_server_package_state: "latest"
 galera_apt_repo_url: "http://mirror.rackspace.com/mariadb/repo/10.1/ubuntu"
 #galera_mariadb_apt_server_package: "mariadb-galera-server-10.1.21"
 #galera_mariadb_apt_server_package: "mariadb-server-10.1"
