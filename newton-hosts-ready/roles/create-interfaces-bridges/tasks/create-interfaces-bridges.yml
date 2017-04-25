@@ -2,7 +2,7 @@
 - name: install all apt packages
   apt: 
     name: "{{ item }}"
-    state: present
+    state: present 
     allow_unauthenticated: yes
   with_items:
    - bridge-utils
@@ -27,7 +27,7 @@
   tags: configure-network
 - debug:
      msg: "{{ target_hosts[ansible_hostname]['hostname'] }}  {{ ansible_host }}   {{ ansible_hostname }}"
-  tags: test   
+  tags: configure-network   
 - name: Configure the network interfaces and bridges
   template:      
        src: base-hw-network.cfg.j2

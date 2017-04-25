@@ -292,8 +292,8 @@ target_hosts:
 
 ####################################################################################################
 host_table_entry: |
-        10.0.0.52       haproxy2
-        10.0.0.50        haproxy1
+        10.0.0.52        dcim
+        10.0.0.51        haproxy1
 etc_environment_entry: |
         export https_proxy="http://10.0.0.52:3128"
         export http_proxy="http://10.0.0.52:3128"
