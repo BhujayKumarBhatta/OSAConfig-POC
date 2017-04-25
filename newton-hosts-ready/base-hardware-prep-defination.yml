@@ -74,11 +74,10 @@ target_hosts:
      - { interface: br-mgmt, defaultin: allow, defaultout: allow}
             
     specific_rules:      
-      rules: 
-         - {interface: br-internet,direction: out,from: any, to: any , protocol: tcp, ports: [http, https, 2223, 6080, 6080, 6081, 6082]}
-         - {interface: br-internet,direction: in, from: any, to: any , protocol: tcp, ports: [http, https, 2223, 6080, 6080, 6081, 6082]}
-         - {interface: br-internet,direction: out,from: any, to: any , protocol: udp, ports: [123,]}
-         - {interface: br-internet,direction: in,from: any, to: any , protocol: udp, ports: [123,]}
+      - {interface: br-internet,direction: out,from: any, to: any , protocol: tcp, ports: [http, https, 2223, 6080, 6080, 6081, 6082]}
+      - {interface: br-internet,direction: in, from: any, to: any , protocol: tcp, ports: [http, https, 2223, 6080, 6080, 6081, 6082]}
+      - {interface: br-internet,direction: out,from: any, to: any , protocol: udp, ports: [123,]}
+      - {interface: br-internet,direction: in,from: any, to: any , protocol: udp, ports: [123,]}
 #---------------------------------------------------------------------------------------------     
       
  infra1:
