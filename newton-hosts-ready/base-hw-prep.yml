@@ -34,29 +34,29 @@
     - base-hardware-prep-defination.yml    
   become: true
   tasks:   
-  - name: Server will be rebooted and waited in the following order, faster server may restart before ansible wait is shown as completed
-    debug:
+   - name: Server will be rebooted and waited in the following order, faster server may restart before ansible wait is shown as completed
+     debug:
       msg: "{{ item }}"
-    with_items: "{{ servers_to_reboot }}"
+     with_items: "{{ servers_to_reboot }}"
 
-  - name: Reboot the remote server from control host
-    shell: "ssh root@{{ item }} shutdown -r now"
-    async: 180
-    poll: 20
-    with_items: "{{ servers_to_reboot }}"
-    ignore_errors: true
-    when: "servers_to_reboot !=''"
+   - name: Reboot the remote server from control host
+     shell: "ssh root@{{ item }} shutdown -r now"
+     async: 180
+     poll: 20
+     with_items: "{{ servers_to_reboot }}"
+     ignore_errors: true
+     when: "servers_to_reboot !=''"
     
-  - name: 'Waiting OS boot and SSH readiness'
-    wait_for: 
+   - name: 'Waiting OS boot and SSH readiness'
+     wait_for: 
          port: 22        
          host: "{{ item }}"
          delay: 1
          timeout: 3000
-    delay: 30
-    retries: 50
-    with_items: "{{ servers_to_reboot }}"
-    when: "servers_to_reboot !=''"
-    tags: rebootserver
+     delay: 30
+     retries: 50
+     with_items: "{{ servers_to_reboot }}"
+     when: "servers_to_reboot !=''"
+     tags: rebootserver
      
   
