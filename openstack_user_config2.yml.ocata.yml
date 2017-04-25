@@ -43,7 +43,7 @@ global_overrides:
         container_bridge: "br-vlan"
         container_type: "veth"
         container_interface: "eth12"
-        host_bind_override: "bond2" #?????? this ovverrides is trying to search eth2 on compute node 
+        host_bind_override: "bond2" #?????? this ovverrides is trying to search eth2 on compute node  
         host_bind_override: eno2
         type: "flat"
         net_name: "flat"
