@@ -16,8 +16,7 @@ ufw allow in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_inter
 ufw allow in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 6080
 ufw allow in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 6081
 ufw allow in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 6082
-ufw allow in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port {{ rp_http_port }}
-ufw allow in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port {{ rp_https_port }}
+
    
 
 
