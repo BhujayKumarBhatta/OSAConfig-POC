@@ -16,7 +16,7 @@ Chrony_clients_uplink_names: |
 nfs_share_names:
   - /images
   
-  
+   
 
 servers_to_reboot:
   #- infra1
