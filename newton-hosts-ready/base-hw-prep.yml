@@ -34,6 +34,7 @@
   vars_files: 
     - base-hardware-prep-defination.yml    
   become: true
+  gather_facts: yes
   tasks:   
    - name: Server will be rebooted and waited in the following order, faster server may restart before ansible wait is shown as completed
      debug:
