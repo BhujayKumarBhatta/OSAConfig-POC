@@ -16,8 +16,7 @@ Chrony_clients_uplink_names: |
 nfs_share_names:
   - /images
   
-Firewall:  
-   
+  
 
 servers_to_reboot:
   - infra1
@@ -68,7 +67,9 @@ target_hosts:
      - {brName: br-internet,brPort: bond2, address: 14.142.104.139 ,netmask: 255.255.255.248 ,network: 14.142.104.136, 
          broadcast: 14.142.104.143, gateway: 14.142.104.137,dns: 115.112.18.21 115.112.18.131,part_of_vlan: True,
              description: USed for internet connection }
-   Firewall: 
+   Firewall:
+    internet_facing_interface: br-internet
+    internal_interface: br-mgmt 
     default_rules:     
      - { interface: br-internet, defaultin: deny, defaultout: allow}
      - { interface: br-mgmt, defaultin: allow, defaultout: allow}

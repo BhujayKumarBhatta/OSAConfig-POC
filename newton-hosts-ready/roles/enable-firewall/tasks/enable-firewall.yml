@@ -5,7 +5,7 @@
     state: present
     allow_unauthenticated: yes   
   
-- name: copy the ufwrules.sh to server to open reverse proxy custom http port
+- name: copy the ufwrules.sh to that contain the pre configured firewall rules
   template:
    src: ufwrules.j2
    dest: /tmp/ufwrules.sh
