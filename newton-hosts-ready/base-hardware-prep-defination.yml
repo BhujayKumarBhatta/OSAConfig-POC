@@ -2,7 +2,7 @@
 # ansible-playbook base-hw-prep.yml  -i inventory-base-hw-prep
 
 chrony_master_server_hostnames: 
-  - tavoidnull
+  - tavoidnull 
 
 Chrony_master_server_uplink_names: |
   server 0.north-america.pool.ntp.org offline maxpoll 10 minpoll 8
@@ -68,21 +68,24 @@ target_hosts:
      - {brName: br-internet,brPort: bond2, address: 14.142.104.139 ,netmask: 255.255.255.248 ,network: 14.142.104.136, 
          broadcast: 14.142.104.143, gateway: 14.142.104.137,dns: 115.112.18.21 115.112.18.131,part_of_vlan: True,
              description: USed for internet connection }
-   Firewall:
-      br-internet: 
+   Firewall: 
+    applied_on:
+     - br-internet: 
+        interface: br-internet
         default:
-           incoming: deny
-           outgoing: allow
+         incoming: deny
+         outgoing: allow       
         others: 
-         - { direction: out,from: any, to: any , protocol: tcp, ports: [http, https, 2223, 6080, 6080, 6081, 6082]}
-         - { direction: in, from: any, to: any , protocol: tcp, ports: [http, https, 2223, 6080, 6080, 6081, 6082]}
-         - { direction: out,from: any, to: any , protocol: udp, ports: [123,]}
-         - { direction: in,from: any, to: any , protocol: udp, ports: [123,]}
-      br-mgmt: 
+         - {direction: out,from: any, to: any , protocol: tcp, ports: [http, https, 2223, 6080, 6080, 6081, 6082]}
+         - {direction: in, from: any, to: any , protocol: tcp, ports: [http, https, 2223, 6080, 6080, 6081, 6082]}
+         - {direction: out,from: any, to: any , protocol: udp, ports: [123,]}
+         - {direction: in,from: any, to: any , protocol: udp, ports: [123,]}
+     - br-mgmt: 
+        interface: br-mgmt
         default: 
-           incoming: allow
-           outgoing: allow
-          
+         incoming: allow
+         outgoing: allow
+# interface: br-internet, defaultin: deny, defaultout: allow,
  #---------------------------------------------------------------------------------------------     
       
  infra1:
