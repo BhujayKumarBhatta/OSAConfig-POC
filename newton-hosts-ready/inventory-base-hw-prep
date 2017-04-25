@@ -1,7 +1,10 @@
 [base_hw_prep_for_openstack]
-#newtonhost1
-#newton-kvm1
+infra1
 infra2
-compute6
-dcim2
-#compute2	ansible_ssh_host=10.0.0.32
+infra3
+kvm1
+kvm2
+bm1
+rsyslog
+haproxy1
+
