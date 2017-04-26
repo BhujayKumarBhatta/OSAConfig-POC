@@ -5,6 +5,6 @@ infra3
 kvm1
 kvm2
 bm1
-rsyslog
+rsyslog 
 haproxy1
 
