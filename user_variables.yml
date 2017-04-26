@@ -7,7 +7,7 @@ debug: false
 validate_certs: false
 percona_package_download_validate_certs: false
 
-proxy_env_url: "http://10.0.0.51:3128/ , http://10.0.0.52:3128/"
+proxy_env_url: "http://10.0.0.51:3128"
 # no_proxy_env: "localhost,127.0.0.1,{{ internal_lb_vip_address }},{{ external_lb_vip_address }},{% for host in groups['all_containers'] %}{{ hostvars[host]['container_address'] }}{% if not loop.last %},{% endif %}{% endfor %}"
 no_proxy_env: "localhost,127.0.0.1,10.0.0.51,10.0.0.52,10.0.0.21,10.0.0.22,10.0.0.23,10.0.0.53,{{ internal_lb_vip_address }},{{ external_lb_vip_address }},{% for host in groups['all_containers'] %}{{ hostvars[host]['container_address'] }}{% if not loop.last %},{% endif %}{% endfor %}"
 #no_proxy_env: "localhost,127.0.0.1,,10.0.0.*,10.0.0.0,10.0.1.0,10.0.2.0"
