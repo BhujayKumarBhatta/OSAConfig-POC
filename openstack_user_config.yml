@@ -229,15 +229,15 @@ metering-compute_hosts:
     ip: 10.0.0.31
   kvm2:  
     ip: 10.0.0.32
-  bm1:
-    ip: 10.0.0.42  
+#  bm1:
+#    ip: 10.0.0.42  
 
 # Ironic compute hosts. These compute hosts will be used to
 #  facilitate ironic's interactions through nova.
-ironic-compute_hosts:
-  bm1:
-    ip: 10.0.0.42
-    
+#ironic-compute_hosts:
+#  bm1:
+#    ip: 10.0.0.42
+#    
 #storage
 storage_hosts:
  infra1:
