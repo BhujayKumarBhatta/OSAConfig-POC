@@ -339,4 +339,4 @@ storage_hosts:
 #    ip: 10.0.0.87
 #  osd5:
 #    ip: 10.0.0.85
-# cinder storage host (ceph-backed)
+# cinder storage host (ceph-backed) 
