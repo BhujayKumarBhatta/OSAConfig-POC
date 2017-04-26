@@ -3,10 +3,13 @@
   vars_files: 
     - base-hardware-prep-defination.yml    
   become: true
-  gather_facts: no
+#  gather_facts: no
   tasks:
   - debug:
-      msg: "{{ target_hosts['ansible_hostname']['roles'] }}"
+      msg: "{{ target_hosts[ansible_hostname]['roles'] }}"
+  - debug:
+      msg: " worked fine"  
+    when: "'ntpmaster' not in target_hosts[ansible_hostname]['roles']"
 #  - template:
 #      src: roles/create-interfaces-bridges/templates/base-hw-network.cfg.j2
 #      dest: /tmp/myfile
