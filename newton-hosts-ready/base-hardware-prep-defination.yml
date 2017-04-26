@@ -19,14 +19,14 @@ nfs_share_names:
    
 
 servers_to_reboot:
-  #- infra1
-  #- infra2
-  #- infra3
+  - infra1
+  - infra2
+  - infra3
   - kvm1
   - kvm2
-  - bm1
-  #- haproxy1
-  #- rsyslog
+  #- bm1
+  - haproxy1
+  - rsyslog
 #################################################################################
 # network interface defination - 
 # leave bonded_with: empty  if insted of bond physical interface is wanted
