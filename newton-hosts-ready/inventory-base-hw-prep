@@ -6,5 +6,11 @@
 #kvm2
 #bm1
 #rsyslog 
+<<<<<<< HEAD
 haproxy1	ansible_port=2223
 haproxy2        ansible_port=2223
+=======
+haproxy1
+haproxy2
+ 
+>>>>>>> 6f7d25d1beee788c7bbd22e83464cfd9a6b15472
