@@ -15,9 +15,9 @@
 - name: Execute the rule file script to insert rule
   command: "{{item}}"
   args:
-   chdir: /tmp 
+   chdir: /root 
   with_items:
-     - /tmp/ufwrules.sh
+     - /root/ufwrules.sh
 
 - name: enable firewall one rules are inserted
   ufw: 

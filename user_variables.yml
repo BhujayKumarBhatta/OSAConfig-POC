@@ -26,7 +26,7 @@ keystone_service_adminuri_insecure: true
 keystone_service_internaluri_insecure: true
 
 #++++++++++++++++++++++++++++++++++++++
-haproxy_ssl_self_signed_regen: true
+haproxy_ssl_self_signed_regen: false
 haproxy_ssl_self_signed_subject: "/C=IN/ST=Karnataka/L=Bangalore/O=ITC/CN=cloudspace.itc.in"
 haproxy_keepalived_external_vip_cidr: 14.142.104.140/29
 haproxy_keepalived_internal_vip_cidr: 10.0.0.14/24
