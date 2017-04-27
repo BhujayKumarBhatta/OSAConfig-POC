@@ -1,4 +1,5 @@
 [base_hw_prep_for_openstack]
+<<<<<<< HEAD
 #infra1
 #infra2
 #infra3
@@ -10,7 +11,16 @@
 haproxy1	ansible_port=2223
 haproxy2        ansible_port=2223
 =======
+=======
+infra1
+infra2
+infra3
+kvm1
+kvm2
+bm1
+rsyslog 
+>>>>>>> cec475348f886ec15a9ecf85c5df391be77480f7
 haproxy1
-haproxy2
+
  
 >>>>>>> 6f7d25d1beee788c7bbd22e83464cfd9a6b15472
