@@ -19,14 +19,15 @@ nfs_share_names:
    
 
 servers_to_reboot:
-  - infra1
-  - infra2
-  - infra3
-  - kvm1
-  - kvm2
-  - bm1
+#  - infra1
+#  - infra2
+#  - infra3
+#  - kvm1
+#  - kvm2
+#  - bm1
   - haproxy1
-  - rsyslog
+  - haproxy2
+#  - rsyslog
 #################################################################################
 # network interface defination - 
 # leave bonded_with: empty  if insted of bond physical interface is wanted
@@ -65,6 +66,54 @@ target_hosts:
         broadcast: 10.0.0.255,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
      - {brName: br-internet,brPort: bond2, address: 14.142.104.139 ,netmask: 255.255.255.248 ,network: 14.142.104.136, 
+         broadcast: 14.142.104.143, gateway: 14.142.104.137,dns: 115.112.18.21 115.112.18.131,part_of_vlan: True,
+             description: USed for internet connection }
+   Firewall:
+    internet_facing_interface: br-internet
+    internal_interface: br-mgmt 
+    default_rules:     
+     - { interface: br-internet, defaultin: deny, defaultout: allow}
+     - { interface: br-mgmt, defaultin: allow, defaultout: allow}
+            
+    specific_rules:      
+      - {interface: br-internet,direction: out,from: any, to: any , protocol: tcp, 
+          ports: [http, https, 2223, 6080, 6080, 6081, 6082], action: allow}
+      - {interface: br-internet,direction: in, from: any, to: any , protocol: tcp,
+           ports: [http, https, 2223, 6080, 6080, 6081, 6082], action: allow}
+      - {interface: br-internet,direction: out,from: any, to: any ,
+          protocol: udp, ports: [123,], action: allow}
+      - {interface: br-internet,direction: in,from: any, to: any ,
+           protocol: udp, ports: [123,], action: allow}
+           
+target_hosts:
+ haproxy1:
+   hostname: haproxy2 
+   ssh_ip: 10.0.0.52
+   roles:
+     - haproxy
+     - squidproxy
+     - ntpmaster
+     - firewall 
+   change_network_interface_file: True
+   nic: 
+     - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface eno1 , part of bond1 }
+     - {nicName: eno2,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface part of bond 2 connected to switch ....}                  
+   bond: 
+     - {bondName: bond1, bondNic: eno1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 1 using NIC eno1 }  
+     - {bondName: bond2, bondNic: eno2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 2 using NIC eno2 }             
+   vNic: 
+     - {vNicName: , vNicParent: , address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description:  } 
+               
+   bridges: 
+     - {brName: br-mgmt,brPort: bond1, address: 10.0.0.52 ,netmask: 255.255.255.0 ,network: 10.0.0.0,
+        broadcast: 10.0.0.255,gateway: ,dns: ,part_of_vlan: True,
+             description: USed for Openstack Managment, SSH and api access }
+     - {brName: br-internet,brPort: bond2, address: 14.142.104.138 ,netmask: 255.255.255.248 ,network: 14.142.104.136, 
          broadcast: 14.142.104.143, gateway: 14.142.104.137,dns: 115.112.18.21 115.112.18.131,part_of_vlan: True,
              description: USed for internet connection }
    Firewall:
@@ -292,12 +341,12 @@ target_hosts:
 
 ####################################################################################################
 host_table_entry: |
-        10.0.0.52        dcim
+        10.0.0.52        haproxy2
         10.0.0.51        haproxy1
 etc_environment_entry: |
         export https_proxy="http://10.0.0.52:3128"
         export http_proxy="http://10.0.0.52:3128"
-        no_proxy=localhost,127.0.0.1,10.*.*.*,*.poc,10.0.0.50,10.0.0.52,10.0.0.53,gitlab
+        no_proxy=localhost,127.0.0.1,10.*.*.*,*.poc,10.0.0.51,10.0.0.52,10.0.0.53,gitlab
 apt_proxy_entry: |
         Acquire::http { Proxy "http://10.0.0.52:3128";};
         Acquire::https { Proxy "http://10.0.0.52:3128";};        
