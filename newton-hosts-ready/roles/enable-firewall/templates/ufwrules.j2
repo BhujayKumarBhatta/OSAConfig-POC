@@ -12,6 +12,8 @@ ufw limit in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_inter
 ufw limit out on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port http
 ufw limit in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 123 proto udp
 ufw limit out on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 123 proto udp
+ufw limit out on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 53 proto udp
+ufw limit out on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 53 proto tcp
 ufw limit in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 2223
 ufw limit in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 6080
 ufw limit in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 6081

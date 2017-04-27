@@ -19,14 +19,15 @@ nfs_share_names:
    
 
 servers_to_reboot:
-  - infra1
-  - infra2
-  - infra3
-  - kvm1
-  - kvm2
-  - bm1
+#  - infra1
+#  - infra2
+#  - infra3
+#  - kvm1
+#  - kvm2
+#  - bm1
   - haproxy1
-  - rsyslog
+  - haproxy2
+#  - rsyslog
 #################################################################################
 # network interface defination - 
 # leave bonded_with: empty  if insted of bond physical interface is wanted
@@ -83,6 +84,56 @@ target_hosts:
           protocol: udp, ports: [123,], action: allow}
       - {interface: br-internet,direction: in,from: any, to: any ,
            protocol: udp, ports: [123,], action: allow}
+
+ 
+ haproxy2:
+   hostname: haproxy2
+   ssh_ip: 10.0.0.52
+   roles:
+     - haproxy
+     - squidproxy
+     - ntpmaster
+     - firewall
+   change_network_interface_file: True
+   nic:
+     - {nicName: enp5s0,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface enp5s0 , part of bond1 }
+     - {nicName: enp9s0,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface part of bond 2 connected to switch ....}
+   bond:
+     - {bondName: bond1, bondNic: enp5s0, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: bond 1 using NIC enp5s0 }
+     - {bondName: bond2, bondNic: enp9s0, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: bond 2 using NIC enp9s0 }
+   vNic:
+     - {vNicName: , vNicParent: , address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description:  }
+
+   bridges:
+     - {brName: br-mgmt,brPort: bond1, address: 10.0.0.52 ,netmask: 255.255.255.0 ,network: 10.0.0.0,
+        broadcast: 10.0.0.255,gateway: ,dns: ,part_of_vlan: True,
+             description: USed for Openstack Managment, SSH and api access }
+     - {brName: br-internet,brPort: bond2, address: 14.142.104.138 ,netmask: 255.255.255.248 ,network: 14.142.104.136,
+         broadcast: 14.142.104.143, gateway: 14.142.104.137,dns: 115.112.18.21 115.112.18.131,part_of_vlan: True,
+             description: USed for internet connection }
+   Firewall:
+    internet_facing_interface: br-internet
+    internal_interface: br-mgmt
+    default_rules:
+     - { interface: br-internet, defaultin: deny, defaultout: allow}
+     - { interface: br-mgmt, defaultin: allow, defaultout: allow}
+
+
+    specific_rules:
+      - {interface: br-internet,direction: out,from: any, to: any , protocol: tcp,
+          ports: [http, https, 2223, 6080, 6080, 6081, 6082], action: allow}
+      - {interface: br-internet,direction: in, from: any, to: any , protocol: tcp,
+           ports: [http, https, 2223, 6080, 6080, 6081, 6082], action: allow}
+      - {interface: br-internet,direction: out,from: any, to: any ,
+          protocol: udp, ports: [123,], action: allow}
+      - {interface: br-internet,direction: in,from: any, to: any ,
+           protocol: udp, ports: [123,], action: allow}             
+
 #---------------------------------------------------------------------------------------------     
       
  infra1:

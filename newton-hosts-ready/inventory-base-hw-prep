@@ -1,10 +1,10 @@
 [base_hw_prep_for_openstack]
-infra1
-infra2
-infra3
-kvm1
-kvm2
-bm1
-rsyslog 
-haproxy1
- 
+#infra1
+#infra2
+#infra3
+#kvm1
+#kvm2
+#bm1
+#rsyslog 
+haproxy1	ansible_port=2223
+haproxy2        ansible_port=2223

@@ -8,7 +8,7 @@
 - name: copy the ufwrules.sh to that contain the pre configured firewall rules
   template:
    src: ufwrules.j2
-   dest: /tmp/ufwrules.sh
+   dest: /root/ufwrules.sh
    mode: 0744
   register: ufwrulefilestat
    
