@@ -96,6 +96,19 @@ keystone_ceilometer_enabled: True
 
 horizon_enable_sahara_ui: True
 
+aodh_requires_pip_packages:
+  - alembic>=0.7.2
+  - aodh
+  - ceilometermiddleware
+  - gnocchiclient
+  - pycrypto
+  - PyMySQL>=0.6.2
+  - python-ceilometerclient
+  - python-memcached
+  - SQLAlchemy>=0.9.7
+  - sqlalchemy-utils
+  - warlock
+
 # Common pip packages
 #aodh_pip_packages:
 #  # The following constraints are taken from the setup.cfg
