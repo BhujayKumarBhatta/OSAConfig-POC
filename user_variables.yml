@@ -103,7 +103,11 @@ horizon_enable_sahara_ui: True
 #  - "sqlalchemy<1.1.0
 
 aodh_requires_pip_packages:
-#aodh_pip_packages: 
+  - virtualenv
+  - virtualenv-tools
+  - python-keystoneclient # Keystoneclient needed to OSA keystone lib
+  - httplib2
+aodh_pip_packages: 
   - alembic>=0.7.2
   - aodh
   - ceilometermiddleware
@@ -115,10 +119,6 @@ aodh_requires_pip_packages:
   - SQLAlchemy>=1.1.9
   - sqlalchemy-utils
   - warlock 
-  - virtualenv
-  - virtualenv-tools
-  - python-keystoneclient # Keystoneclient needed to OSA keystone lib
-  - httplib2
 
 ceilometer_requires_pip_packages:
   - httplib2
