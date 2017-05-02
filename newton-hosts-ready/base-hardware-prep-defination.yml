@@ -341,16 +341,17 @@ target_hosts:
 host_table_entry: |
         10.0.0.52        haproxy2
         10.0.0.51        haproxy1
+# use keepalived virtual ip to avoid dependency on one proxy server ip 
 etc_environment_entry: |
-        export https_proxy="http://10.0.0.52:3128"
-        export http_proxy="http://10.0.0.52:3128"
+        export https_proxy="http://10.0.0.14:3128"
+        export http_proxy="http://10.0.0.14:3128"
         no_proxy=localhost,127.0.0.1,10.*.*.*,*.poc,10.0.0.51,10.0.0.52,10.0.0.53,gitlab
 apt_proxy_entry: |
-        Acquire::http { Proxy "http://10.0.0.52:3128";};
-        Acquire::https { Proxy "http://10.0.0.52:3128";};        
+        Acquire::http { Proxy "http://10.0.0.14:3128";};
+        Acquire::https { Proxy "http://10.0.0.14:3128";};        
 pip_proxy_entry: |
         [global]
-        proxy = 10.0.0.52:3128
+        proxy = 10.0.0.14:3128
      
 
 ############################################################## 
