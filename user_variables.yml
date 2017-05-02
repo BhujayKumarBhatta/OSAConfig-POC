@@ -69,10 +69,10 @@ cinder_service_backup_ceph_user: cinder-backup
 cinder_service_backup_ceph_pool: backups
 
 ## ceilometer database mongodb manually installed and these settings done
-ceilometer_db_type: mongodb
-ceilometer_db_ip: 10.0.0.57
-ceilometer_db_port: 27017
-swift_ceilometer_enabled: False
+#ceilometer_db_type: mongodb
+#ceilometer_db_ip: 10.0.0.57
+#ceilometer_db_port: 27017
+#swift_ceilometer_enabled: False
 
 heat_ceilometer_enabled: True
 cinder_ceilometer_enabled: True
