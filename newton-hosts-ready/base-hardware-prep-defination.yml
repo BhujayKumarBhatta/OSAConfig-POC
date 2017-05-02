@@ -1,22 +1,7 @@
 # include the host name in inventory-base-hw-prep and run with -i option as below
 # ansible-playbook base-hw-prep.yml  -i inventory-base-hw-prep
 
-chrony_master_server_hostnames: 
-  - tavoidnull 
 
-Chrony_master_server_uplink_names: |
-  server 0.north-america.pool.ntp.org offline maxpoll 10 minpoll 8
-  server 1.north-america.pool.ntp.org offline maxpoll 10 minpoll 8
-  server 2.north-america.pool.ntp.org offline maxpoll 10 minpoll 8
-  server 3.north-america.pool.ntp.org offline maxpoll 10 minpoll 8
-Chrony_clients_uplink_names: |
-  server 10.0.0.51
-  server 10.0.0.52
-  
-nfs_share_names:
-  - /images
-  
-   
 
 servers_to_reboot:
   - infra1
@@ -355,6 +340,15 @@ pip_proxy_entry: |
      
 
 ############################################################## 
+
+Chrony_clients_uplink_names: |
+  server 10.0.0.51
+  server 10.0.0.52
+  
+nfs_share_names:
+  - /images
+
+
 
 base_apt_packages:
  - python
