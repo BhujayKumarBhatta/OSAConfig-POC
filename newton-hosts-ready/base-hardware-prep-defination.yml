@@ -83,6 +83,7 @@ target_hosts:
           protocol: udp, ports: [123,], action: allow}
       - {interface: br-internet,direction: in,from: any, to: any ,
            protocol: udp, ports: [123,], action: allow}
+#---------------------------------------------------------------------------------------------------
  haproxy2:
    hostname: haproxy2 
    ssh_ip: 10.0.0.52
@@ -121,10 +122,11 @@ target_hosts:
      - { interface: br-mgmt, defaultin: allow, defaultout: allow}
 
     specific_rules:
-      - {interface: br-internet,direction: out,from: any, to: any , protocol: tcp,
-#---------------------------------------------------------------------------------------------     
-      
- infra1:
+      - {interface: br-internet,direction: out,from: any, to: any , protocol: tcp,}
+  
+ #--------------------------------------------------------------------------------------------------------------- 
+ 
+ infra1: 
    hostname: infra1
    ssh_ip: 10.0.0.21
    roles: controller
@@ -153,6 +155,7 @@ target_hosts:
              description: USed for Provider Network flat or vlan , To be connected to external router gateway.Bridge will not have any IP}
      - {brName: br-vxlan,brPort: bond2.20, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, 
              description: Used for tenant network , virtual network. On Controller this bridge will not have address}
+#---------------------------------------------------------------------------------------------------------------------------------
  infra2:
    hostname: infra2
    ssh_ip: 10.0.0.22
@@ -182,6 +185,7 @@ target_hosts:
              description: USed for Provider Network flat or vlan , To be connected to external router gateway.Bridge will not have any IP}
      - {brName: br-vxlan,brPort: bond2.20, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, 
              description: Used for tenant network , virtual network. On Controller this bridge will not have address}
+#-----------------------------------------------------------------------------------------------------------------
  infra3:
    hostname: infra3
    ssh_ip: 10.0.0.23
@@ -211,6 +215,7 @@ target_hosts:
              description: USed for Provider Network flat or vlan , To be connected to external router gateway.Bridge will not have any IP}
      - {brName: br-vxlan,brPort: bond2.20, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, 
              description: Used for tenant network , virtual network. On Controller this bridge will not have address}
+#------------------------------------------------------------------------------------------------------------------
  kvm1:
    hostname: kvm1
    ssh_ip: 10.0.0.31
@@ -239,7 +244,8 @@ target_hosts:
      - {brName: br-vlan,brPort: bond2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Provider Network flat or vlan , To be connected to external router gateway. Bridge doesn't have any IP}
      - {brName: br-vxlan,brPort: bond2.20, address: 10.0.1.31 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, 
-             description: Used for tenant network , virtual network. On Compute node this will have address}      
+             description: Used for tenant network , virtual network. On Compute node this will have address}   
+#-------------------------------------------------------------------------------------------------------------------   
  kvm2:
    hostname: kvm2
    ssh_ip: 10.0.0.32
@@ -268,7 +274,8 @@ target_hosts:
      - {brName: br-vlan,brPort: bond2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Provider Network flat or vlan , To be connected to external router gateway. Bridge doesn't have any IP}
      - {brName: br-vxlan,brPort: bond2.20, address: 10.0.1.32 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, 
-             description: Used for tenant network , virtual network. On Compute node this will have address}      
+             description: Used for tenant network , virtual network. On Compute node this will have address}    
+#----------------------------------------------------------------------------------------------------------------  
  
  bm1:
    hostname: bm1
@@ -298,8 +305,9 @@ target_hosts:
      - {brName: br-vlan,brPort: bond2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Provider Network flat or vlan , To be connected to external router gateway. Bridge doesn't have any IP}
      - {brName: br-vxlan,brPort: bond2.20, address: 10.0.1.42 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, 
-             description: Used for tenant network , virtual network. On Compute node this will have address}      
- rsyslog:
+             description: Used for tenant network , virtual network. On Compute node this will have address}   
+#------------------------------------------------------------------------------------------------------------------   
+ rsyslog1:
    hostname: rsyslog
    ssh_ip: 10.0.0.57
    roles: rsyslog
