@@ -91,7 +91,7 @@ haproxy_hosts:
 #    port: 2223
 # rsyslog server
 log_hosts:
-  rsyslog:
+  rsyslog1:
     ip: 10.0.0.57
 # galera, memcache, rabbitmq, utility
 shared-infra_hosts:
