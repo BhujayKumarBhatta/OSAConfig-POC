@@ -3,21 +3,21 @@ sudo ufw default deny incoming on {{ target_hosts[ansible_host]['Firewall']['int
 sudo ufw default deny outgoing on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }}
 ufw allow in on {{ target_hosts[ansible_host]['Firewall']['internal_interface'] }}
 ufw allow out on {{ target_hosts[ansible_host]['Firewall']['internal_interface'] }}
-ufw limit  in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from 220.225.15.126
-ufw limit in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port https
-ufw limit out on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port https
-ufw limit in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port http
-ufw limit out on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port http
-ufw limit in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port http
-ufw limit out on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port http
-ufw limit in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 123 proto udp
-ufw limit out on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 123 proto udp
-ufw limit out on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 53 proto udp
-ufw limit out on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 53 proto tcp
-ufw limit in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 2223
-ufw limit in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 6080
-ufw limit in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 6081
-ufw limit in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 6082
+ufw allow  in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from 220.225.15.126
+ufw allow in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port https
+ufw allow out on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port https
+ufw allow in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port http
+ufw allow out on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port http
+ufw allow in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port http
+ufw allow out on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port http
+ufw allow in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 123 proto udp
+ufw allow out on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 123 proto udp
+ufw allow out on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 53 proto udp
+ufw allow out on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 53 proto tcp
+ufw allow in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 2223
+ufw allow in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 6080
+ufw allow in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 6081
+ufw allow in on {{ target_hosts[ansible_host]['Firewall']['internet_facing_interface'] }} from any to any  port 6082
 
    
 
