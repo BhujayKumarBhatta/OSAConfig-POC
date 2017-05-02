@@ -91,7 +91,9 @@ haproxy_hosts:
 #    port: 2223
 # rsyslog server
 log_hosts:
-  rsyslog:
+# dont give the host name as rsyslog , playbook them 
+#tries to deploy the server on bare metal and doesnt work proerly
+  rsyslog1:
     ip: 10.0.0.57
 # galera, memcache, rabbitmq, utility
 shared-infra_hosts:
