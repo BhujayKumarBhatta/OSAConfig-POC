@@ -90,9 +90,12 @@ keystone_ceilometer_enabled: True
 #         - database://
 #         - gnocchi://
 #         - notifier://
-#ceilometer_pipeline_yaml_overrides: 
+#ceilometer_pipeline_yaml_overrides: https://docs.openstack.org/ocata/config-reference/telemetry/samples/event_pipeline.yaml.html
 #ceilometer_aodh_enabled: false
 #ceilometer_gnocchi_enabled: false
+
+#https://docs.openstack.org/ocata/config-reference/telemetry/samples/event_definitions.yaml.html
+#
 
 horizon_enable_sahara_ui: True
 
