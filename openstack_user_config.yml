@@ -78,13 +78,13 @@ global_overrides:
 ### Infrastructure
 ###
 # The infra nodes that will be running the Unbound DNS caching resolvers
-unbound_hosts:
-  infra1:
-    ip: 10.0.0.21
-  infra2:
-    ip: 10.0.0.22
-  infra3:
-    ip: 10.0.0.23  
+#unbound_hosts:
+#  infra1:
+#    ip: 10.0.0.21
+#  infra2:
+#    ip: 10.0.0.22
+#  infra3:
+#    ip: 10.0.0.23  
 # load balancer
 haproxy_hosts:
   haproxy1:
