@@ -33,6 +33,8 @@ keystone_ssl_self_signed_regen: True
 keystone_ssl_self_signed_subject: "/C=IN/ST=Karnataka/L=Bangalore/O=ITC/CN={{ internal_lb_vip_address }}/subjectAltName=IP.1={{ external_lb_vip_address }}"
 
 #++++++++++++++++++++++++++++++++++++++
+## haproxy default timeouts
+haproxy_http_request_timeout: "10s"
 haproxy_ssl_self_signed_regen: True
 haproxy_ssl_self_signed_subject: "/C=IN/ST=Karnataka/L=Bangalore/O=ITC/CN={{ internal_lb_vip_address }}/subjectAltName=IP.1={{ external_lb_vip_address }}"
 
