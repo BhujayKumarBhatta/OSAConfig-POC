@@ -21,6 +21,7 @@ global_overrides:
         container_bridge: "br-mgmt"
         container_type: "veth"
         container_interface: "eth1"
+        container_mtu: "9000"
         ip_from_q: "container"
         type: "raw"
         group_binds:
@@ -43,6 +44,7 @@ global_overrides:
         container_bridge: "br-vlan"
         container_type: "veth"
         container_interface: "eth12"
+        container_mtu: "9000"
         host_bind_override: "bond2" #?????? this ovverrides is trying to search eth2 on compute node  
         type: "flat"
         net_name: "flat"
@@ -52,6 +54,7 @@ global_overrides:
         container_bridge: "br-vlan"
         container_type: "veth"
         container_interface: "eth11"
+        container_mtu: "9000"
         type: "vlan"
         range: "1:1"
         net_name: "vlan"
@@ -86,8 +89,16 @@ unbound_hosts:
 haproxy_hosts:
   haproxy1:
     ip: 10.0.0.51
+    host_vars:
+      global_environment_variables: {}
+      repo_pkg_cache_enabled: False
+      resolvconf_enabled: False
   haproxy2:
     ip: 10.0.0.52
+    host_vars:
+      global_environment_variables: {}
+      repo_pkg_cache_enabled: False
+      resolvconf_enabled: False
 #    port: 2223
 # rsyslog server
 log_hosts:

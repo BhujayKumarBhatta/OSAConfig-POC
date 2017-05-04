@@ -1,4 +1,8 @@
 ---
+
+lxc_net_mtu: 9000
+
+
 ## set security hardening to false during upgrade
 apply_security_hardening: True 
 
@@ -6,6 +10,8 @@ apply_security_hardening: True
 debug: false
 validate_certs: false
 percona_package_download_validate_certs: false
+#pip_validate_certs: false
+#galera_package_download_validate_certs: false
 # use the keepalived  floating ip  of haproxy server as the proxy to avoid dependency on 52
 proxy_env_url: "http://10.0.0.14:3128"
 # no_proxy_env: "localhost,127.0.0.1,{{ internal_lb_vip_address }},{{ external_lb_vip_address }},{% for host in groups['all_containers'] %}{{ hostvars[host]['container_address'] }}{% if not loop.last %},{% endif %}{% endfor %}"
@@ -22,17 +28,27 @@ global_environment_variables:
 # If an increased delay for the ssh connection check is desired,# uncomment this variable and set it appropriately.   
 ssh_delay: 15
 #++++++++++++++++++Must for Self signed Certificate++++++++++++++++
+keystone_ssl: false
+keystone_external_ssl: false
 keystone_service_adminuri_insecure: true
 keystone_service_internaluri_insecure: true
+#external_lb_vip_address: 14.142.104.140 its present in user_config
+#internal_lb_vip_address: 10.0.0.14
+# if using a self-signed certificate, set this to true to regenerate it
+keystone_ssl_self_signed_regen: True
+keystone_ssl_self_signed_subject: "/C=IN/ST=Karnataka/L=Bangalore/O=ITC/CN={{ internal_lb_vip_address }}/subjectAltName=IP.1={{ external_lb_vip_address }}"
 
 #++++++++++++++++++++++++++++++++++++++
+## haproxy default timeouts
+haproxy_http_request_timeout: "10s"
 haproxy_ssl_self_signed_regen: True
-haproxy_ssl_self_signed_subject: "/C=IN/ST=Karnataka/L=Bangalore/O=ITC/CN=cloudspace.itc.in"
+haproxy_ssl_self_signed_subject: "/C=IN/ST=Karnataka/L=Bangalore/O=ITC/CN={{ internal_lb_vip_address }}/subjectAltName=IP.1={{ external_lb_vip_address }}"
+
 haproxy_keepalived_external_vip_cidr: 14.142.104.140/29
 haproxy_keepalived_internal_vip_cidr: 10.0.0.14/24
 haproxy_keepalived_external_interface: br-internet
 haproxy_keepalived_internal_interface: br-mgmt
-keepalived_ping_address: "10.0.0.53"
+keepalived_ping_address: 10.0.0.53
 #ocata
 keepalived_use_latest_stable: True
 #+++++++++++++++++Proxying TLS traffic often interferes with the clients ability to perform 
@@ -90,9 +106,12 @@ keystone_ceilometer_enabled: True
 #         - database://
 #         - gnocchi://
 #         - notifier://
-#ceilometer_pipeline_yaml_overrides: 
+#ceilometer_pipeline_yaml_overrides: https://docs.openstack.org/ocata/config-reference/telemetry/samples/event_pipeline.yaml.html
 #ceilometer_aodh_enabled: false
 #ceilometer_gnocchi_enabled: false
+
+#https://docs.openstack.org/ocata/config-reference/telemetry/samples/event_definitions.yaml.html
+#
 
 horizon_enable_sahara_ui: True
 
@@ -100,6 +119,8 @@ horizon_enable_sahara_ui: True
 #repo_build_upper_constraints_overrides:
 ##  # Due to bug  https://bugs.launchpad.net/openstack-ansible/+bug/1686483?comments=all
 ##  # trying with   
+#  # Due to bug  https://bugs.launchpad.net/openstack-ansible/+bug/1686483?comments=all
+#  # trying with   
 #  - "sqlalchemy<1.1.0"
 
 #aodh_requires_pip_packages:
@@ -141,6 +162,6 @@ horizon_enable_sahara_ui: True
 #  - PyMySQL>=0.6.2
 #  - python-ceilometerclient
 #  - python-memcached
-#  #- sqlalchemy<1.1.0,>=0.9.7
+#  - sqlalchemy<1.1.0,>=0.9.7
 #  - sqlalchemy-utils
 #  - warlock
