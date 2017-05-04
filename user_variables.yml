@@ -1,7 +1,7 @@
 ---
 
-lxc_net_mtu: "9000"
-lxc_container_default_mtu: "9000"
+#lxc_net_mtu: "9000"
+#lxc_container_default_mtu: "9000"
 
 ## set security hardening to false during upgrade
 apply_security_hardening: True 
