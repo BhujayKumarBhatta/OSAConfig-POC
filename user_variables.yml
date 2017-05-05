@@ -1,7 +1,7 @@
 ---
 
-lxc_net_mtu: 9000
-
+#lxc_net_mtu: "9000"
+#lxc_container_default_mtu: "9000"
 
 ## set security hardening to false during upgrade
 apply_security_hardening: True 
@@ -26,7 +26,7 @@ global_environment_variables:
    no_proxy: "{{ no_proxy_env }}"
 ## SSH connection wait time
 # If an increased delay for the ssh connection check is desired,# uncomment this variable and set it appropriately.   
-ssh_delay: 15
+ssh_delay: 60
 #++++++++++++++++++Must for Self signed Certificate++++++++++++++++
 keystone_ssl: false
 keystone_external_ssl: false

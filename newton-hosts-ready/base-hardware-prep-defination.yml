@@ -13,6 +13,8 @@ servers_to_reboot:
 #  - haproxy1
 #  - rsyslog
 #  - haproxy2 
+#  - haproxy2 
+
 #################################################################################
 # network interface defination - 
 # leave bonded_with: empty  if insted of bond physical interface is wanted
@@ -367,6 +369,6 @@ base_apt_packages:
 
 
 
-
+ 
 
  
