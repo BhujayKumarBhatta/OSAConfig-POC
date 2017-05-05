@@ -7,12 +7,12 @@ servers_to_reboot:
 #  - infra1
 #  - infra2
 #  - infra3
-#  - kvm1
-#  - kvm2
+  - kvm1
+  - kvm2
 #  - bm1
 #  - haproxy1
 #  - rsyslog
-   - haproxy2 
+#  - haproxy2 
 #################################################################################
 # network interface defination - 
 # leave bonded_with: empty  if insted of bond physical interface is wanted
