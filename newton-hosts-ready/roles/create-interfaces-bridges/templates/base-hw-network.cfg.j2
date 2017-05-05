@@ -46,7 +46,7 @@ iface {{ nicitem.nicName }} inet static
 ## DESCRIPTION: {{ bonditem.description }}
 auto {{ bonditem.bondName }}
 iface {{ bonditem.bondName }} inet manual
-    bond-slaves {{ bonditem.bondNic }}
+    bond-slaves none
     bond-mode active-backup
     bond-miimon 100
     bond-downdelay 200
