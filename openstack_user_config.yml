@@ -73,6 +73,7 @@ global_overrides:
           - cinder_volume
           - nova_compute
           - swift_proxy
+          - gnocchi_all
 
 ###
 ### Infrastructure
