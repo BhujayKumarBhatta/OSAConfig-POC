@@ -121,6 +121,8 @@ horizon_enable_sahara_ui: True
 
 
 #repo_build_upper_constraints_overrides:
+##  # Due to bug  https://bugs.launchpad.net/openstack-ansible/+bug/1686483?comments=all
+##  # trying with   
 #  # Due to bug  https://bugs.launchpad.net/openstack-ansible/+bug/1686483?comments=all
 #  # trying with   
 #  - "sqlalchemy<1.1.0"
@@ -164,6 +166,6 @@ horizon_enable_sahara_ui: True
 #  - PyMySQL>=0.6.2
 #  - python-ceilometerclient
 #  - python-memcached
-#  #- sqlalchemy<1.1.0,>=0.9.7
+#  - sqlalchemy<1.1.0,>=0.9.7
 #  - sqlalchemy-utils
 #  - warlock
