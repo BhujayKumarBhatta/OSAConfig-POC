@@ -309,7 +309,7 @@ storage_hosts:
        san_password: password
        #eqlx_group_name: group-0
        destroy_empty_storage_group: False
-  
+  limit_container_types: cinder_volume
 #ocata
 #       rbd_secret_uuid: "{{ cinder_ceph_client_uuid }}"
 
