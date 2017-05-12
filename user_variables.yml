@@ -131,7 +131,7 @@ galera_client_distro_packages:
   - libssl-dev
   - libstdc++6
   - mariadb-client
-  - mariadb-client-core-10.0
+#  - mariadb-client-core-10.0
   - python-dev
 
 
