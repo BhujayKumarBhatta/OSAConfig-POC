@@ -290,6 +290,26 @@ storage_hosts:
        rbd_pool: volumes
        rbd_ceph_conf: /etc/ceph/ceph.conf
        rbd_user: cinder
+ storage1:
+  ip: 10.0.0.42
+  container_vars:
+   is_metal: true
+   cinder_backends:
+     limit_container_types: cinder_volume
+     vnx5300:
+       volume_backend_name: vnx5300
+       volume_driver: cinder.volume.drivers.emc.emc_cli_fc.EMCCLIFCDriver
+       storage_vnx_pool_name: pool_1
+       #san_ip: ip_of_dell_storage
+       storage_vnx_authentication_type: global
+       #storage_vnx_security_file_dir = /etc/secfile/array1
+       naviseccli_path: /opt/Navisphere/bin/naviseccli
+       default_timeout: 10
+       san_login: grpadmin
+       san_password: password
+       #eqlx_group_name: group-0
+       destroy_empty_storage_group: False
+  
 #ocata
 #       rbd_secret_uuid: "{{ cinder_ceph_client_uuid }}"
 
