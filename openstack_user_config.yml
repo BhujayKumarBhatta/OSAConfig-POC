@@ -153,8 +153,7 @@ image_hosts:
     ip: 10.0.0.21
   infra2:
     ip: 10.0.0.22
-  infra3:
-    ip: 10.0.0.23  
+  
 # nova 
 compute-infra_hosts:
   infra1:
@@ -187,8 +186,7 @@ network_hosts:
 metering-infra_hosts:
   infra1:
     ip: 10.0.0.21
-  infra2:
-    ip: 10.0.0.22
+  
 # The infra nodes that will be running the dnsaas services
 dnsaas_hosts:
   infra1:
@@ -200,38 +198,30 @@ dnsaas_hosts:
 metering-alarm_hosts:
   infra1:
     ip: 10.0.0.21
-  infra2:
-    ip: 10.0.0.22
+  
 # gnocchi (telemetry metrics storage)
 metrics_hosts:
   infra1:
     ip: 10.0.0.21
-  infra2:
-    ip: 10.0.0.22
+  
 # Bare metal api  
 ironic-infra_hosts:
   infra1:
     ip: 10.0.0.21
   infra2:
-    ip: 10.0.0.22
-  infra3:
-    ip: 10.0.0.23 
+    ip: 10.0.0.2  
 # magnum api 
 magnum-infra_hosts:
   infra1:
     ip: 10.0.0.21
   infra2:
-    ip: 10.0.0.22
-  infra3:
-    ip: 10.0.0.23 
+    ip: 10.0.0.22  
 #Sahara api
 sahara-infra_hosts:
   infra1:
     ip: 10.0.0.21
   infra2:
     ip: 10.0.0.22
-  infra3:
-    ip: 10.0.0.23 
 ####################################################################################################
 # nova hypervisors
 compute_hosts:
