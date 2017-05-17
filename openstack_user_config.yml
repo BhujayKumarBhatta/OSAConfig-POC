@@ -209,7 +209,7 @@ ironic-infra_hosts:
   infra1:
     ip: 10.0.0.21
   infra2:
-    ip: 10.0.0.2  
+    ip: 10.0.0.22  
 # magnum api 
 magnum-infra_hosts:
   infra1:
