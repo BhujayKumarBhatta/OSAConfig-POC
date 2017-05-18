@@ -120,19 +120,19 @@ keystone_ceilometer_enabled: True
 horizon_enable_sahara_ui: True
 
 
-galera_client_distro_packages:
-  - build-essential
-  - libaio1
-  - libc6
-  - libdbd-mysql-perl
-  - libgcc1
-  - libgcrypt20
-  - libmariadbclient-dev
-  - libssl-dev
-  - libstdc++6
-  - mariadb-client
-#  - mariadb-client-core-10.0
-  - python-dev
+#galera_client_distro_packages:
+#  - build-essential
+#  - libaio1
+#  - libc6
+#  - libdbd-mysql-perl
+#  - libgcc1
+#  - libgcrypt20
+#  - libmariadbclient-dev
+#  - libssl-dev
+#  - libstdc++6
+#  - mariadb-client
+##  - mariadb-client-core-10.0
+#  - python-dev
 
 
 #repo_build_upper_constraints_overrides:
