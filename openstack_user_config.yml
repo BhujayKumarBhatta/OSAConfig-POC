@@ -216,6 +216,10 @@ magnum-infra_hosts:
     ip: 10.0.0.21
   infra2:
     ip: 10.0.0.22  
+# The infra nodes that will be running the trove services
+trove-infra_hosts:
+  infra1:
+    ip: 10.0.0.21
 #Sahara api
 sahara-infra_hosts:
   infra1:
