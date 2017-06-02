@@ -139,7 +139,7 @@ identity_hosts:
   infra3:
     ip: 10.0.0.23  
 # Barbican
-barbican_hosts:
+key-manager_hosts: 
   infra1:
     ip: 10.0.0.21
   infra2:
