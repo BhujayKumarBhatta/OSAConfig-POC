@@ -126,17 +126,16 @@ horizon_enable_ironic_ui: True
 #neutron_dns_domain: itc.in. 
 ## Enable/Disable Ceilometer
 #neutron_ceilometer_enabled: True
-#neutron_plugin_base:
-#   - router
-#   - firewall
-#   - lbaas
-#   - neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2
-#   - neutron_dynamic_routing.services.bgp.bgp_plugin.BgpPlugin
-#   - vpnaas
-#   - metering
+neutron_plugin_base:
+   - router
+   - metering
+   - lbaas
+   - neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2
+#   - neutron_dynamic_routing.services.bgp.bgp_plugin.BgpPlugin  
 #   - qos
 #   - dns
-#
+#  - vpnaas
+#  - firewall
 
 #galera_client_distro_packages:
 #  - build-essential
