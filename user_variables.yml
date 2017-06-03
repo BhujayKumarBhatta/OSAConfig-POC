@@ -118,6 +118,8 @@ keystone_ceilometer_enabled: True
 #
 
 horizon_enable_sahara_ui: True
+horizon_enable_ironic_ui: True
+
 
 # Enable/Disable designate
 neutron_designate_enabled: True
