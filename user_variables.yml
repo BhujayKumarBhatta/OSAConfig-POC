@@ -136,27 +136,27 @@ neutron_plugin_base:
 #   - vpnaas
 #   - neutron_dynamic_routing.services.bgp.bgp_plugin.BgpPlugin  
 
-#designate_pools_yaml:
-#   - name: "default"
-#     description: Default BIND9 Pool
-#     attributes: {}
-#     ns_records:
-#       - hostname: ns1.example.org.
-#         priority: 1
-#     nameservers:
-#       - host: 127.0.0.1
-#         port: 53
-#     targets:
-#       - type: bind9
-#         description: BIND9 Server
-#         masters:
-#           - host: 127.0.0.1
-#             port: 5354
-#         options:
-#           host: 127.0.0.1
-#           port: 53
-#           rndc_host: 127.0.0.1
-#           rndc_port: 953
+designate_pools_yaml:
+   - name: "default"
+     description: Default BIND9 Pool
+     attributes: {}
+     ns_records:
+       - hostname: ns1.itc.in.
+         priority: 1       
+     nameservers:
+       - host: 127.0.0.1
+         port: 53
+     targets:
+       - type: bind9
+         description: BIND9 Server
+         masters:
+           - host: 127.0.0.1
+             port: 5354
+         options:
+           host: 127.0.0.1
+           port: 53
+           rndc_host: 127.0.0.1
+           rndc_port: 953
 
 #galera_client_distro_packages:
 #  - build-essential
