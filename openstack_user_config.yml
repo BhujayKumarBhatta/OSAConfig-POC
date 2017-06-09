@@ -310,7 +310,7 @@ storage_hosts:
        #storage_vnx_security_file_dir = /etc/secfile/array1
        naviseccli_path: /opt/Navisphere/bin/naviseccli
        default_timeout: 10
-       san_ip: 10.0.0.90
+       san_ip: 10.0.0.9
        san_login: sysadmin
        san_password:  Welcome@123?    
        storage_vnx_authentication_type: global
