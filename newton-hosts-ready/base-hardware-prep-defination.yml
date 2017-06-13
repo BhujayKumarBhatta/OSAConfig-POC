@@ -4,11 +4,11 @@
 
 
 servers_to_reboot:
-  - infra1
-  - infra2
-  - infra3
-  - kvm1
-  - kvm2
+#  - infra1
+# - infra2
+# - infra3
+#  - kvm1
+#  - kvm2
 #  - bm1
 #  - haproxy1
 #  - rsyslog
@@ -265,10 +265,10 @@ target_hosts:
              description: Used for tenant network , virtual network. On Compute node this will have address}    
 #----------------------------------------------------------------------------------------------------------------  
  
- bm1:
-   hostname: bm1
+ storage1:
+   hostname: storage1
    ssh_ip: 10.0.0.42
-   roles: novacompute
+   roles: controller
    change_network_interface_file: True
    nic: 
      - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
