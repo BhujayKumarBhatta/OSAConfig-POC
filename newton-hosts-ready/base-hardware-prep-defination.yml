@@ -374,15 +374,15 @@ target_hosts:
     roles: controller
     change_network_interface_file: True
     nic: 
-      - {nicName: enp5s0,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface enp5s0 , part of bond1 }
-      - {nicName: enp9s0,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface enp9s0 , part of bond 2 connected to switch ....}                  
+      - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface eno1 , part of bond1 }
+      - {nicName: eno2,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface eno2 , part of bond 2 connected to switch ....}                  
     bond: 
-      - {bondName: bond1, bondNic: enp5s0, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 1 using NIC enp5s0 }  
-      - {bondName: bond2, bondNic: enp9s0, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 2 using NIC enp9s0 }                        
+      - {bondName: bond1, bondNic: eno1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 1 using NIC eno1 }  
+      - {bondName: bond2, bondNic: eno2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 2 using NIC eno2 }                        
     bridges: 
       - {brName: br-mgmt,brPort: bond1, address: 10.0.0.47 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
