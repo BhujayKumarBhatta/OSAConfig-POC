@@ -8,4 +8,7 @@
 #rsyslog 
 #haproxy1	ansible_port=2223
 #haproxy2    ansible_port=2223
-storage1
+#storage1
+swiftn1
+swiftn2
+swiftn3
