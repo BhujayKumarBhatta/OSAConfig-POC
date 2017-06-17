@@ -329,7 +329,7 @@ storage_hosts:
   swiftn2:
     ip: 10.0.0.46
   swiftn3:
-    ip: 10.0.0.47  
+    ip: 10.0.0.47    
 #ocata
 #       rbd_secret_uuid: "{{ cinder_ceph_client_uuid }}"
 
