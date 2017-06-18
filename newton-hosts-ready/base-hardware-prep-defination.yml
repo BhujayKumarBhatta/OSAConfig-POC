@@ -4,17 +4,20 @@
 
 
 servers_to_reboot:
-  - infra1
-  - infra2
-  - infra3
-  - kvm1
-  - kvm2
+#  - infra1
+# - infra2
+# - infra3
+#  - kvm1
+#  - kvm2
 #  - bm1
 #  - haproxy1
 #  - rsyslog
 #  - haproxy2 
 #  - haproxy2 
-
+#  - storage1
+  - swiftn1
+  - swiftn2
+  - swiftn3
 #################################################################################
 # network interface defination - 
 # leave bonded_with: empty  if insted of bond physical interface is wanted
@@ -265,10 +268,10 @@ target_hosts:
              description: Used for tenant network , virtual network. On Compute node this will have address}    
 #----------------------------------------------------------------------------------------------------------------  
  
- bm1:
-   hostname: bm1
+ storage1:
+   hostname: storage1
    ssh_ip: 10.0.0.42
-   roles: novacompute
+   roles: controller
    change_network_interface_file: True
    nic: 
      - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
@@ -320,6 +323,71 @@ target_hosts:
              description: USed for Openstack Managment, SSH and api access }
      - {brName: br-storage,brPort: bond1.10, address: 10.0.2.57 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Openstack Storage }
+##############################################################################################################
+
+#  Swift Nodes for OpenStack
+
+##############################################################################################################
+ swiftn1:
+    hostname: swiftn1
+    ssh_ip: 10.0.0.45
+    roles: controller
+    change_network_interface_file: True
+    nic: 
+      - {nicName: enp5s0,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface enp5s0 , part of bond1 }
+      - {nicName: enp9s0,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface enp9s0 , part of bond 2 connected to switch ....}                  
+    bond: 
+      - {bondName: bond1, bondNic: enp5s0, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 1 using NIC enp5s0 }  
+      - {bondName: bond2, bondNic: enp9s0, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 2 using NIC enp9s0 }                        
+    bridges: 
+      - {brName: br-mgmt,brPort: bond1, address: 10.0.0.45 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+             description: USed for Openstack Managment, SSH and api access }
+      - {brName: br-swift,brPort: bond2, address: 10.0.2.45 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+             description: Used for Openstack Swift }
+ swiftn2:
+    hostname: swiftn2
+    ssh_ip: 10.0.0.46
+    roles: controller
+    change_network_interface_file: True
+    nic: 
+      - {nicName: enp5s0,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface enp5s0 , part of bond1 }
+      - {nicName: enp9s0,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface enp9s0 , part of bond 2 connected to switch ....}                  
+    bond: 
+      - {bondName: bond1, bondNic: enp5s0, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 1 using NIC enp5s0 }  
+      - {bondName: bond2, bondNic: enp9s0, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 2 using NIC enp9s0 }                        
+    bridges: 
+      - {brName: br-mgmt,brPort: bond1, address: 10.0.0.46 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+             description: USed for Openstack Managment, SSH and api access }
+      - {brName: br-swift,brPort: bond2, address: 10.0.2.46 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+             description: Used for Openstack Swift }
+ swiftn3:
+    hostname: swiftn3
+    ssh_ip: 10.0.0.47
+    roles: controller
+    change_network_interface_file: True
+    nic: 
+      - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface eno1 , part of bond1 }
+      - {nicName: eno2,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface eno2 , part of bond 2 connected to switch ....}                  
+    bond: 
+      - {bondName: bond1, bondNic: eno1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 1 using NIC eno1 }  
+      - {bondName: bond2, bondNic: eno2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 2 using NIC eno2 }                        
+    bridges: 
+      - {brName: br-mgmt,brPort: bond1, address: 10.0.0.47 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+             description: USed for Openstack Managment, SSH and api access }
+      - {brName: br-swift,brPort: bond2, address: 10.0.2.47 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+             description: Used for Openstack Swift }                       
      
 ############################################################################################
 
