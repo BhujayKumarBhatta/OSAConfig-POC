@@ -132,7 +132,7 @@ neutron_plugin_base:
    - neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2
    - firewall
 #   - qos
-#   - dns
+   - dns
 #   - vpnaas
 #   - neutron_dynamic_routing.services.bgp.bgp_plugin.BgpPlugin  
 
