@@ -3,6 +3,7 @@
 	<name>osaconfigs</name>
 	<comment></comment>
 	<projects>
+		<project>newton-hosts-ready</project>
 	</projects>
 	<buildSpec>
 	</buildSpec>
