@@ -242,6 +242,7 @@ swift-proxy_hosts:
     ip: 10.0.0.22 
   infra3:
     ip: 10.0.0.23    
+  
 ####################################################################################################
 # nova hypervisors
 compute_hosts:
@@ -324,6 +325,8 @@ storage_hosts:
        storage_vnx_authentication_type: global
        destroy_empty_storage_group: False
   limit_container_types: cinder_volume
+  
+
 # Swift-Object-Storage-Nodes  
   swift_hosts:
   swiftn1:

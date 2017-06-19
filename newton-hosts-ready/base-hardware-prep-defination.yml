@@ -342,11 +342,17 @@ target_hosts:
       - {bondName: bond1, bondNic: enp5s0, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
              description: bond 1 using NIC enp5s0 }  
       - {bondName: bond2, bondNic: enp9s0, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 2 using NIC enp9s0 }                        
+             description: bond 2 using NIC enp9s0 }
+    vNic:
+     - {vNicName: bond1.10, vNicParent: bond1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: used by br-storage bridge } 
+                     
     bridges: 
       - {brName: br-mgmt,brPort: bond1, address: 10.0.0.45 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
-      - {brName: br-swift,brPort: bond2, address: 10.0.2.45 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+      - {brName: br-storage,brPort: bond1.10, address: 10.0.2.45 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+             description: USed for Storage Network VLAN }
+      - {brName: br-swift,brPort: bond2, address: 12.0.0.45 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: Used for Openstack Swift }
  swiftn2:
     hostname: swiftn2
@@ -362,11 +368,16 @@ target_hosts:
       - {bondName: bond1, bondNic: enp5s0, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
              description: bond 1 using NIC enp5s0 }  
       - {bondName: bond2, bondNic: enp9s0, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 2 using NIC enp9s0 }                        
+             description: bond 2 using NIC enp9s0 }
+    vNic:
+     - {vNicName: bond1.10, vNicParent: bond1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: used by br-storage bridge }                         
     bridges: 
       - {brName: br-mgmt,brPort: bond1, address: 10.0.0.46 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
-      - {brName: br-swift,brPort: bond2, address: 10.0.2.46 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+      - {brName: br-storage,brPort: bond1.10, address: 10.0.2.46 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+             description: USed for Storage Network VLAN }
+      - {brName: br-swift,brPort: bond2, address: 12.0.0.46 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: Used for Openstack Swift }
  swiftn3:
     hostname: swiftn3
@@ -382,11 +393,17 @@ target_hosts:
       - {bondName: bond1, bondNic: eno1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
              description: bond 1 using NIC eno1 }  
       - {bondName: bond2, bondNic: eno2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 2 using NIC eno2 }                        
+             description: bond 2 using NIC eno2 }
+    vNic:
+     - {vNicName: bond1.10, vNicParent: bond1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: used by br-storage bridge }                         
+                        
     bridges: 
       - {brName: br-mgmt,brPort: bond1, address: 10.0.0.47 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
-      - {brName: br-swift,brPort: bond2, address: 10.0.2.47 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+      - {brName: br-storage,brPort: bond1.10, address: 10.0.2.47 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+             description: USed for Storage Network VLAN }
+      - {brName: br-swift,brPort: bond2, address: 12.0.0.47 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: Used for Openstack Swift }                       
      
 ############################################################################################
