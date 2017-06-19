@@ -157,7 +157,32 @@ designate_pools_yaml:
            port: 53
            rndc_host: 127.0.0.1
            rndc_port: 953
-
+swift:     
+     part_power: 10
+     weight: 100
+     min_part_hours: 1
+     repl_number: 3  
+     storage_network: 'br-storage'
+     replication_network: 'br-swift'     
+     drives:
+       - name: sdb
+       - name: sdc
+       - name: sdd
+       - name: sde
+       - name: sdf
+     mount_point: /srv/node
+     account: 
+     container: 
+     storage_policies:
+      - policy:
+         name: gold
+         index: 0
+         default: True
+      - policy:
+         name: silver
+         index: 1
+         repl_number: 3
+         deprecated: True
 #galera_client_distro_packages:
 #  - build-essential
 #  - libaio1
