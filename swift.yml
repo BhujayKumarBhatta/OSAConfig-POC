@@ -26,4 +26,19 @@ global_overrides:
          index: 1
          repl_number: 3
          deprecated: True
- 
+#Swift-proxy
+swift-proxy_hosts:
+  infra1:
+    ip: 10.0.0.21
+  infra2:
+    ip: 10.0.0.22 
+  infra3:
+    ip: 10.0.0.23    
+# Swift-Object-Storage-Nodes  
+swift_hosts:
+  swiftn1:
+    ip: 10.0.0.45
+  swiftn2:
+    ip: 10.0.0.46
+  swiftn3:
+    ip: 10.0.0.47    
