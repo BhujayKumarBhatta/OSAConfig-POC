@@ -100,9 +100,6 @@ global_overrides:
 #  infra3:
 #    ip: 10.0.0.23  
 # load balancer
-os-ntp_hosts:
-  haproxy2:
-    ip: 10.0.0.52
     
     
 haproxy_hosts:
