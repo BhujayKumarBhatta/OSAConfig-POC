@@ -19,7 +19,7 @@
 
 physical_skel:
   # This maps back to items in the container_skel.
-  os-ntp_containers:
+  csntp_containers:
     belongs_to:
       - all_containers
   # This is a required pair for the container physical entry.
