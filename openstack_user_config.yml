@@ -4,12 +4,14 @@ cidr_networks:
    container: 10.0.0.0/24
    tunnel: 10.0.1.0/24
    storage: 10.0.2.0/24
+   br_internet: 14.1.0.0/24
 
 used_ips:
    - 10.0.0.100
    - "10.0.0.1,10.0.0.100"
    - "10.0.1.1,10.0.1.100"
    - "10.0.2.1,10.0.2.100"
+   
 
 global_overrides:
   internal_lb_vip_address: 10.0.0.14
@@ -75,6 +77,16 @@ global_overrides:
           - nova_compute
           - swift_proxy
           - gnocchi_all
+    - network:
+        container_bridge: "br-internet"
+        container_type: "veth"
+        container_interface: "eth2"
+        ip_from_q: "br_internet"
+        #container_mtu: "9000"
+        type: "raw"
+        group_binds:
+          - ntp_all
+          
 
 ###
 ### Infrastructure

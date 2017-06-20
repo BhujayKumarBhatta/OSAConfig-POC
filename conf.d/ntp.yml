@@ -1,0 +1,6 @@
+# The nodes where ntp container  will run
+ntp_hosts:
+  haproxy1:
+    ip: 10.0.0.51
+  haproxy2:
+    ip: 10.0.0.52
