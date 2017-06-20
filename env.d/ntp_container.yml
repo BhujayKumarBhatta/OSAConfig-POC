@@ -23,6 +23,6 @@ physical_skel:
     belongs_to:
       - all_containers
   # This is a required pair for the container physical entry.
-  os-ntp_hosts:
+  csntp_hosts:
     belongs_to:
       - hosts
