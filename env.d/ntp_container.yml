@@ -19,10 +19,10 @@
 
 physical_skel:
   # This maps back to items in the container_skel.
-  ntp-infra_containers:
+  os-ntp_containers:
     belongs_to:
       - all_containers
   # This is a required pair for the container physical entry.
-  ntp_hosts:
+  os-ntp_hosts::
     belongs_to:
       - hosts
