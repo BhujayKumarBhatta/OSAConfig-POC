@@ -183,6 +183,7 @@ swift:
          index: 1
          repl_number: 3
          deprecated: True
+swift_allow_all_users: True
 #galera_client_distro_packages:
 #  - build-essential
 #  - libaio1
