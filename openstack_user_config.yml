@@ -93,8 +93,8 @@ global_overrides:
 #    ip: 10.0.0.23  
 # load balancer
 csntp_hosts:
-  rsyslog1:
-    ip: 10.0.0.57    
+  haproxy2:
+    ip: 10.0.0.52   
     
 haproxy_hosts:
   haproxy1:
