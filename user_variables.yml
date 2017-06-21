@@ -42,17 +42,17 @@ keystone_ldap:
     url: "ldap://10.0.0.70"
     user: "cn=admin,dc=itc,dc=in"
     password: "welcome@123"
-#    user_tree_dn: "ou=OU1,dc=itc,dc=in"   
-#    user_objectclass: "inetOrgPerson"
-#    group_tree_dn: "cn=g1,ou=OU1,dc=itc,dc=in"
+    user_tree_dn: "ou=OU1,dc=itc,dc=in"   
+    user_objectclass: "inetOrgPerson"
+    group_tree_dn: "cn=g1,ou=OU1,dc=itc,dc=in"
 #      user_allow_create: "False"
 #      user_allow_update: "False"
 #      user_allow_delete: "False"
 #      group_allow_create: "False"
 #      group_allow_update: "False"
 #      group_allow_delete: "False"
-#    user_id_attribute: "cn"
-#    user_name_attribute: "uid"
+    user_id_attribute: "cn"
+    user_name_attribute: "uid"
     
 horizon_keystone_multidomain_support: True
 #++++++++++++++++++++++++++++++++++++++
