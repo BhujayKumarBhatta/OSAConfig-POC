@@ -40,7 +40,7 @@ keystone_ssl_self_signed_subject: "/C=IN/ST=Karnataka/L=Bangalore/O=ITC/CN={{ in
 keystone_ldap:
   ITC:
     url: "ldap://10.0.0.70"
-    user: "admin,dc=itc,dc=in"
+    user: "cn=admin,dc=itc,dc=in"
     password: "welcome@123"
     user_tree_dn: "ou=OU1,dc=itc,dc=in"   
     user_objectclass: "inetOrgPerson"
