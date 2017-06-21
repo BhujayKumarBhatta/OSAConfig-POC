@@ -42,6 +42,7 @@ keystone_ldap:
     url: "ldap://10.0.0.70"
     user: "admin"
     password: "welcome@123"
+horizon_keystone_multidomain_support: True
 #++++++++++++++++++++++++++++++++++++++
 ## haproxy default timeouts
 haproxy_http_request_timeout: "10s"
