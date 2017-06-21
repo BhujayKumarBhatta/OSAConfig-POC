@@ -37,7 +37,11 @@ keystone_service_internaluri_insecure: true
 # if using a self-signed certificate, set this to true to regenerate it
 keystone_ssl_self_signed_regen: True
 keystone_ssl_self_signed_subject: "/C=IN/ST=Karnataka/L=Bangalore/O=ITC/CN={{ internal_lb_vip_address }}/subjectAltName=IP.1={{ external_lb_vip_address }}"
-
+keystone_ldap:
+  Users:
+    url: "ldap://10.0.0.70"
+    user: "root"
+    password: "welcome@123"
 #++++++++++++++++++++++++++++++++++++++
 ## haproxy default timeouts
 haproxy_http_request_timeout: "10s"
