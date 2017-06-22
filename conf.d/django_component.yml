@@ -1,5 +1,5 @@
 # The infra nodes that will be running the Unbound DNS caching resolvers
-example-infra_hosts:
+django_component-infra_hosts:
   haproxy2:
     ip: 10.0.0.52
   

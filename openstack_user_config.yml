@@ -86,6 +86,7 @@ global_overrides:
         type: "raw"
         group_binds:
           - example_all
+          - django_component_all
     
           
 
