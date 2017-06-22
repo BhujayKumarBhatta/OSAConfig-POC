@@ -85,7 +85,7 @@ global_overrides:
         #container_mtu: "9000"
         type: "raw"
         group_binds:
-          - example-all
+          - example_all
     
           
 
