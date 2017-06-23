@@ -10,7 +10,7 @@ container_skel:
   django_container:
     belongs_to:
       # This is a group of containers mapped to a physical host.
-      - django-infra_containers
+      - django-infra_containers  # _containers to be replaced by _hosts for the physical mapping
     contains:
       # This maps back to an item in the component_skel.
       - django_component
