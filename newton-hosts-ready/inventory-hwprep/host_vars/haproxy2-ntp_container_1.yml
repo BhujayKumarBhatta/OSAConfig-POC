@@ -9,12 +9,12 @@ container_networks:
           interface:  eth1
           netmask: 255.255.255.0
           type: veth
-  storage_address:
-          address: 14.142.104.141
-          bridge: br-internet
-          interface: eth2
-          netmask: 255.255.255.0
-          type: veth             
+#  storage_address:
+#          address: 14.142.104.141
+#          bridge: br-internet
+#          interface: eth2
+#          netmask: 255.255.255.0
+#          type: veth             
 physical_host: haproxy2
 physical_host_group: ntp-master_hosts
 properties: 
