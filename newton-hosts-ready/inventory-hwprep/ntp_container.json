@@ -1,0 +1,19 @@
+"infra1_aodh_container-a24dc685": {
+                "ansible_host": "10.0.0.179",
+                "component": "aodh_api",
+                "container_address": "10.0.0.179",
+                "container_name": "infra1_aodh_container-a24dc685",
+                "container_networks": {
+                    "container_address": {
+                        "address": "10.0.0.179",
+                        "bridge": "br-mgmt",
+                        "interface": "eth1",
+                        "netmask": "255.255.255.0",
+                        "type": "veth"
+                    }
+                },
+                "physical_host": "infra1",
+                "physical_host_group": "metering-alarm_hosts",
+                "properties": {
+                    "service_name": "aodh"
+                }
