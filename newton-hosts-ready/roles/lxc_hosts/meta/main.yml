@@ -13,26 +13,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-galaxy_info:
-  author: rcbops
-  description: Deployment of LXC hosts for use in Rackspace Private Cloud
-  company: Rackspace
-  license: Apache2
-  min_ansible_version: 1.9.4
-  platforms:
-    - name: Ubuntu
-      versions:
-        - xenial
-    - name: EL
-      versions:
-        - 7
-  categories:
-    - cloud
-    - lxc
-    - development
-    - openstack
-dependencies:
-  - role: apt_package_pinning
-    when:
-      - ansible_pkg_mgr == 'apt'
-  - role: pip_install
+#galaxy_info:
+#  author: rcbops
+#  description: Deployment of LXC hosts for use in Rackspace Private Cloud
+#  company: Rackspace
+#  license: Apache2
+#  min_ansible_version: 1.9.4
+#  platforms:
+#    - name: Ubuntu
+#      versions:
+#        - xenial
+#    - name: EL
+#      versions:
+#        - 7
+#  categories:
+#    - cloud
+#    - lxc
+#    - development
+#    - openstack
+#dependencies:
+#  - role: apt_package_pinning
+#    when:
+#      - ansible_pkg_mgr == 'apt'
+#  - role: pip_install
