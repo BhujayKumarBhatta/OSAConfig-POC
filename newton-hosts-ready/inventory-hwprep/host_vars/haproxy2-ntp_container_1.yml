@@ -1,4 +1,5 @@
 ansible_host: 10.0.0.54
+ansible_port: 22
 component: ntp-master_component
 container_address: 10.0.0.54
 container_name: haproxy2-ntp_container_1
