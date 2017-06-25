@@ -12,3 +12,6 @@ haproxy2    ansible_port=2223
 swiftn1
 swiftn2
 swiftn3
+
+[lxc_hosts]
+haproxy2
