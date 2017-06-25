@@ -1,147 +1,30 @@
-{
-    "_meta": {
-        "hostvars": {            
-            "haproxy2": {
-                "ansible_host": "10.0.0.52",
-                "component": "haproxy",
-                "container_address": "10.0.0.52",
-                "container_name": "haproxy2",
+{ "hostvars": {           
+            "haproxy2-ntp_container_1": {
+                "ansible_host": "10.0.0.54",
+                "component": "ntp-master_component",
+                "container_address": "10.0.0.54",
+                "container_name": "haproxy2-ntp_container_1",
                 "container_networks": {
                     "container_address": {
-                        "address": "10.0.0.52",
+                        "address": "10.0.0.54",
                         "bridge": "br-mgmt",
+                        "interface": "eth1",
+                        "netmask": "255.255.255.0",
+                        "type": "veth"
+                    },
+                    "storage_address": {
+                        "address": "14.142.104.141",
+                        "bridge": "br-internet",
+                        "interface": "eth2",
                         "netmask": "255.255.255.0",
                         "type": "veth"
                     }
                 },
-                "container_types": "haproxy2-host_containers",
-                "global_environment_variables": null,
-                "is_metal": true,
-                "physical_host": "haproxy2",
-                "physical_host_group": "haproxy_hosts",
+                "physical_host": "haproxy1",
+                "physical_host_group": "ntp-master_hosts",
                 "properties": {
-                    "is_metal": true,
-                    "service_name": "haproxy"
-                },
-                "repo_pkg_cache_enabled": false,
-                "resolvconf_enabled": false
-            }            
-        
-        }
-    },
-    "all": {
-        "vars": {
-            "container_cidr": "10.0.0.0/24",
-            "external_lb_vip_address": "14.142.104.140",
-            "internal_lb_vip_address": "10.0.0.14",
-            "management_bridge": "br-mgmt",
-            "provider_networks": [
-                {
-                    "network": {
-                        "container_bridge": "br-mgmt",
-                        "container_interface": "eth1",
-                        "container_type": "veth",
-                        "group_binds": [
-                            "all_containers",
-                            "hosts"
-                        ],
-                        "ip_from_q": "container",
-                        "is_container_address": true,
-                        "is_ssh_address": true,
-                        "type": "raw"
-                    }
-                },
-                {
-                    "network": {
-                        "container_bridge": "br-vxlan",
-                        "container_interface": "eth10",
-                        "container_type": "veth",
-                        "group_binds": [
-                            "neutron_linuxbridge_agent"
-                        ],
-                        "ip_from_q": "tunnel",
-                        "net_name": "vxlan",
-                        "range": "1:1000",
-                        "type": "vxlan"
-                    }
-                },
-                {
-                    "network": {
-                        "container_bridge": "br-vlan",
-                        "container_interface": "eth12",
-                        "container_type": "veth",
-                        "group_binds": [
-                            "neutron_linuxbridge_agent"
-                        ],
-                        "host_bind_override": "eno2",
-                        "net_name": "flat",
-                        "type": "flat"
-                    }
-                },
-                {
-                    "network": {
-                        "container_bridge": "br-vlan",
-                        "container_interface": "eth11",
-                        "container_type": "veth",
-                        "group_binds": [
-                            "neutron_linuxbridge_agent"
-                        ],
-                        "net_name": "vlan",
-                        "range": "1:1",
-                        "type": "vlan"
-                    }
-                },
-                {
-                    "network": {
-                        "container_bridge": "br-storage",
-                        "container_interface": "eth2",
-                        "container_type": "veth",
-                        "group_binds": [
-                            "glance_api",
-                            "cinder_api",
-                            "cinder_volume",
-                            "nova_compute",
-                            "swift_proxy",
-                            "gnocchi_all"
-                        ],
-                        "ip_from_q": "storage",
-                        "type": "raw"
-                    }
+                    "service_name": "ntp-master"
                 }
-            ],
-            "tunnel_bridge": "br-vxlan"
-        }
-    },
-    "all_containers": {
-        "children": [    
-            "ntp_containers"
-        ],
-        "hosts": []
-    },
-    
-    
-    "ntp_containers": {
-        "hosts": [
-            "haproxy2_ntp_container-1"            
-        ]    },
-    "ntp_hosts": {
-        "hosts": [
-            "haproxy2"
-        ]
-    },
-  
-    "hosts": {
-        "children": [          
-            "ntp_hosts"
-        ],
-        "hosts": []
-    },
-    
-    "haproxy2-host_containers": {
-        "hosts": [
-            "haproxy2_ntp_container-1"
-        ]
-    }
-   
-      
+              }  
+          }             
 }
