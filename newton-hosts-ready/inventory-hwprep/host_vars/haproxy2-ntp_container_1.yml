@@ -15,7 +15,7 @@ container_networks:
           interface: eth2
           netmask: 255.255.255.0
           type: veth             
-physical_host: haproxy1
+physical_host: haproxy2
 physical_host_group: ntp-master_hosts
 properties: 
         service_name: ntp-master
