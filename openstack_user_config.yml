@@ -4,12 +4,14 @@ cidr_networks:
    container: 10.0.0.0/24
    tunnel: 10.0.1.0/24
    storage: 10.0.2.0/24
+   br_internet: 14.1.0.0/24
 
 used_ips:
    - 10.0.0.100
    - "10.0.0.1,10.0.0.100"
    - "10.0.1.1,10.0.1.100"
    - "10.0.2.1,10.0.2.100"
+   
 
 global_overrides:
   internal_lb_vip_address: 10.0.0.14
@@ -75,6 +77,18 @@ global_overrides:
           - nova_compute
           - swift_proxy
           - gnocchi_all
+    - network:
+        container_bridge: "br-internet"
+        container_type: "veth"
+        container_interface: "eth2"
+        ip_from_q: "br_internet"
+        #container_mtu: "9000"
+        type: "raw"
+        group_binds:
+          - example_all
+          - django_all
+    
+          
 
 ###
 ### Infrastructure
@@ -88,6 +102,8 @@ global_overrides:
 #  infra3:
 #    ip: 10.0.0.23  
 # load balancer
+
+    
 haproxy_hosts:
   haproxy1:
     ip: 10.0.0.51
@@ -234,6 +250,8 @@ sahara-infra_hosts:
     ip: 10.0.0.21
   infra2:
     ip: 10.0.0.22
+
+  
 ####################################################################################################
 # nova hypervisors
 compute_hosts:
@@ -316,6 +334,24 @@ storage_hosts:
        storage_vnx_authentication_type: global
        destroy_empty_storage_group: False
   limit_container_types: cinder_volume
+  
+#Swift-proxy
+swift-proxy_hosts:
+  infra1:
+    ip: 10.0.0.21
+  infra2:
+    ip: 10.0.0.22 
+  infra3:
+    ip: 10.0.0.23    
+# Swift-Object-Storage-Nodes  
+swift_hosts:
+  swiftn1:
+    ip: 10.0.0.45
+  swiftn2:
+    ip: 10.0.0.46
+  swiftn3:
+    ip: 10.0.0.47  
+ 
 #ocata
 #       rbd_secret_uuid: "{{ cinder_ceph_client_uuid }}"
 

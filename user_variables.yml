@@ -5,7 +5,12 @@
 
 ## set security hardening to false during upgrade
 apply_security_hardening: True 
-
+# chrony configuration is getting overwriiten by these settings
+security_enable_chrony: false    
+security_ntp_servers:
+  - 10.0.0.51
+  - 10.0.0.51
+                   
 ## Debug and Verbose options.
 debug: false
 validate_certs: false
@@ -37,7 +42,24 @@ keystone_service_internaluri_insecure: true
 # if using a self-signed certificate, set this to true to regenerate it
 keystone_ssl_self_signed_regen: True
 keystone_ssl_self_signed_subject: "/C=IN/ST=Karnataka/L=Bangalore/O=ITC/CN={{ internal_lb_vip_address }}/subjectAltName=IP.1={{ external_lb_vip_address }}"
-
+keystone_ldap:
+  ITC:
+    url: "ldap://10.0.0.70"
+    user: "cn=admin,dc=itc,dc=in"
+    password: "welcome@123"
+    user_tree_dn: "ou=OU1,dc=itc,dc=in"   
+    user_objectclass: "inetOrgPerson"
+    group_tree_dn: "cn=g1,ou=OU1,dc=itc,dc=in"
+#      user_allow_create: "False"
+#      user_allow_update: "False"
+#      user_allow_delete: "False"
+#      group_allow_create: "False"
+#      group_allow_update: "False"
+#      group_allow_delete: "False"
+    user_id_attribute: "cn"
+    user_name_attribute: "uid"
+    
+horizon_keystone_multidomain_support: True
 #++++++++++++++++++++++++++++++++++++++
 ## haproxy default timeouts
 haproxy_http_request_timeout: "10s"
@@ -80,9 +102,9 @@ glance_rbd_store_pool: images
 glance_rbd_store_chunk_size: 8
 
 cinder_service_backup_program_enabled: True 
-cinder_service_backup_driver: cinder.backup.drivers.ceph
-cinder_service_backup_ceph_user: cinder-backup
-cinder_service_backup_ceph_pool: backups
+#cinder_service_backup_driver: cinder.backup.drivers.ceph
+#cinder_service_backup_ceph_user: cinder-backup
+#cinder_service_backup_ceph_pool: backups
 
 ## ceilometer database mongodb manually installed and these settings done
 #ceilometer_db_type: mongodb
@@ -157,7 +179,33 @@ designate_pools_yaml:
            port: 53
            rndc_host: 127.0.0.1
            rndc_port: 953
-
+swift:     
+     part_power: 10
+     weight: 100
+     min_part_hours: 1
+     repl_number: 3  
+     storage_network: 'br-storage'
+     replication_network: 'br-swift'     
+     drives:
+       - name: sdb
+       - name: sdc
+       - name: sdd
+       - name: sde
+       - name: sdf
+     mount_point: /srv/node
+     account: 
+     container: 
+     storage_policies:
+      - policy:
+         name: gold
+         index: 0
+         default: True
+      - policy:
+         name: silver
+         index: 1
+         repl_number: 3
+         deprecated: True
+swift_allow_all_users: True
 #galera_client_distro_packages:
 #  - build-essential
 #  - libaio1
