@@ -28,7 +28,8 @@
      when: "'novacompute'  in target_hosts[ansible_hostname]['roles']"
    
    - role: configure-nfs-server
-     when: "'nfs'  in target_hosts[ansible_hostname]['roles']" 
+     when: "'nfs'  in target_hosts[ansible_hostname]['roles']"     
+   
    
 - hosts: localhost
   vars_files: 
@@ -60,4 +61,5 @@
      when: "servers_to_reboot !=''"
      tags: rebootserver
      
-  
+
+   
