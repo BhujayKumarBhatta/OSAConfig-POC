@@ -14,9 +14,9 @@ servers_to_reboot:
 #  - haproxy2 
 #  - haproxy2 
 #  - storage1
-  - swiftn1
-  - swiftn2
-  - swiftn3
+#  - swiftn1
+#  - swiftn2
+#  - swiftn3
 #################################################################################
 # network interface defination - 
 # leave bonded_with: empty  if insted of bond physical interface is wanted
