@@ -4,12 +4,12 @@
 
 servers_to_reboot:
 #  - infra1
-# - infra2
+ - infra2
 # - infra3
 #  - kvm1
 #  - kvm2
 #  - bm1
-  - haproxy1
+#  - haproxy1
 #  - rsyslog
 #  - haproxy2 
 #  - haproxy2 
@@ -26,8 +26,8 @@ servers_to_reboot:
 #ansible-playbook -i inventory-base-hw-prep base-hw-prep.yml  --tags configure-network
 #multiple dns entries to be enterted with a space ex dns: 115.112.18.21 115.112.18.131
 
-# TODO SANDIPAN : please update the network config , they were manually modifed to add one 
-# swift bridge and added one more nic in  bond1 
+# TODO SANDIPAN : please update the network config , they were manually modifed to add one ,  
+# swift bridge and added one more nic in  bond1 , bondNic to be removed 
 
 target_hosts:
  haproxy1:
@@ -159,8 +159,12 @@ target_hosts:
    nic: 
      - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: physical interface eno1 , part of bond1 }
+     - {nicName: eno3,bonded_with: bond1 ,  bond_primary: False, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface eno3 , part of bond1 }
      - {nicName: eno2,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface part of bond 2 connected to switch ....}                  
+             description: physical interface part of bond 2 connected to switch ....}
+     - {nicName: eno4,bonded_with: ,bond_primary: , address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface part of bridge br-swift ....}                  
    bond: 
      - {bondName: bond1, bondNic: eno1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
              description: bond 1 using NIC eno1 }  
@@ -180,6 +184,8 @@ target_hosts:
              description: USed for Provider Network flat or vlan , To be connected to external router gateway.Bridge will not have any IP}
      - {brName: br-vxlan,brPort: bond2.20, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, 
              description: Used for tenant network , virtual network. On Controller this bridge will not have address}
+     - {brName: br-swift,brPort: eno4, address: 12.0.0.22 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: False, 
+             description: Used for swift cluster }
 #-----------------------------------------------------------------------------------------------------------------
  infra3:
    hostname: infra3
@@ -189,8 +195,12 @@ target_hosts:
    nic: 
      - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: physical interface eno1 , part of bond1 }
+     - {nicName: enp15s3f0,bonded_with: bond1 ,  bond_primary: False, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface enp15s3f0 , part of bond1 }
      - {nicName: eno2,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface part of bond 2 connected to switch ....}                  
+             description: physical interface part of bond 2 connected to switch ....}
+     - {nicName: enp15s3f1,bonded_with:  ,  bond_primary: , address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface enp15s3f1 ,part of bridge br-swift }                  
    bond: 
      - {bondName: bond1, bondNic: eno1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
              description: bond 1 using NIC eno1 }  
@@ -210,6 +220,8 @@ target_hosts:
              description: USed for Provider Network flat or vlan , To be connected to external router gateway.Bridge will not have any IP}
      - {brName: br-vxlan,brPort: bond2.20, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, 
              description: Used for tenant network , virtual network. On Controller this bridge will not have address}
+     - {brName: br-swift,brPort: enp15s3f1, address: 12.0.0.23 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: False, 
+             description: Used for swift cluster }
 #------------------------------------------------------------------------------------------------------------------
  kvm1:
    hostname: kvm1

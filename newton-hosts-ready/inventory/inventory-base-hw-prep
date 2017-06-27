@@ -1,12 +1,12 @@
 [base_hw_prep_for_openstack]
 #infra1
-#infra2
+infra2
 #infra3
 #kvm1
 #kvm2
 #bm1
 #rsyslog 
-haproxy1	ansible_port=2223
+#haproxy1	ansible_port=2223
 #haproxy2    ansible_port=2223
 #storage1
 #swiftn1
@@ -14,10 +14,10 @@ haproxy1	ansible_port=2223
 #swiftn3
 
 [lxc_hosts]
-haproxy2 ansible_host=10.0.0.52 ansible_port=2223
+#haproxy2 ansible_host=10.0.0.52 ansible_port=2223
 
 [all_containers]
-container_test_2  ansible_host=10.0.0.55  ansible_port=22
-container_test_3  ansible_host=10.0.0.56  ansible_port=22
+#container_test_2  ansible_host=10.0.0.55  ansible_port=22
+#container_test_3  ansible_host=10.0.0.56  ansible_port=22
 
 
