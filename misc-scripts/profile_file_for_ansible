@@ -14,3 +14,4 @@ alias ckickstart='ssh itss@10.0.0.70'
 source /home/admin/nrc
 alias g2c='cd /etc/openstack_deploy;git pull origin;cd /opt/openstack-ansible/playbooks'
 alias g2r='cd /opt/openstack-ansible/playbooks'
+alias showlog='ssh 10.0.0.161 xtail /var/log/log-storage/*'
