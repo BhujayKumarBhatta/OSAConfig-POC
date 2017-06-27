@@ -1,6 +1,6 @@
 ---
 # Copyright 2014, Rackspace US, Inc.
-#
+# Modified by Bhujay.Bhatta@yahoo.com  on 27th June 2017 for running the role other than Openstack purpose
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -13,6 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+- name: This is where we are modyfying the Rackspace Inventory logic , Checking varibale passed from inlcude 
+  debug:
+    msg: " variable values received from include statement:  -    {{hostvars[physical_host]}}
+     {{hostvars[physical_host]['ansible_architecture']}} 
+    {{ lxc_container_download_template_options }}
+    {{ physical_host }} {{ inventory_hostname }}"
+    
 - name: Check for lxc volume group
   shell: "(which vgs > /dev/null && vgs | grep -o '{{ lxc_container_vg_name }}') || false"
   register: vg_result
@@ -53,6 +60,8 @@
   delegate_to: "{{ physical_host }}"
   tags:
     - lxc_container_create-autodev
+ 
+
 
 - name: Create container
   lxc_container:

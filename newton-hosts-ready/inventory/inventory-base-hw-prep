@@ -17,7 +17,7 @@ swiftn3
 haproxy2 ansible_host=10.0.0.52 ansible_port=2223
 
 [all_containers]
-haproxy2-ntp_container_1
-
+container_test_2  ansible_host=10.0.0.55  ansible_port=22
+container_test_3  ansible_host=10.0.0.56  ansible_port=22
 
 

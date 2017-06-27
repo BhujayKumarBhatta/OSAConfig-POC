@@ -1,0 +1,140 @@
+---
+# Copyright 2016, Rackspace US, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- name: Deploy COPR yum repo for LXC 2.0
+  yum_repository:
+    name: thm-lxc2.0
+    description: "COPR repository for LXC 2.0 packages on CentOS 7"
+    baseurl: "{{ lxc_centos_package_baseurl }}"
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: "{{ lxc_centos_package_key }}"
+    repo_gpgcheck: no
+    priority: 50
+    state: present
+  register: copr_repository_deploy
+
+# NOTE: Existing CentOS environments may not have the COPR repo priority set
+#       higher than the default. The following task ensures that existing
+#       deployments have their priority adjusted for the COPR repository.
+# TODO(mhayden): The ini_file module is required here since the yum_repository
+#                module can only do add/remove operations, not edits.
+#                Ansible bug: https://github.com/ansible/ansible/issues/22362
+- name: Ensure COPR repository priority is set
+  ini_file:
+    dest: /etc/yum.repos.d/thm-lxc2.0.repo
+    section: thm-lxc2.0
+    option: priority
+    value: 50
+  when:
+    - not copr_repository_deploy | changed
+
+- name: Add GPG key for COPR LXC repo
+  rpm_key:
+    key: "{{ lxc_centos_package_key }}"
+    state: present
+  register: add_keys
+  until: add_keys | success
+  retries: 5
+  delay: 2
+
+- name: Install yum packages
+  yum:
+    pkg: "{{ item }}"
+    state: present
+  register: install_packages
+  until: install_packages|success
+  retries: 5
+  delay: 2
+  with_items:
+    - "{{ lxc_hosts_distro_packages }}"
+  tags:
+    - lxc-packages
+
+- name: Remove sub system lock if found
+  file:
+    path: "/var/lock/subsys/lxc"
+    state: "absent"
+    owner: "root"
+    group: "root"
+  tags:
+    - lxc-directories
+
+- name: Drop post up script
+  copy:
+    content: |
+      #!/usr/bin/env bash
+      if [ "${DEVICE}" == "{{ lxc_net_bridge }}" ];then
+        if [ "{{ lxc_net_nat }}" == "True" ];then
+          /usr/local/bin/lxc-system-manage iptables-create
+          /usr/local/bin/lxc-system-manage dnsmasq-start || true
+        fi
+      fi
+    dest: "/etc/sysconfig/network-scripts/ifup-post-{{ lxc_net_bridge }}"
+    owner: "root"
+    group: "root"
+    mode: "0755"
+  tags:
+    - lxc-post-up
+    - lxc_hosts-config
+
+- name: Drop post down script
+  copy:
+    content: |
+      #!/usr/bin/env bash
+      if [ "${DEVICE}" == "{{ lxc_net_bridge }}" ];then
+        if [ "{{ lxc_net_nat }}" == "True" ];then
+          /usr/local/bin/lxc-system-manage dnsmasq-stop
+          /usr/local/bin/lxc-system-manage iptables-remove
+        fi
+      fi
+    dest: "/etc/sysconfig/network-scripts/ifdown-post-{{ lxc_net_bridge }}"
+    owner: "root"
+    group: "root"
+    mode: "0755"
+  tags:
+    - lxc-post-down
+    - lxc_hosts-config
+
+- name: Create networking post-up data
+  lineinfile:
+    dest: "{{ item.dest }}"
+    line: "{{ item.line }}"
+    insertbefore: "^exit\ 0$"
+  with_items:
+    - dest: "/etc/sysconfig/network-scripts/ifup-post"
+      line: ". /etc/sysconfig/network-scripts/ifup-post-{{ lxc_net_bridge }}"
+  tags:
+    - lxc-post-up
+    - lxc_hosts-config
+
+- name: Create networking post-down data
+  lineinfile:
+    dest: "{{ item.dest }}"
+    line: "{{ item.line }}"
+    insertbefore: "^exit\ 0$"
+  with_items:
+    - dest: "/etc/sysconfig/network-scripts/ifdown-post"
+      line: ". /etc/sysconfig/network-scripts/ifdown-post-{{ lxc_net_bridge }}"
+  tags:
+    - lxc-post-down
+    - lxc_hosts-config
+
+- name: Enable lxc service
+  service:
+    name: lxc
+    enabled: "yes"
+  tags:
+    - lxc_hosts-config

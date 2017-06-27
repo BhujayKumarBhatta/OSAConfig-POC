@@ -1,6 +1,6 @@
 ---
 # Copyright 2014, Rackspace US, Inc.
-#
+#Modified by Bhujay.Bhatta@yahoo.com  on 27th June 2017 for running the role other than Openstack purpose
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -40,11 +40,31 @@
 #    - "{{ hostvars[physical_host]['ansible_os_family'] | lower }}.yml"
   tags:
     - always
-
-- include: container_create.yml
+ 
+#- debug:
+#    msg: "{{ item.physical_host }}"
+#  with_items:
+#    - "{{ containers }}"     
+    
+- include: "container_create.yml  physical_host={{outer_item.physical_host}} inventory_hostname={{outer_item.container_name}} 
+             properties={{outer_item.properties}} 
+             container_name={{outer_item.container_name}}
+             container_networks={{outer_item.container_networks}}
+             component={{outer_item.ansible_port}}
+             container_address={{outer_item.container_address}}
+             physical_host_group={{outer_item.physical_host_group}}
+             
+             "
+#ansible_host={{outer_item.ansible_host}}
+#ansible_port={{outer_item.ansible_port}}
+  with_items:
+    - "{{ containers }}" 
+  loop_control:
+    loop_var: outer_item
   when:
-    - physical_host is defined
-    - inventory_hostname is defined
-    - physical_host != inventory_hostname
+    - outer_item.physical_host  is defined
+    - outer_item.container_name is defined
+    - outer_item.physical_host != outer_item.container_name
+  
   tags:
     - lxc_container_create

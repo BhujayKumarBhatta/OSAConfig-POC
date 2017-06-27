@@ -1,0 +1,93 @@
+---
+# Copyright 2016, Rackspace US, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+system_config_dir: "/etc/sysconfig"
+
+# Required rpm packages.
+lxc_hosts_distro_packages:
+  - bridge-utils
+  - debootstrap
+  - dnsmasq
+  - git
+  - libseccomp
+  - libselinux
+  - libselinux-devel
+  - lxc
+  - lxc-devel
+  - lxc-libs
+  - lxc-templates
+  - policycoreutils-python
+  - selinux-policy-devel
+  - xz
+
+lxc_xz_bin: xz
+
+lxc_cache_map:
+  distro: centos
+  arch: amd64
+  release: 7
+  copy_from_host:
+    - /etc/yum.repos.d/
+    - /etc/pki/rpm-gpg/
+    - /etc/localtime
+  cache_prep_commands: |
+    {{ lxc_cache_prep_pre_commands }}
+    mkdir -p /etc/ansible/facts.d/
+    if [ -a /etc/resolv.conf ]; then
+      mv /etc/resolv.conf /etc/resolv.conf.org
+    fi
+    {% for resolver in lxc_cache_prep_dns %}
+    echo "nameserver {{ resolver }}" >> /etc/resolv.conf
+    {% endfor %}
+    rpm --import /etc/pki/rpm-gpg/*
+    yum install -y {{ lxc_cache_distro_packages | join(' ') }}
+    rm -f /usr/bin/python
+    ln -s /usr/bin/python2.7 /usr/bin/python
+    yum clean all
+    mkdir -p /var/backup
+    echo -e '{{ lxc_container_default_interfaces }}' | tee /etc/sysconfig/network-scripts/ifcfg-eth0
+    chage -I -1 -d -1 -m 0 -M 99999 -E -1 root
+    if [ -a /etc/resolv.conf.org ]; then
+      mv /etc/resolv.conf.org /etc/resolv.conf
+    else
+      rm -f /etc/resolv.conf
+    fi
+    {{ lxc_cache_prep_post_commands }}
+
+lxc_cache_distro_packages:
+  - ca-certificates
+  - epel-release
+  - git
+  - openssh-server
+  - python-devel
+  - python2
+  - rsync
+  - sudo
+  - wget
+  - tar
+  - which
+  - yum-plugin-priorities
+  - yum-utils
+
+lxc_cached_network_interfaces:
+  - src: "lxc-net-ifcfg-bridge.cfg.j2"
+    dest: "/etc/sysconfig/network-scripts/ifcfg-lxcbr0"
+
+lxc_container_default_interfaces: |
+  DEVICE=eth0
+  BOOTPROTO=dhcp
+  ONBOOT=yes
+  NM_CONTROLLED=no
+  TYPE=Ethernet

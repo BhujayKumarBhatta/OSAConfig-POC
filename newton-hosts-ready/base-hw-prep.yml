@@ -61,5 +61,27 @@
      when: "servers_to_reboot !=''"
      tags: rebootserver
      
+- hosts: lxc_hosts
+  vars_files: 
+    - base-hardware-prep-defination.yml   
+  become: true
+  gather_facts: true
+  
+  roles:
+   - role: lxc_hosts
+     tags: 
+       - lxc-hosts     
 
-   
+- name: Gather lxc container host facts
+  hosts: lxc_hosts
+  gather_facts: True
+# the above section is important to get ansible_archtecture for host where the task is delegated for container creation
+- hosts: all_containers
+  vars_files: 
+    - base-hardware-prep-defination.yml    
+  become: true
+  gather_facts: true
+  roles:
+   - role: lxc_container_create 
+   #- role: here put roles to install application on conatiners e.g. ntp service etc.
+            
