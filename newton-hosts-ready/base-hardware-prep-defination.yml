@@ -4,8 +4,8 @@
 
 servers_to_reboot:
 #  - infra1
-# - infra2
- - infra3
+ - infra2
+# - infra3
 #  - kvm1
 #  - kvm2
 #  - bm1
