@@ -1,6 +1,6 @@
 [base_hw_prep_for_openstack]
-#infra1
-infra2
+infra1
+#infra2
 #infra3
 #kvm1
 #kvm2

@@ -3,8 +3,8 @@
 
 
 servers_to_reboot:
-#  - infra1
- - infra2
+  - infra1
+# - infra2
 # - infra3
 #  - kvm1
 #  - kvm2
@@ -129,8 +129,12 @@ target_hosts:
    nic: 
      - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: physical interface eno1 , part of bond1 }
+     - {nicName: eno3,bonded_with: bond1 ,  bond_primary: False, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface eno3 , part of bond1 }
      - {nicName: eno2,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface part of bond 2 connected to switch ....}                  
+             description: physical interface part of bond 2 connected to switch ....}
+     - {nicName: eno4,bonded_with: ,bond_primary: , address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface part of bridge br-swift ....}                  
    bond: 
      - {bondName: bond1, bondNic: eno1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
              description: bond 1 using NIC eno1 }  
@@ -150,6 +154,8 @@ target_hosts:
              description: USed for Provider Network flat or vlan , To be connected to external router gateway.Bridge will not have any IP}
      - {brName: br-vxlan,brPort: bond2.20, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, 
              description: Used for tenant network , virtual network. On Controller this bridge will not have address}
+     - {brName: br-swift,brPort: eno4, address: 12.0.0.21 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: False, 
+             description: Used for swift cluster }
 #---------------------------------------------------------------------------------------------------------------------------------
  infra2:
    hostname: infra2
