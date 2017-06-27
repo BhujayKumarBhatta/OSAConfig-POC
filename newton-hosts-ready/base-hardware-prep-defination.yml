@@ -42,6 +42,8 @@ target_hosts:
    nic: 
      - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: physical interface eno1 , part of bond1 }
+     - {nicName: enp15s3,bonded_with: bond1 ,  bond_primary: False, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface enp15s3 , part of bond1 }
      - {nicName: eno2,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: physical interface part of bond 2 connected to switch ....}                  
    bond: 
