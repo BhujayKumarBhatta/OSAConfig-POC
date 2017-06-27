@@ -9,7 +9,7 @@ servers_to_reboot:
 #  - kvm1
 #  - kvm2
 #  - bm1
-#  - haproxy1
+  - haproxy1
 #  - rsyslog
 #  - haproxy2 
 #  - haproxy2 
