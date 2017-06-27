@@ -6,7 +6,7 @@
 #kvm2
 #bm1
 #rsyslog 
-#haproxy1	ansible_port=2223
+haproxy1	ansible_port=2223
 #haproxy2    ansible_port=2223
 #storage1
 #swiftn1
