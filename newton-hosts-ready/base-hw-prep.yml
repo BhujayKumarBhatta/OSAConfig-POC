@@ -30,7 +30,7 @@
    - role: configure-nfs-server
      when: "'nfs'  in target_hosts[ansible_hostname]['roles']"     
    
-   
+# TODO: ssh port to be made as variable    
 - hosts: localhost
   vars_files: 
     - base-hardware-prep-defination.yml    
