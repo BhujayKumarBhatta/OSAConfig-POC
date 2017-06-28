@@ -11,7 +11,7 @@ used_ips:
    - "10.0.0.1,10.0.0.100"
    - "10.0.1.1,10.0.1.100"
    - "10.0.2.1,10.0.2.100"
-   - "12.0.0.200, 12.0.0.255"
+   - "12.0.0.1, 12.0.0.100"
    
 
 global_overrides:
@@ -81,7 +81,7 @@ global_overrides:
     - network:
         container_bridge: "br-swift"
         container_type: "veth"
-        container_interface: "eth2"
+        container_interface: "eth3"
         ip_from_q: "brswift"
         container_mtu: "9000"
         type: "raw"
