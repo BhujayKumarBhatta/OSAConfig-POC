@@ -5,6 +5,7 @@ cidr_networks:
    tunnel: 10.0.1.0/24
    storage: 10.0.2.0/24
    brswift: 12.0.0.0/24
+   brceph: 13.0.0.0/24
 
 used_ips:
    - 10.0.0.100
@@ -12,6 +13,7 @@ used_ips:
    - "10.0.1.1,10.0.1.100"
    - "10.0.2.1,10.0.2.100"
    - "12.0.0.1,12.0.0.100" 
+   - "13.0.0.1,13.0.0.100"
    
 
 global_overrides:
@@ -87,6 +89,15 @@ global_overrides:
         type: "raw"
         group_binds:
           - swift_proxy
+    - network:
+        container_bridge: "br-ceph"
+        container_type: "veth"
+        container_interface: "eth3"
+        ip_from_q: "brceph"
+        container_mtu: "9000"
+        type: "raw"
+        group_binds:
+          - ceph-mon
           
     
           
