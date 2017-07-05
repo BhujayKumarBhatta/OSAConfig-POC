@@ -3,9 +3,9 @@
 
 
 servers_to_reboot:
-  - infra1
+# - infra1
 # - infra2
-# - infra3
+ - infra3
 #  - kvm1
 #  - kvm2
 #  - bm1
@@ -205,18 +205,22 @@ target_hosts:
              description: physical interface enp15s3f0 , part of bond1 }
      - {nicName: eno2,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: physical interface part of bond 2 connected to switch ....}
-     - {nicName: enp15s3f1,bonded_with:  ,  bond_primary: , address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface enp15s3f1 ,part of bridge br-swift }                  
+     - {nicName: enp15s3f1,bonded_with: bond3,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface part of bond 3 }                  
    bond: 
      - {bondName: bond1, bondNic: eno1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
              description: bond 1 using NIC eno1 }  
      - {bondName: bond2, bondNic: eno2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 2 using NIC eno2 }             
+             description: bond 2 using NIC eno2 }    
+     - {bondName: bond3, bondNic: enp15s3f1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 3 using NIC enp15s3f1 }          
    vNic:
      - {vNicName: bond1.10, vNicParent: bond1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: used by br-storage bridge } 
      - {vNicName: bond2.20,vNicParent: bond2, address: ,netmask: ,network: ,broadcast:  ,gateway: ,dns: , 
-             description: used by br-vxlan bridge}            
+             description: used by br-vxlan bridge} 
+     - {vNicName: bond3.10,vNicParent: bond3, address: ,netmask: ,network: ,broadcast:  ,gateway: ,dns: , 
+             description: used by br-ceph bridge}                                 
    bridges: 
      - {brName: br-mgmt,brPort: bond1, address: 10.0.0.23 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
@@ -226,7 +230,9 @@ target_hosts:
              description: USed for Provider Network flat or vlan , To be connected to external router gateway.Bridge will not have any IP}
      - {brName: br-vxlan,brPort: bond2.20, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, 
              description: Used for tenant network , virtual network. On Controller this bridge will not have address}
-     - {brName: br-swift,brPort: enp15s3f1, address: 12.0.0.23 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: False, 
+     - {brName: br-swift,brPort: bond3, address: 12.0.0.23 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: False, 
+             description: Used for swift cluster }             
+     - {brName: br-ceph,brPort: bond3.10, address: 13.0.0.23 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: False, 
              description: Used for swift cluster }
 #------------------------------------------------------------------------------------------------------------------
  kvm1:
