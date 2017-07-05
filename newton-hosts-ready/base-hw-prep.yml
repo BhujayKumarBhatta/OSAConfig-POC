@@ -6,6 +6,8 @@
   gather_facts: true
   
   roles:
+   - role: configure-proxy-apt
+     when: "'haproxy' not in target_hosts[ansible_hostname]['roles']"
    - role: install-apt-pkg
    - role: create-interfaces-bridges #tag configure-network 
    
@@ -19,11 +21,8 @@
      when: "'firewall'  in target_hosts[ansible_hostname]['roles']"
      
    - role: configure-chrony #tag chrony
-     when: "'ntpmaster' not in target_hosts[ansible_hostname]['roles']"  
-     
-   - role: configure-proxy-apt
-     when: "'haproxy' not in target_hosts[ansible_hostname]['roles']"
-      
+     when: "'ntpmaster' not in target_hosts[ansible_hostname]['roles']"       
+        
    - role: configure-iommu-for-nova-compute
      when: "'novacompute'  in target_hosts[ansible_hostname]['roles']"
    

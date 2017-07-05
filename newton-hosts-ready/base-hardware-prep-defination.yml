@@ -612,7 +612,7 @@ nfs_share_names:
 
 
 base_apt_packages:
-# - python
+ - python
  - bridge-utils
  - vlan 
  - debootstrap
