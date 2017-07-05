@@ -1,6 +1,6 @@
 - name: install all apt packages
   apt:
     name: "{{ item }}"
-    state: present
+    state: latest
     allow_unauthenticated: yes
   with_items: "{{base_apt_packages}}"   
