@@ -451,7 +451,7 @@ target_hosts:
       - {brName: br-swift,brPort: bond2, address: 12.0.0.47 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: Used for Openstack Swift }  
 #---------------Ceph OSD-------------------------------------------------------------------------------------
-ceph-osd1:
+ ceph-osd1:
     hostname: ceph-osd1
     ssh_ip: 10.0.0.91
     roles: controller
@@ -478,7 +478,7 @@ ceph-osd1:
       - {brName: br-ceph,brPort: bond2, address: 13.0.0.91 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: Used for Openstack Ceph }  
 
-ceph-osd2:
+ ceph-osd2:
     hostname: ceph-osd2
     ssh_ip: 10.0.0.92
     roles: controller
@@ -505,7 +505,7 @@ ceph-osd2:
       - {brName: br-ceph,brPort: bond2, address: 13.0.0.92 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: Used for Openstack Ceph }  
 
-ceph-osd3:
+ ceph-osd3:
     hostname: ceph-osd3
     ssh_ip: 10.0.0.93
     roles: controller
