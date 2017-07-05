@@ -468,14 +468,16 @@ target_hosts:
              description: bond 2 using NIC enp9s0 }
     vNic:
      - {vNicName: bond1.10, vNicParent: bond1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: used by br-storage bridge }                         
+             description: used by br-storage bridge }
+     - {vNicName: bond2.30, vNicParent: bond2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: used by br-ceph bridge }                           
                         
     bridges: 
       - {brName: br-mgmt,brPort: bond1, address: 10.0.0.91 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
       - {brName: br-storage,brPort: bond1.10, address: 10.0.2.91 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Storage Network VLAN }
-      - {brName: br-ceph,brPort: bond2, address: 13.0.0.91 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+      - {brName: br-ceph,brPort: bond2.30, address: 13.0.0.91 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: Used for Openstack Ceph }  
 
  ceph-osd2:
@@ -495,14 +497,16 @@ target_hosts:
              description: bond 2 using NIC eno2 }
     vNic:
      - {vNicName: bond1.10, vNicParent: bond1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: used by br-storage bridge }                         
+             description: used by br-storage bridge }
+     - {vNicName: bond2.30, vNicParent: bond2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: used by br-ceph bridge }                              
                         
     bridges: 
       - {brName: br-mgmt,brPort: bond1, address: 10.0.0.92 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
       - {brName: br-storage,brPort: bond1.10, address: 10.0.2.92 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Storage Network VLAN }
-      - {brName: br-ceph,brPort: bond2, address: 13.0.0.92 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+      - {brName: br-ceph,brPort: bond2.30, address: 13.0.0.92 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: Used for Openstack Ceph }  
 
  ceph-osd3:
@@ -522,14 +526,16 @@ target_hosts:
              description: bond 2 using NIC eno2 }
     vNic:
      - {vNicName: bond1.10, vNicParent: bond1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: used by br-storage bridge }                         
+             description: used by br-storage bridge }
+     - {vNicName: bond2.30, vNicParent: bond2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: used by br-ceph bridge }                             
                         
     bridges: 
       - {brName: br-mgmt,brPort: bond1, address: 10.0.0.93 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
       - {brName: br-storage,brPort: bond1.10, address: 10.0.2.93 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Storage Network VLAN }
-      - {brName: br-ceph,brPort: bond2, address: 13.0.0.93 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+      - {brName: br-ceph,brPort: bond2.30, address: 13.0.0.93 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: Used for Openstack Ceph }  
             
              
