@@ -158,7 +158,7 @@ target_hosts:
              description: USed for Provider Network flat or vlan , To be connected to external router gateway.Bridge will not have any IP}
      - {brName: br-vxlan,brPort: bond2.20, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, 
              description: Used for tenant network , virtual network. On Controller this bridge will not have address}
-     - {brName: br-swift,brPort: eno4, address: 12.0.0.21 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: False, 
+     - {brName: br-swift,brPort: bond3, address: 12.0.0.21 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: False, 
              description: Used for swift cluster }
      - {brName: br-ceph,brPort: bond3.30, address: 13.0.0.21 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: False, 
              description: Used for ceph cluster }
