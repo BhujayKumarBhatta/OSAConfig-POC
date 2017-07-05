@@ -219,7 +219,7 @@ target_hosts:
              description: used by br-storage bridge } 
      - {vNicName: bond2.20,vNicParent: bond2, address: ,netmask: ,network: ,broadcast:  ,gateway: ,dns: , 
              description: used by br-vxlan bridge} 
-     - {vNicName: bond3.10,vNicParent: bond3, address: ,netmask: ,network: ,broadcast:  ,gateway: ,dns: , 
+     - {vNicName: bond3.30,vNicParent: bond3, address: ,netmask: ,network: ,broadcast:  ,gateway: ,dns: , 
              description: used by br-ceph bridge}                                 
    bridges: 
      - {brName: br-mgmt,brPort: bond1, address: 10.0.0.23 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
@@ -232,7 +232,7 @@ target_hosts:
              description: Used for tenant network , virtual network. On Controller this bridge will not have address}
      - {brName: br-swift,brPort: bond3, address: 12.0.0.23 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: False, 
              description: Used for swift cluster }             
-     - {brName: br-ceph,brPort: bond3.10, address: 13.0.0.23 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: False, 
+     - {brName: br-ceph,brPort: bond3.30, address: 13.0.0.23 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: False, 
              description: Used for swift cluster }
 #------------------------------------------------------------------------------------------------------------------
  kvm1:
