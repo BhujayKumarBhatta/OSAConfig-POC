@@ -306,10 +306,6 @@ ceph-osd_hosts:
     ip: 10.0.0.92
   osd3:
     ip: 10.0.0.93
- 
-
-
-
 
 # ########## SWIFT STORAGE ########################SWIFT STORAGE#######################
 storage_hosts:
