@@ -206,6 +206,88 @@ swift:
          repl_number: 3
          deprecated: True
 swift_allow_all_users: True
+
+
+#Swift Section ##################################################################################
+dummy:
+debian_package_dependencies:
+  - python-pycurl
+  - hdparm
+  - chrony
+
+ntp_service_enabled: false
+
+debian_ceph_packages:
+  - ceph
+  - ceph-common    #|--> yes, they are already all dependencies from 'ceph'
+#  - ceph-fs-common #|--> however while proceding to rolling upgrades and the 'ceph' package upgrade
+  - ceph-fuse      #|--> they don't get update so we need to force them
+
+ceph_origin: 'upstream' # or 'distro' or 'local'
+
+# COMMUNITY VERSION
+ceph_stable: true # use ceph stable branch
+ceph_stable_release: kraken  # ceph stable release
+#ceph_stable_repo: "{{ ceph_mirror }}/debian-{{ ceph_stable_release }}"
+ceph_release_num:
+#  dumpling: 0.67
+#  emperor: 0.72
+#  firefly: 0.80
+#  giant: 0.87
+#  hammer: 0.94
+#  infernalis: 9
+  jewel: 10
+  kraken: 11.2.0
+
+monitor_interface: br-storage
+monitor_address: 10.0.2.0/24
+
+journal_size: 5120 # OSD journal size in MB
+public_network: 10.0.2.0/24
+cluster_network: 13.0.0.0/24
+osd_mkfs_type: xfs
+
+openstack_config: true
+openstack_glance_pool:
+  name: images
+  pg_num: "{{ osd_pool_default_pg_num }}"
+openstack_cinder_pool:
+  name: volumes
+  pg_num: "{{ osd_pool_default_pg_num }}"
+openstack_nova_pool:
+  name: vms
+  pg_num: "{{ osd_pool_default_pg_num }}"
+openstack_cinder_backup_pool:
+  name: backups
+  pg_num: "{{ osd_pool_default_pg_num }}"
+
+openstack_pools:
+  - "{{ openstack_glance_pool }}"
+  - "{{ openstack_cinder_pool }}"
+  - "{{ openstack_nova_pool }}"
+  - "{{ openstack_cinder_backup_pool }}"
+
+openstack_keys:
+  - { name: client.glance, value: "mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool={{ openstack_glance_pool.name }}'" }
+  - { name: client.cinder, value: "mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool={{ openstack_cinder_pool.name }}, allow rwx pool={{ openstack_nova_pool.name }}, allow rx pool={{ openstack_glance_pool.name }}'"  }
+  - { name: client.cinder-backup, value: "mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool={{ openstack_cinder_backup_pool.name }}'" }
+
+devices:
+  - /dev/sdb
+#  - /dev/sdc
+#  - /dev/sdd
+#  - /dev/sde
+journal_collocation: true
+
+
+
+
+
+
+
+
+
+
 #galera_client_distro_packages:
 #  - build-essential
 #  - libaio1
