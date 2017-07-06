@@ -80,6 +80,7 @@ global_overrides:
           - nova_compute
           - swift_proxy
           - gnocchi_all
+          - ceph-mon
     - network:
         container_bridge: "br-swift"
         container_type: "veth"
