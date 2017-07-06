@@ -243,7 +243,7 @@ ceph_release_num:
   jewel: 10
   kraken: 11.2.0
 
-monitor_interface: br-storage
+monitor_interface: eth2
 monitor_address: 10.0.2.0/24
 
 journal_size: 5120 # OSD journal size in MB
