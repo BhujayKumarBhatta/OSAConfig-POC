@@ -87,7 +87,10 @@ cephx: true
 ceph_mons:
    - 10.0.2.81
    - 10.0.2.82
-   - 10.0.2.83   
+   - 10.0.2.83 
+   - 10.0.0.117
+   - 10.0.0.129
+   - 10.0.0.173  
 
 # When nova_libvirt_images_rbd_pool is defined, ceph will be installed on nova
 # hosts.
