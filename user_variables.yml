@@ -84,13 +84,13 @@ galera_package_download_validate_certs: false
 # configuration for nova, glance and cinder backup with ceph rbd as backend . Cinder volume config is in openstack_user_config
 
 cephx: true
-#ceph_mons:
-#   - 10.0.2.81
-#   - 10.0.2.82
-#   - 10.0.2.83 
-#   - 10.0.0.117
-#   - 10.0.0.129
-#   - 10.0.0.173  
+ceph_mons:
+   - 10.0.2.81
+   - 10.0.2.82
+   - 10.0.2.83 
+   - 10.0.0.117
+   - 10.0.0.129
+   - 10.0.0.173  
 #mon_group_name: ceph-mon
 
 # When nova_libvirt_images_rbd_pool is defined, ceph will be installed on nova
