@@ -12,10 +12,10 @@
 #swiftn1
 #swiftn2
 #swiftn3
-ceph-osd1
-ceph-osd2
-ceph-osd3
-
+#ceph-osd1
+#ceph-osd2
+#ceph-osd3
+ceph-osd4
 [lxc_hosts]
 #haproxy2 ansible_host=10.0.0.52 ansible_port=2223
 
