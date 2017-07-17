@@ -539,7 +539,7 @@ target_hosts:
       - {brName: br-ceph,brPort: bond2.30, address: 13.0.0.93 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: Used for Openstack Ceph } 
  ceph-osd4:
-    hostname: ceph-osd3
+    hostname: ceph-osd4
     ssh_ip: 10.0.0.94
     roles: controller
     change_network_interface_file: True
