@@ -21,6 +21,10 @@ servers_to_reboot:
 #   - ceph-osd1
 #   - ceph-osd2
 #   - ceph-osd3
+<<<<<<< HEAD
+=======
+   - ceph-osd4
+>>>>>>> branch 'master' of https://github.com/divergent45/OSAConfigs.git
 #################################################################################
 # network interface defination - 
 # leave bonded_with: empty  if insted of bond physical interface is wanted
@@ -567,7 +571,36 @@ target_hosts:
       - {brName: br-storage,brPort: bond1.10, address: 10.0.2.93 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Storage Network VLAN }
       - {brName: br-ceph,brPort: bond2.30, address: 13.0.0.93 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
-             description: Used for Openstack Ceph }  
+             description: Used for Openstack Ceph } 
+ ceph-osd4:
+    hostname: ceph-osd4
+    ssh_ip: 10.0.0.94
+    roles: controller
+    change_network_interface_file: True
+    nic: 
+      - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface eno1 , part of bond1 }
+      - {nicName: eno2,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface eno2 , part of bond 2 connected to switch ....}                  
+    bond: 
+      - {bondName: bond1, bondNic: eno1 , address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 1 using NIC eno1 }  
+      - {bondName: bond2, bondNic: eno2 , address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 2 using NIC eno2 }
+    vNic:
+     - {vNicName: bond1.10, vNicParent: bond1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: used by br-storage bridge }
+     - {vNicName: bond2.30, vNicParent: bond2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: used by br-ceph bridge }                             
+                        
+    bridges: 
+      - {brName: br-mgmt,brPort: bond1, address: 10.0.0.94 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+             description: USed for Openstack Managment, SSH and api access }
+      - {brName: br-storage,brPort: bond1.10, address: 10.0.2.94 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+             description: USed for Storage Network VLAN }
+      - {brName: br-ceph,brPort: bond2.30, address: 13.0.0.94 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+             description: Used for Openstack Ceph }            
+   
             
              
 #############################################################################################################
