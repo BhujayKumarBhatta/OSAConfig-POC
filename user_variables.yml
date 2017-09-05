@@ -88,9 +88,9 @@ ceph_mons:
 #   - 10.0.2.81
 #   - 10.0.2.82
 #   - 10.0.2.83 
-   - 10.0.2.228
-   - 10.0.2.252
-   - 10.0.2.158  
+#   - 10.0.2.228
+#   - 10.0.2.252
+#   - 10.0.2.158  
 #mon_group_name: ceph-mon
 
 # When nova_libvirt_images_rbd_pool is defined, ceph will be installed on nova
