@@ -135,19 +135,19 @@ target_hosts:
    nic: 
      - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: physical interface eno1 , part of bond1 }
-     - {nicName: eno3,bonded_with: bond1 ,  bond_primary: False, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface eno3 , part of bond1 }
+     - {nicName: enp16s4f0,bonded_with: bond1 ,  bond_primary: False, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface enp16s4f0 , part of bond1 }
      - {nicName: eno2,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: physical interface part of bond 2 connected to switch ....}
-     - {nicName: eno4,bonded_with: bond3 ,bond_primary: True , address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+     - {nicName: enp16s4f1,bonded_with: bond3 ,bond_primary: True , address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: physical interface part of bridge br-swift ....}                  
    bond: 
      - {bondName: bond1, bondNic: eno1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
              description: bond 1 using NIC eno1 }  
      - {bondName: bond2, bondNic: eno2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
              description: bond 2 using NIC eno2 }  
-     - {bondName: bond3, bondNic: eno4, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 3 using NIC eno4 }           
+     - {bondName: bond3, bondNic: enp16s4f1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 3 using NIC enp16s4f1 }           
    vNic:
      - {vNicName: bond1.10, vNicParent: bond1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: used by br-storage bridge } 
@@ -177,19 +177,19 @@ target_hosts:
    nic: 
      - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: physical interface eno1 , part of bond1 }
-     - {nicName: eno3,bonded_with: bond1 ,  bond_primary: False, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface eno3 , part of bond1 }
+     - {nicName: enp16s4f0,bonded_with: bond1 ,  bond_primary: False, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface enp16s4f0 , part of bond1 }
      - {nicName: eno2,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: physical interface part of bond 2 connected to switch ....}
-     - {nicName: eno4,bonded_with: bond3,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+     - {nicName: enp16s4f1,bonded_with: bond3,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: physical interface part of bridge br-swift ....}                  
    bond: 
      - {bondName: bond1, bondNic: eno1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
              description: bond 1 using NIC eno1 }  
      - {bondName: bond2, bondNic: eno2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
              description: bond 2 using NIC eno2 }  
-     - {bondName: bond3, bondNic: eno4, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 3 using NIC eno4 }       
+     - {bondName: bond3, bondNic: enp16s4f1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 3 using NIC enp16s4f1 }       
                         
    vNic:
      - {vNicName: bond1.10, vNicParent: bond1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
@@ -426,18 +426,18 @@ target_hosts:
          description:
        br-mgmt:
          type: Bridge
-         address: 10.172.100.33
-         netmask: 255.255.252.0
-         gateway: 10.172.100.1
+         address: 10.0.0.33
+         netmask: 255.255.255.0
+         gateway: 10.0.0.1
          description:
        br-storage:
          type: Bridge
-         address: 10.172.104.33
-         netmask: 255.255.252.0
+         address: 10.0.2.33
+         netmask: 255.255.255.0
        br-vxlan:
          type: Bridge
-         address: 10.172.108.33
-         netmask: 255.255.252.0
+         address: 10.0.1.33
+         netmask: 255.255.255.0
  storage1:
    hostname: storage1
    ssh_ip: 10.0.0.42
@@ -502,15 +502,15 @@ target_hosts:
     roles: controller
     change_network_interface_file: True
     nic: 
-      - {nicName: enp5s0,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface enp5s0 , part of bond1 }
-      - {nicName: enp9s0,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface enp9s0 , part of bond 2 connected to switch ....}                  
+      - {nicName: enp6s7,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface enp6s7 , part of bond1 }
+      - {nicName: enp7s8,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface enp7s8 , part of bond 2 connected to switch ....}                  
     bond: 
-      - {bondName: bond1, bondNic: enp5s0, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 1 using NIC enp5s0 }  
-      - {bondName: bond2, bondNic: enp9s0, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 2 using NIC enp9s0 }
+      - {bondName: bond1, bondNic: enp6s7, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 1 using NIC enp6s7 }  
+      - {bondName: bond2, bondNic: enp7s8, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 2 using NIC enp7s8 }
     vNic:
      - {vNicName: bond1.10, vNicParent: bond1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: used by br-storage bridge } 
@@ -528,15 +528,15 @@ target_hosts:
     roles: controller
     change_network_interface_file: True
     nic: 
-      - {nicName: enp5s0,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface enp5s0 , part of bond1 }
-      - {nicName: enp9s0,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface enp9s0 , part of bond 2 connected to switch ....}                  
+      - {nicName: enp6s7,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface enp6s7 , part of bond1 }
+      - {nicName: enp7s8,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface enp7s8 , part of bond 2 connected to switch ....}                  
     bond: 
-      - {bondName: bond1, bondNic: enp5s0, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 1 using NIC enp5s0 }  
-      - {bondName: bond2, bondNic: enp9s0, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 2 using NIC enp9s0 }
+      - {bondName: bond1, bondNic: enp6s7, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 1 using NIC enp6s7 }  
+      - {bondName: bond2, bondNic: enp7s8, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 2 using NIC enp7s8 }
     vNic:
      - {vNicName: bond1.10, vNicParent: bond1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: used by br-storage bridge }                         
@@ -580,15 +580,15 @@ target_hosts:
     roles: controller
     change_network_interface_file: True
     nic: 
-      - {nicName: enp5s0,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface enp5s0 , part of bond1 }
-      - {nicName: enp9s0,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface enp9s0 , part of bond 2 connected to switch ....}                  
+      - {nicName: enp6s7,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface enp6s7 , part of bond1 }
+      - {nicName: enp7s8,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface enp7s8 , part of bond 2 connected to switch ....}                  
     bond: 
-      - {bondName: bond1, bondNic: enp5s0 , address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 1 using NIC enp5s0 }  
-      - {bondName: bond2, bondNic: enp9s0 , address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 2 using NIC enp9s0 }
+      - {bondName: bond1, bondNic: enp6s7 , address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 1 using NIC enp6s7 }  
+      - {bondName: bond2, bondNic: enp7s8 , address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 2 using NIC enp7s8 }
     vNic:
      - {vNicName: bond1.10, vNicParent: bond1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: used by br-storage bridge }
