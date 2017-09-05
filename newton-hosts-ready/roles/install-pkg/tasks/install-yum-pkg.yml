@@ -1,0 +1,7 @@
+- name: install all Yum packages
+  yum:
+    name: "{{ item }}"
+    state: latest    
+  with_items: 
+   - "{{base_packages}}"
+   - "{{ base_yum_packages }}"

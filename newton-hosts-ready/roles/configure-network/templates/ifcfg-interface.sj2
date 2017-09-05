@@ -1,0 +1,46 @@
+#section below is actula configuration############################################################## 
+### start generated network for [ {{ item.key }} ] ###
+DEVICE={{ item.key }}
+{% if item.value.type != "VLAN" %}
+TYPE={{ item.value.type }}
+{% endif %}
+NAME={{ item.key }}
+{% if item.value.dhcp is defined %}
+BOOTPROTO={{ item.value.dhcp }}
+{% else %}
+BOOTPROTO=none
+{% endif %}
+ONBOOT=yes
+NM_CONTROLLED=no
+{% if item.value.bondedWith is defined %}
+MASTER={{ item.value.bondedWith }}
+SLAVE=yes
+{% endif %}
+{% if item.value.type == "Bond" %}
+BONDING_MASTER=yes
+BONDING_OPTS="miimon=1 updelay=0 downdelay=0 mode=balance-rr"
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=no
+{% endif %}
+{% if item.value.type == "VLAN" %}
+ONPARENT=yes
+VLAN=yes
+{% endif %}
+{% if item.value.bridgedWith is defined %}
+BRIDGE={{ item.value.bridgedWith }}
+{% endif %}
+{% if item.value.address is defined %}
+IPADDR={{ item.value.address }}
+NETMASK={{ item.value.netmask }}
+{% if item.value.gateway is defined %}
+GATEWAY={{ item.value.gateway }}
+{% endif %}
+{% endif %}
+{% if item.value.mtu is defined %}
+MTU={{ item.value.mtu }}
+{% endif %}
+DELAY=0
+### end generated network for [ {{ item.key }} ] ###
+
+

@@ -1,0 +1,19 @@
+- name: enable dsa key in sshd_config
+  lineinfile:
+    name: /etc/ssh/sshd_config
+    regexp: '^#HostKey /etc/ssh/ssh_host_dsa_key'
+    line: 'HostKey /etc/ssh/ssh_host_dsa_key'
+    backup: yes
+  tags: dsakey
+- name: regenerate dsa key 
+  shell: ssh-keygen -A
+  tags: dsakey
+ 
+- name: put fastestmirror.conf file in redhat hosts /etc/yum/pluginconf.d just to avoid OSA setup-host playbook dont fail
+  copy:
+    src: fastestmirror.conf
+    dest: /etc/yum/pluginconf.d/fastestmirror.conf
+    backup: yes
+  tags: fastestmirror
+    
+      

@@ -1,0 +1,95 @@
+---
+- hosts: base_hw_prep_for_openstack
+  vars_files: 
+    - base-hardware-prep-defination.yml 
+    - prep_sec.yml      
+  become: true
+  gather_facts: true
+  
+  roles:
+   - role: configure-proxy-pkg    
+   - role: install-pkg
+   - role: create-interfaces-bridges #tag configure-network 
+   - role: configure-network # redhat only     
+   - role: squidproxy #tag squidproxy
+     when: "'squidproxy'  in target_hosts[ansible_hostname]['roles']"
+     
+   - role: ntpmaster #tag ntp
+     when: "'ntpmaster'  in target_hosts[ansible_hostname]['roles']" 
+      
+   - role: enable-firewall #enable-firewall
+     when: "'firewall'  in target_hosts[ansible_hostname]['roles']"
+     
+   - role: configure-chrony #tag chrony
+     when: "'ntpmaster' not in target_hosts[ansible_hostname]['roles']"       
+        
+   - role: configure-iommu-for-nova-compute
+     when: "'novacompute'  in target_hosts[ansible_hostname]['roles']"
+   
+   - role: configure-nfs-server
+     when: "'nfs'  in target_hosts[ansible_hostname]['roles']"     
+   
+# TODO: ssh port to be made as variable    
+- hosts: localhost
+  vars_files: 
+    - base-hardware-prep-defination.yml    
+  become: true
+  tasks:   
+   - name: Server will be rebooted and waited in the following order, faster server may restart before ansible wait is shown as completed
+     debug:
+      msg: "{{ item }}"
+     with_items: "{{ servers_to_reboot }}"
+     tags: rebootserver
+     
+   - name: Reboot the remote server from control host
+     shell: "ssh root@{{ item }} shutdown -r now"
+     async: 180
+     poll: 20
+     with_items: "{{ servers_to_reboot }}"
+     ignore_errors: true
+     when: "servers_to_reboot !=''"
+     tags: rebootserver
+     
+   - name: 'Waiting OS boot and SSH readiness'
+     wait_for: 
+         port: 22        
+         host: "{{ item }}"
+         delay: 1
+         timeout: 3000
+     delay: 30
+     retries: 50
+     with_items: "{{ servers_to_reboot }}"
+     when: "servers_to_reboot !=''"
+     tags: rebootserver
+     
+- hosts: lxc_hosts
+  vars_files: 
+    - base-hardware-prep-defination.yml   
+  become: true
+  gather_facts: true
+  
+  roles:
+   - role: lxc_hosts
+     tags: 
+       - lxc-hosts     
+
+- name: Gather lxc container host facts
+  hosts: lxc_hosts
+  gather_facts: True
+# the above section is important to get ansible_archtecture for host where the task is delegated for container creation
+- hosts: all_containers  # define in inventory
+  vars_files: 
+    - base-hardware-prep-defination.yml    
+  become: true
+  gather_facts: false
+  roles:
+   - role: lxc_container_create 
+   #- role: here put roles to install application on conatiners e.g. ntp service etc.
+     tags: 
+       - container-create    
+
+- name: install openldap
+  hosts: ldap
+  roles:
+    - role: openldap-simple
+            

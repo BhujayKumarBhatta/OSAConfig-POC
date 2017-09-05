@@ -256,6 +256,52 @@ target_hosts:
              description: Used for swift cluster }             
      - {brName: br-ceph,brPort: bond3.30, address: 13.0.0.23 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: False, 
              description: Used for swift cluster }
+
+
+###################R=redhat host infra4 ##########################################
+ infra4:
+    roles: controller
+    network_interfaces:
+       eno1:
+         type: Ethernet
+         bondedWith: bond1
+         #when used directly  attributes address: , mask: , gateway:  can be used. Same is true for bond, vlan and bridges as well
+         description:
+       en02:
+         type: Ethernet
+         bondedWith: bond2
+         description:
+       bond1:
+         type: Bond
+         description:
+       bond2:
+         type: Bond
+         bridgedWith: br-vlan
+         description:
+       bond1.101:
+         type: VLAN
+         bridgedWith: br-mgmt
+         description:
+       bond1.102:
+         type: VLAN
+         bridgedWith: br-storage
+         description:
+       bond2.103:
+         type: VLAN
+         bridgedWith: br-vxlan
+         description:
+       br-mgmt:
+         type: Bridge
+         address: 10.172.100.24
+         netmask: 255.255.252.0
+         gateway: 10.172.100.1
+         description:
+       br-storage:
+         type: Bridge
+         address: 10.172.104.24
+         netmask: 255.255.252.0
+
+
 #------------------------------------------------------------------------------------------------------------------
  kvm1:
    hostname: kvm1
@@ -347,7 +393,51 @@ target_hosts:
      - {brName: br-vxlan,brPort: bond2.20, address: 10.0.1.33 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, 
              description: Used for tenant network , virtual network. On Compute node this will have address}    
 #---------------------------------------------------------------------------------------------------------------- 
- 
+ kvm3:
+    roles: novacompute
+    network_interfaces:
+       em1:
+         type: Ethernet
+         bondedWith: bond1
+         #when used directly  attributes address: , mask: , gateway:  can be used. Same is true for bond, vlan and bridges as well
+         description:
+       em2:
+         type: Ethernet
+         bondedWith: bond2
+         description:
+       bond1:
+         type: Bond
+         description:
+       bond2:
+         type: Bond
+         bridgedWith: br-vlan
+         description:
+       bond1.101:
+         type: VLAN
+         bridgedWith: br-mgmt
+         description:
+       bond1.102:
+         type: VLAN
+         bridgedWith: br-storage
+         description:
+       bond2.103:
+         type: VLAN
+         bridgedWith: br-vxlan
+         description:
+       br-mgmt:
+         type: Bridge
+         address: 10.172.100.33
+         netmask: 255.255.252.0
+         gateway: 10.172.100.1
+         description:
+       br-storage:
+         type: Bridge
+         address: 10.172.104.33
+         netmask: 255.255.252.0
+       br-vxlan:
+         type: Bridge
+         address: 10.172.108.33
+         netmask: 255.255.252.0
  storage1:
    hostname: storage1
    ssh_ip: 10.0.0.42

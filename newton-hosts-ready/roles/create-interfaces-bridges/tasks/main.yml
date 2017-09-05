@@ -1,1 +1,2 @@
 - include: create-interfaces-bridges.yml
+  when: ansible_distribution == "Ubuntu"

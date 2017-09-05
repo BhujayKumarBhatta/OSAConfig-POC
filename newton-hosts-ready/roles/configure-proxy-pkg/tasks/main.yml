@@ -1,0 +1,13 @@
+- include: configure-proxy-pip.yml
+
+#- name: Include distribution specific variables
+#  include_vars: "{{ ansible_distribution }}.yml"
+#  tags: package-manager
+
+- include: configure-proxy-yum.yml
+  when: ansible_distribution == "RedHat"
+  tags: package-manager
+
+- include: configure-proxy-apt.yml
+  when: ansible_distribution == "Ubuntu"
+  tags: package-manager

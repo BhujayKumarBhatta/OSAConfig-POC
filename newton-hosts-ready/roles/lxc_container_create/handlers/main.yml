@@ -1,9 +1,19 @@
 ---
-- include: "restart.yml  physical_host={{outer_item.physical_host}} inventory_hostname={{outer_item.container_name}} 
-             properties={{outer_item.properties}} 
-             container_name={{outer_item.container_name}}
-             container_networks={{outer_item.container_networks}}
-             component={{outer_item.ansible_port}}
-             container_address={{outer_item.container_address}}
-             physical_host_group={{outer_item.physical_host_group}}
-             "
+#- include: "restart.yml  physical_host={{outer_item.physical_host}} inventory_hostname={{outer_item.container_name}} 
+#             properties={{outer_item.properties}} 
+#             container_name={{outer_item.container_name}}
+#             container_networks={{outer_item.container_networks}}
+#             component={{outer_item.ansible_port}}
+#             container_address={{outer_item.container_address}}
+#             physical_host_group={{outer_item.physical_host_group}}
+#             "
+#  with_items:
+#    - "{{ containers }}" 
+#  loop_control:
+#    loop_var: outer_item
+#  when:
+#    - outer_item.physical_host  is defined
+#    - outer_item.container_name is defined
+#    - outer_item.physical_host != outer_item.container_name
+
+- include: "restart.yml"

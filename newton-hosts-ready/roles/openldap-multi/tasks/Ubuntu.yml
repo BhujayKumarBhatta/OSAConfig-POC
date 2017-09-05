@@ -1,0 +1,84 @@
+---
+# tasks file for openldap (Ubuntu specific)
+
+- name: Do not autoconfigure OpenLDAP
+  debconf: >
+    name=slapd
+    question='slapd/no_configuration'
+    value=true
+    vtype=boolean
+  tags: openldap
+  
+- debconf:
+    name: slapd
+    question: "{{ item }}"
+    value: "{{ openldap_server_rootpw }}"
+    vtype: "password"
+  with_items:
+    - slapd/root_password
+    - slapd/root_password_again
+    - slapd/internal/adminpw password
+    - slapd/internal/generated_adminpw
+    - slapd/password1
+    - slapd/password2
+
+- debconf:
+    name: slapd
+    question: slapd/domain
+    value: "{{ openldap_domain | default(ansible_fqdn) }}"
+    vtype: "string"
+
+- debconf:
+    name: slapd
+    question: slapd/organization
+    value: "{{ openldap_organization }}"
+    vtype: "string"
+
+- debconf:
+    name: slapd
+    question: slapd/backend
+    value: "MDB"
+    vtype: "string"
+
+- debconf:
+    name: slapd
+    question: slapd/purge_database
+    value: false
+    vtype: boolean
+
+- debconf:
+    name: slapd
+    question: slapd/allow_ldap_v2
+    value: false
+    vtype: boolean
+
+- debconf:
+    name: slapd
+    question: slapd/no_configuration
+    value: false
+    vtype: boolean
+
+- debconf:
+    name: slapd
+    question: slapd/move_old_database
+    value: true
+    vtype: boolean
+
+- debconf:
+    name: slapd
+    question: slapd/dump_database
+    value: 'when needed'
+    vtype: select
+
+- debconf:
+    name: slapd
+    question: slapd/dump_database_destdir
+    value: "/var/backups/slapd-VERSION"
+    vtype: string
+
+
+- name: Install OpenLDAP packages
+  apt: name={{ item }} state=present update_cache=yes
+  with_items: "{{ openldap_packages }}"
+  environment: "{{ env }}"
+  tags: openldap

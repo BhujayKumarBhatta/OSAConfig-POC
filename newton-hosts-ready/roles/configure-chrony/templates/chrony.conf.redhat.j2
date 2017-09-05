@@ -1,0 +1,25 @@
+# Ansible managed
+#
+
+{{ Chrony_clients_uplink_names }}
+
+driftfile /var/lib/chrony/chrony.drift
+
+logdir /var/log/chrony
+
+log tracking measurements statistics
+
+keyfile /etc/chrony.keys
+
+commandkey 24
+
+local stratum 10
+
+#initstepslew  20 
+
+# Allow computers on the unrouted nets to use the server.
+
+allow 10/8
+allow 192.168/16
+allow 172.16/12
+

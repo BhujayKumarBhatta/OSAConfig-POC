@@ -986,9 +986,9 @@ acl Safe_ports port 488		# gss-http
 acl Safe_ports port 591		# filemaker
 acl Safe_ports port 777		# multiling http
 acl CONNECT method CONNECT
-acl fortytwo_network src 10.0.0.0/8
+#acl fortytwo_network src 10.0.0.0/8
 #acl fortytwo_network src 203.0.0.0/8
-acl openstack_ext_net1  src 203.0.113.0/24
+#acl openstack_ext_net1  src 203.0.113.0/24
 acl fortytwo_time  time M T W T F S S 1:00-23:00
 
 
@@ -2592,13 +2592,11 @@ http_port 3128
 #	cache_peer sib1.foo.net         sibling   3128  3130  proxy-only
 #	cache_peer sib2.foo.net         sibling   3128  3130  proxy-only
 #	cache_peer example.com          parent    80       0  default
+	cache_peer 10.13.4.20          parent    80       0   default 
+        #acl all src 0.0.0./0
+        never_direct allow all
 #	cache_peer cdn.example.com      sibling   3128     0  
-#############THis is TO be ACtivated  for upsteram proxy in our ITC EnvironmentBHUJAY 
-#	 cache_peer 10.13.4.20          parent    80       0   default
-#        #acl all src 0.0.0./0
-#        never_direct allow all
-#######################################BHUJAY###################################
-
+#	
 #	      type:	either 'parent', 'sibling', or 'multicast'.
 #	
 #	proxy-port:	The port number where the peer accept HTTP requests.

@@ -1,1 +1,4 @@
-- include: configure-chrony.yml
+- include: configure-chrony-redhat.yml
+  when: ansible_distribution == "RedHat"
+- include: configure-chrony-ubuntu.yml
+  when: ansible_distribution == "Ubuntu"

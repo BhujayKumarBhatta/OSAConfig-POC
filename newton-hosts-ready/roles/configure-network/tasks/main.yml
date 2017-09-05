@@ -1,0 +1,7 @@
+- include: configure-network-RedHat.yml
+  when: ansible_distribution == "RedHat"
+  tags: network
+
+#- include: configure-proxy-apt.yml
+#  when: ansible_distribution == "Ubuntu"
+#  tags: package-manager

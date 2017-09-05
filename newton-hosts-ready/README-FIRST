@@ -1,0 +1,69 @@
+This project will prepare the  ubuntu16  and rhel7 hardware  for running openstack ansible .
+1. inventory\inventory-base-hw-prep :  insert the hostname and ip address under 
+	a. [base_hw_prep_for_openstack]
+    	<actual hostname>	ansible_host=<ip>  
+    b.  comment out any host where openstack has been already installed and running
+    
+2.  
+    a. insert network details , hosts role such as novacompute or controller etc.
+       additionally ntp master , firewall ufw or squid proxy can be installed 
+   
+    b. Network configuartion details are provided in different format for ubuntu and redhat.
+       Review sample. 
+    
+    c. comment out hosts in the server_to_reboot section  to avoid restart servers
+
+ 
+
+3. pull the configuration in the ansible controller 
+   from /etc/openstack_deploy/newton-hosts-ready folder
+   
+   
+   
+4. On the controllers hosts newton-hosts-ready directory one file named prep_sec.yml need to exist
+   a. enter redhat_subscrition_username: <user account name >
+   b. enter redhat_subscrition_password: <password >
+   c. encrypt this file using :
+       ansible-vault encrypt prep_sec.yml
+       enter a vault password and keep a note 
+   step b and c are not required if there is no redhat host
+       
+   
+
+5. ssh-copy-id <target hosts> and  check ansible all -i inventory -m ping for connectivity
+   if python is not installed on the target host , install python first
+    
+   
+6. ansible-playbook -i inventory start.yml  --ask-vault-pass
+
+
+future developments:
+
+1. check network connectivity
+2. develop a raw module to insert proxy and  install python. 
+   This will avoid manual python installation problem
+3. Include CIS hardening
+4. Include cache_peer for squid upstream proxy
+
+TAG: cache_peer
+#       To specify other caches in a hierarchy, use the format:
+#
+#               cache_peer hostname type http-port icp-port [options]
+#
+#       For example,
+#
+#       #                                        proxy  icp
+#       #          hostname             type     port   port  options
+#       #          -------------------- -------- ----- -----  -----------
+#       cache_peer parent.foo.net       parent    3128  3130  default
+#       cache_peer sib1.foo.net         sibling   3128  3130  proxy-only
+#       cache_peer sib2.foo.net         sibling   3128  3130  proxy-only
+#       cache_peer example.com          parent    80       0  default
+        cache_peer 10.13.4.20          parent    80       0   default
+        #acl all src 0.0.0./0
+        never_direct allow all
+#       cache_peer cdn.example.com      sibling   3128     0
+#
+#             type:     either 'parent', 'sibling', or 'multicast'.
+#
+#       proxy-port:     The port number w

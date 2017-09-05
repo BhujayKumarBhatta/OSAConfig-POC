@@ -1,4 +1,12 @@
 ---
+#virt-host-validate output should be checked for intel_iommu=on
+- name: validate if the host is capable of running KVM
+  shell: virt-host-validate|grep WARN|grep 'intel_iommu=on'
+  register: kvmtestresult
+  tags: iommu
+- debug:
+     msg: "{{ kvmtestresult }}"
+  tags: iommu
 - name: Enabling IOMMU in the kernel through grub
   lineinfile: 
     destfile: /etc/default/grub
@@ -6,7 +14,15 @@
     line: 'GRUB_CMDLINE_LINUX_DEFAULT="intel_iommu=on"'
     backup: yes
   register: grubfilestat
-- name: Updating grub
+  when: kvmtestresult.rc == 0
+  tags: iommu
+- name: Updating grub for ubuntu usinh grub-update
   command: update-grub
-  when: grubfilestat.changed
+  when: (grubfilestat.changed and ansible_distribution == "Ubuntu")
+  tags: iommu
+- name: Updating grub for redhat through grub2-mkconfig
+  #command: grub2-makeconfig -o /boot/grub2/grub.cfg
+  command: grub2-mkconfig -o /boot/grub2/grub.cfg
+  when: (grubfilestat.changed and ansible_distribution == "RedHat")
+  tags: iommu
   

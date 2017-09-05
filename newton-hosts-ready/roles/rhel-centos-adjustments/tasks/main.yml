@@ -1,0 +1,4 @@
+- include: rhel-centos-adjustments.yml
+  when: ansible_distribution == "RedHat"
+  tags: rhel-centos-adjustments
+

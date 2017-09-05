@@ -1,0 +1,29 @@
+---
+
+#The domain prefix for ldap
+openldap_server_domain_name: itcpoc.in
+
+#This is the password for admin for openldap 
+openldap_server_rootpw: passme
+
+#The self signed ssl parameters
+openldap_server_country: IN
+openldap_server_state: KA
+openldap_server_location: SDC
+openldap_server_organization: ITSS
+
+openldap_server_enable_ssl: false
+
+#The ldif file
+openldap_server_ldif: domain.ldif
+
+
+openldap_server_pkgs:
+  - slapd
+  - ldap-utils
+  - python-selinux
+  - openssl
+
+openldap_server_app_path: "/etc/ldap/"
+openldap_server_user: "openldap"
+
