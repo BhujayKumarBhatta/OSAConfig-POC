@@ -98,6 +98,17 @@ ceph_mons:
 nova_libvirt_images_rbd_pool: vms
 nova_force_config_drive: True
 
+nova_virt_types:
+  qemu:
+    nova_compute_driver: libvirt.LibvirtDriver
+    nova_scheduler_host_manager: host_manager
+    nova_reserved_host_memory_mb: 2048
+    nova_firewall_driver: nova.virt.firewall.NoopFirewallDriver
+    nova_scheduler_use_baremetal_filters: False
+    nova_scheduler_tracks_instance_changes: True
+    nova_cpu_mode: "none"
+
+
 glance_default_store: rbd 
 #glance_default_store: file
 
