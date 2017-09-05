@@ -8,11 +8,11 @@
       block: "{{ apt_proxy_entry }}"
 #  when: set_intenal_apt_mirror == False
   
-- name: pointing to internal mirror  in /etc/apt/sources.list 
-  template:
-      source: sources.j2
-      dest: /etc/apt/sources.list
-      backup: yes
+#- name: pointing to internal mirror  in /etc/apt/sources.list 
+#  template:
+#      source: sources.j2
+#      dest: /etc/apt/sources.list
+#      backup: yes
 #  when: set_intenal_apt_mirror == True
     
 - name: Run the equivalent of "apt-get update"  and apt dist-upgrade as a separate step
