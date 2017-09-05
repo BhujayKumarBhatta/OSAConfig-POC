@@ -70,7 +70,7 @@ haproxy_keepalived_external_vip_cidr: 14.142.104.140/29
 haproxy_keepalived_internal_vip_cidr: 10.0.0.14/24
 haproxy_keepalived_external_interface: br-internet
 haproxy_keepalived_internal_interface: br-mgmt
-keepalived_ping_address: 10.0.0.53
+keepalived_ping_address: 10.0.0.54
 #ocata
 keepalived_use_latest_stable: True
 #+++++++++++++++++Proxying TLS traffic often interferes with the clients ability to perform 
