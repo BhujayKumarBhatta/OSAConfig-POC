@@ -211,6 +211,8 @@ dashboard_hosts:
     ip: 10.0.0.21
   infra2:
     ip: 10.0.0.22
+  infra3:
+    ip: 10.0.0.23  
 # neutron server, agents (L3, etc)
 network_hosts:
   infra1:

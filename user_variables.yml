@@ -85,9 +85,6 @@ galera_package_download_validate_certs: false
 
 cephx: true
 ceph_mons:
-#   - 10.0.2.81
-#   - 10.0.2.82
-#   - 10.0.2.83 
    - 10.0.2.152
    - 10.0.2.202
    - 10.0.2.119  
