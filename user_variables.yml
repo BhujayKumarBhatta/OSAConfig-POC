@@ -20,7 +20,7 @@ percona_package_download_validate_certs: false
 # use the keepalived  floating ip  of haproxy server as the proxy to avoid dependency on 52
 proxy_env_url: "http://10.0.0.14:3128"
 # no_proxy_env: "localhost,127.0.0.1,{{ internal_lb_vip_address }},{{ external_lb_vip_address }},{% for host in groups['all_containers'] %}{{ hostvars[host]['container_address'] }}{% if not loop.last %},{% endif %}{% endfor %}"
-no_proxy_env: "localhost,127.0.0.1,10.0.0.51,10.0.0.52,10.0.0.21,10.0.0.22,10.0.0.23,10.0.0.53,{{ internal_lb_vip_address }},{{ external_lb_vip_address }},{% for host in groups['all_containers'] %}{{ hostvars[host]['container_address'] }}{% if not loop.last %},{% endif %}{% endfor %}"
+no_proxy_env: "localhost,127.0.0.1,10.0.0.51,10.0.0.52,10.0.0.21,10.0.0.22,10.0.0.23,10.0.0.54,{{ internal_lb_vip_address }},{{ external_lb_vip_address }},{% for host in groups['all_containers'] %}{{ hostvars[host]['container_address'] }}{% if not loop.last %},{% endif %}{% endfor %}"
 #no_proxy_env: "localhost,127.0.0.1,,10.0.0.*,10.0.0.0,10.0.1.0,10.0.2.0"
 global_environment_variables:
    HTTP_PROXY: "{{ proxy_env_url }}"
@@ -88,9 +88,9 @@ ceph_mons:
 #   - 10.0.2.81
 #   - 10.0.2.82
 #   - 10.0.2.83 
-   - 10.0.2.228
-   - 10.0.2.252
-   - 10.0.2.158  
+   - 10.0.2.152
+   - 10.0.2.202
+   - 10.0.2.119  
 #mon_group_name: ceph-mon
 
 # When nova_libvirt_images_rbd_pool is defined, ceph will be installed on nova
