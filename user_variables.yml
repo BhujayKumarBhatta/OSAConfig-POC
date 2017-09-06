@@ -9,7 +9,7 @@ apply_security_hardening: True
 security_enable_chrony: false    
 security_ntp_servers:
   - 10.0.0.51
-  - 10.0.0.51
+  - 10.0.0.52
                    
 ## Debug and Verbose options.
 debug: false
