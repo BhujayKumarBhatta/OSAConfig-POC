@@ -3,17 +3,16 @@
 
 
 servers_to_reboot:
-#  - infra1
-#  - infra2
-#  - infra3
-#  - kvm1
+  - infra1
+  - infra2
+  - infra3
+  - kvm1
 #  - kvm2
 #  - kvm3
 #  - bm1
-#  - haproxy1
-#  - rsyslog
-#  - haproxy2 
-#  - haproxy2 
+  - haproxy1
+  - rsyslog
+  - haproxy2 
 #  - storage1
   - swiftn1
   - swiftn2
