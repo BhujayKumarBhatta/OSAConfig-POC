@@ -1,15 +1,15 @@
 [base_hw_prep_for_openstack]
 
-#haproxy1	ansible_host=10.0.0.51
-#haproxy2   ansible_host=10.0.0.52
-#infra1		ansible_host=10.0.0.21
-#infra2		ansible_host=10.0.0.22
-#infra3		ansible_host=10.0.0.23
+haproxy1	ansible_host=10.0.0.51
+haproxy2   ansible_host=10.0.0.52
+infra1		ansible_host=10.0.0.21
+infra2		ansible_host=10.0.0.22
+infra3		ansible_host=10.0.0.23
 #infra4		ansible_host=10.0.0.24
-#kvm1		ansible_host=10.0.0.31
+kvm1		ansible_host=10.0.0.31
 #kvm2		ansible_host=10.0.0.32
 #kvm3		ansible_host=10.0.0.33
-#rsyslog 	ansible_host=10.0.0.57
+rsyslog 	ansible_host=10.0.0.57
 #storage1	ansible_host=10.0.0.42
 swiftn1	    ansible_host=10.0.0.45
 swiftn2	    ansible_host=10.0.0.46
