@@ -107,6 +107,10 @@ nova_virt_type:
 
 nova_supported_virt_types:
   - qemu
+  - kvm
+  - lxd
+  - ironic
+  - powervm
 
 glance_default_store: rbd 
 #glance_default_store: file
