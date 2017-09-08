@@ -4,5 +4,5 @@
     state: latest
     allow_unauthenticated: yes
   with_items: 
-#    - "{{base_packages}}"
+    - "{{base_packages}}"
     - "{{ base_apt_packages }}"  
