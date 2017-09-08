@@ -12,8 +12,8 @@ infra4		ansible_host=10.0.0.24
 kvm4		ansible_host=10.0.0.34
 #rsyslog 	ansible_host=10.0.0.57
 #storage1	ansible_host=10.0.0.42
-#swiftn1	    ansible_host=10.0.0.45
-#swiftn2	    ansible_host=10.0.0.46
+#swiftn1	ansible_host=10.0.0.45
+#swiftn2	ansible_host=10.0.0.46
 #swiftn3	ansible_host=10.0.0.47
 #ceph-osd1	ansible_host=10.0.0.91
 #ceph-osd2	ansible_host=10.0.0.92
@@ -22,24 +22,6 @@ kvm4		ansible_host=10.0.0.34
 #ceph-osd5	ansible_host=10.0.0.95
 #ceph-osd5	ansible_host=10.0.0.95
 
-#infra1
-#infra2
-#infra3
-#kvm1
-#kvm2
-#kvm3
-#bm1
-#rsyslog 
-#haproxy1	ansible_port=2223
-#haproxy2    ansible_port=2223
-#storage1
-#swiftn1
-#swiftn2
-#swiftn3
-#ceph-osd1
-#ceph-osd2
-#ceph-osd3
-#ceph-osd4
 [lxc_hosts]
 #haproxy2 ansible_host=10.0.0.52 ansible_port=2223
 
