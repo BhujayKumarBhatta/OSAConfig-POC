@@ -6,11 +6,11 @@ servers_to_reboot:
 #  - infra1
 #  - infra2
 #  - infra3
-  - infra4 
+#  - infra4 
 #  - kvm1
 #  - kvm2
 #  - kvm3
-  - kvm4
+#  - kvm4
 #  - bm1
 #  - haproxy1
 #  - rsyslog
@@ -21,8 +21,8 @@ servers_to_reboot:
 #  - swiftn3
 #  - ceph-osd1
 #  - ceph-osd2
-#   - ceph-osd3
-#   - ceph-osd4
+#  - ceph-osd3
+#  - ceph-osd4
 
 #################################################################################
 # network interface defination - 
