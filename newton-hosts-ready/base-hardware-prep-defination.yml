@@ -279,15 +279,15 @@ target_hosts:
          type: Bond
          bridgedWith: br-vlan
          description:
-       bond1.101:
+       bond1:
          type: VLAN
          bridgedWith: br-mgmt
          description:
-       bond1.102:
+       bond1.10:
          type: VLAN
          bridgedWith: br-storage
          description:
-       bond2.103:
+       bond2.20:
          type: VLAN
          bridgedWith: br-vxlan
          description:
@@ -413,15 +413,15 @@ target_hosts:
          type: Bond
          bridgedWith: br-vlan
          description:
-       bond1.101:
+       bond1:
          type: VLAN
          bridgedWith: br-mgmt
          description:
-       bond1.102:
+       bond1.10:
          type: VLAN
          bridgedWith: br-storage
          description:
-       bond2.103:
+       bond2.20:
          type: VLAN
          bridgedWith: br-vxlan
          description:
