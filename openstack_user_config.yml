@@ -154,7 +154,7 @@ repo-infra_hosts:
   infra2:
     ip: 10.0.0.22
   infra4:  
-    ip: 10.0.0.24 # redhat repo host
+    ip: 10.0.0.24 
 ###
 ### OpenStack
 ###
