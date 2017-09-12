@@ -407,9 +407,9 @@ target_hosts:
          type: Ethernet
          bondedWith: bond2
          description:
-       bond1:
-         type: Bond
-         description:
+#       bond1:
+#         type: Bond
+#         description:
        bond2:
          type: Bond
          bridgedWith: br-vlan
