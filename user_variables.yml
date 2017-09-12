@@ -115,8 +115,8 @@ nova_force_config_drive: True
 #    nova_scheduler_tracks_instance_changes: True
 #    nova_cpu_mode: "none"
 
-#nova_supported_virt_types:
-#  - qemu
+nova_supported_virt_types:
+   - qemu
   
 
 glance_default_store: rbd 
