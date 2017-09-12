@@ -116,7 +116,7 @@ nova_force_config_drive: True
 #    nova_cpu_mode: "none"
 
 nova_supported_virt_types:
-   - qemu
+   - kvm
   
 
 glance_default_store: rbd 
