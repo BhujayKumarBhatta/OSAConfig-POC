@@ -415,7 +415,7 @@ target_hosts:
          bridgedWith: br-vlan
          description:
        bond1:
-         type: VLAN
+         type: Bond
          bridgedWith: br-mgmt
          description:
        bond1.10:
