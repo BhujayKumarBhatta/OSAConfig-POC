@@ -275,6 +275,7 @@ target_hosts:
        bond1:
          type: Bond
          description:
+         bridgedWith: br-mgmt
        bond2:
          type: Bond
          bridgedWith: br-vlan
