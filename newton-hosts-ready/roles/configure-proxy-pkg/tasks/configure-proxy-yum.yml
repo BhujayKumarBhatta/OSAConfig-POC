@@ -2,7 +2,7 @@
 - name: Enable  Redhat Subscription
   redhat_subscription:
    state: present
-   force_register: yes
+   force_register: no
    username: "{{ redhat_subscription_username }}"
    password: "{{ redhat_subscription_password }}"
    autosubscribe: true
