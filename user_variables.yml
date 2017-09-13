@@ -43,8 +43,8 @@ deployment_environment_variables:
 # If an increased delay for the ssh connection check is desired,# uncomment this variable and set it appropriately.   
 ssh_delay: 60
 #++++++++++++++++++Must for Self signed Certificate++++++++++++++++
-keystone_ssl: true
-keystone_external_ssl: true
+keystone_ssl: false
+keystone_external_ssl: false
 keystone_service_adminuri_insecure: true
 keystone_service_internaluri_insecure: true
 #external_lb_vip_address: 14.142.104.140 its present in user_config
