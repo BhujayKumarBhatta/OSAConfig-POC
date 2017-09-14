@@ -282,8 +282,8 @@ compute_hosts:
 metering-compute_hosts:
   kvm1:
     ip: 10.0.0.31
-  kvm4:  
-    ip: 10.0.0.34
+#  kvm4:  
+#    ip: 10.0.0.34
 #  kvm2: 
 #    ip: 10.0.0.32
 #  bm1:
