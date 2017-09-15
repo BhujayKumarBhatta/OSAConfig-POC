@@ -278,7 +278,7 @@ openstack_glance_pool:
   pg_num: "{{ osd_pool_default_pg_num }}"
 openstack_cinder_pool:
   name: volumes
-  pg_num: "{{ osd_pool_default_pg_num }}"
+  pg_num: "{{ osd_pool_default_pg_num }}"*
 openstack_nova_pool:
   name: vms
   pg_num: "{{ osd_pool_default_pg_num }}"

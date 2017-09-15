@@ -2,7 +2,7 @@
 - hosts: base_hw_prep_for_openstack
   vars_files: 
     - base-hardware-prep-defination.yml 
-    - prep_sec.yml      
+#    - prep_sec.yml      
   become: true
   gather_facts: true
   
