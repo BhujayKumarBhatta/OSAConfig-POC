@@ -8,9 +8,9 @@ servers_to_reboot:
 #  - infra3
 #  - infra4 
 #  - kvm1
-#  - kvm2
+  - kvm2
 #  - kvm3
-  - kvm4
+#  - kvm4
 #  - bm1
 #  - haproxy1
 #  - rsyslog
@@ -341,15 +341,15 @@ target_hosts:
    roles: novacompute
    change_network_interface_file: True
    nic: 
-     - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface eno1 , part of bond1 }
-     - {nicName: eno2,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface part of bond 2 connected to switch ....}                  
+     - {nicName: enp3s0,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface enp3s0 , part of bond1 }
+     - {nicName: enp130s0,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+             description: physical interface enp130s0 part of bond 2 connected to switch ....}                  
    bond: 
-     - {bondName: bond1, bondNic: eno1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 1 using NIC eno1 }  
-     - {bondName: bond2, bondNic: eno2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 2 using NIC eno2 }             
+     - {bondName: bond1, bondNic: enp3s0, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 1 using NIC enp3s0 }  
+     - {bondName: bond2, bondNic: enp130s0, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
+             description: bond 2 using NIC enp130s0 }             
    vNic:
      - {vNicName: bond1.10, vNicParent: bond1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: used by br-storage bridge } 
