@@ -1,5 +1,5 @@
 ---
-repo_build_venv_timeout: 240
+repo_build_venv_timeout: 120
 #lxc_net_mtu: "9000"
 #lxc_container_default_mtu: "9000"
 
