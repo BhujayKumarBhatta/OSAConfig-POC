@@ -309,26 +309,26 @@ devices:
 #  - /dev/sde
 journal_collocation: true
 
-repo_build_distro_packages:
-#  - '@Development Tools'
-  - cmake
-  - git
-  - krb5-devel              # required to build pykerberos
-  - liberasurecode-devel    # required to build pyeclib
-  - libffi-devel            # required to build xattr
-  - libjpeg-turbo-devel     # required to build pillow
-#  - libvirt-devel           # required to build libvirt-python
-  - libxslt-devel           # required to build lxml
-  - lxc-devel               # required to build lxc-python2
-  - MariaDB-devel           # required to build MySQL-python
-  - openldap-devel          # required to build python-ldap
-  - postgresql-devel        # required to build psycopg2
-  - python2-devel
-  - openssl-devel           # required to build cryptography
-  - sqlite-devel            # required to build pysqlite
-  - swig
-  - which
-  - tar                     # required for /opt/op-venv-script.sh
+#repo_build_distro_packages:
+##  - '@Development Tools'
+##  - cmake
+#  - git
+#  - krb5-devel              # required to build pykerberos
+#  - liberasurecode-devel    # required to build pyeclib
+#  - libffi-devel            # required to build xattr
+#  - libjpeg-turbo-devel     # required to build pillow
+##  - libvirt-devel           # required to build libvirt-python
+#  - libxslt-devel           # required to build lxml
+#  - lxc-devel               # required to build lxc-python2
+#  - MariaDB-devel           # required to build MySQL-python
+#  - openldap-devel          # required to build python-ldap
+#  - postgresql-devel        # required to build psycopg2
+#  - python2-devel
+#  - openssl-devel           # required to build cryptography
+#  - sqlite-devel            # required to build pysqlite
+#  - swig
+#  - which
+#  - tar                     # required for /opt/op-venv-script.sh
 
 
 #galera_client_distro_packages:
