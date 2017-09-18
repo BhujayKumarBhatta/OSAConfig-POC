@@ -310,7 +310,7 @@ devices:
 journal_collocation: true
 
 repo_build_distro_packages:
-  - '@Development Tools'
+#  - '@Development Tools'
   - cmake
   - git
   - krb5-devel              # required to build pykerberos
