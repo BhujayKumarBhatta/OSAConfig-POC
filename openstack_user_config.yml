@@ -51,7 +51,7 @@ global_overrides:
         container_interface: "eth12"
         #container_mtu: "9000"
         #host_bind_override: "bond2" #?????? this ovverrides is trying to search eth2 on compute node 
-        host_bind_override: "eno2" #?????? this ovverrides is trying to search eth2 on compute node  
+        host_bind_override: "bond2" #?????? this ovverrides is trying to search eth2 on compute node  
         type: "flat"
         net_name: "flat"
         group_binds:
