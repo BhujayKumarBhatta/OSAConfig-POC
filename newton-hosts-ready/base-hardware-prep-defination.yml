@@ -398,12 +398,12 @@ target_hosts:
  kvm3:
     roles: novacompute
     network_interfaces:
-       p2p1:
+       enp3s0:
          type: Ethernet
          bondedWith: bond1
          #when used directly  attributes address: , mask: , gateway:  can be used. Same is true for bond, vlan and bridges as well
          description:
-       p1p1:
+       enp130s0:
          type: Ethernet
          bondedWith: bond2
          description:
