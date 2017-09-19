@@ -1,7 +1,8 @@
 ---
 #virt-host-validate output should be checked for intel_iommu=on
 - name: validate if the host is capable of running KVM
-  shell: virt-host-validate|grep WARN|grep 'intel_iommu=on'
+#  shell: virt-host-validate|grep WARN|grep 'intel_iommu=on'
+  shell: virt-host-validate|grep PASS
   register: kvmtestresult
   tags: iommu
 - debug:
