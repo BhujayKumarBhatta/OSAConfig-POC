@@ -8,8 +8,8 @@ servers_to_reboot:
 #  - infra3
 #  - infra4 
 #  - kvm1
-  - kvm2
-#  - kvm3
+#  - kvm2
+  - kvm3
 #  - kvm4
 #  - bm1
 #  - haproxy1
