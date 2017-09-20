@@ -1,3 +1,11 @@
+================Start==============================================================
+Ensure in Ansible Server  is able to reach all  the POD IP's 
+
+ip addr add  10.0.1.54/24 dev br-mgmt
+ip addr add 20.0.0.54/24 dev br-storage
+ip addr add 20.0.1.54/24 dev br-storage
+
+
 This project will prepare the  ubuntu16  and rhel7 hardware  for running openstack ansible .
 1. inventory\inventory-base-hw-prep :  insert the hostname and ip address under 
 	a. [base_hw_prep_for_openstack]
@@ -35,6 +43,11 @@ This project will prepare the  ubuntu16  and rhel7 hardware  for running opensta
     
    
 6. ansible-playbook -i inventory start.yml  --ask-vault-pass
+
+=========================================End =================================================
+
+
+
 
 
 future developments:
