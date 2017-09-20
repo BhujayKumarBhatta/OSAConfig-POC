@@ -1,0 +1,25 @@
+---
+- name: install Chrony package CentOS
+  yum:
+    name: chrony
+    state: present      
+  tags: chrony 
+- name: Enable  Chrony after boot  - CentOS
+  systemd: 
+    name: chronyd
+    state: started
+    enabled: yes
+  tags: chrony
+- name: Configure Chrony  - CentOS
+  template:
+    src: chrony.conf.redhat.j2
+    dest: /etc/chrony.conf
+    backup: yes  
+  register: chronycofigstat
+  tags: chrony  
+- name: Restart Chrony - CentOS
+  systemd: 
+    name: chronyd
+    state: restarted
+  when: chronycofigstat.changed
+  tags: chrony
