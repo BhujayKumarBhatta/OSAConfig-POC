@@ -272,7 +272,9 @@ sahara-infra_hosts:
 ####################################################################################################
 # nova hypervisors
 compute_hosts:
-  kvm1:  
+  kvm1: 
+    container_vars:
+      nova_virt_type: qemu 
     ip: 10.0.0.31
 #  kvm2:
 #    ip: 10.0.0.32   
