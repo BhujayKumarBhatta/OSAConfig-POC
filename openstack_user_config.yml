@@ -47,11 +47,9 @@ pod2_hosts:
     ip: 10.0.1.33  
   kvm5:    
     ip: 10.0.1.35  
-#pod2_hosts:
-#  haproxy1:
-#    ip: 10.0.0.51    
-#  haproxy2:
-#    ip: 10.0.0.52
+  neutron1:
+    ip: 10.0.1.41
+    
 
 global_overrides:
   internal_lb_vip_address: 10.0.0.14
