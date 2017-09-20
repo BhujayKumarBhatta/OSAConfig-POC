@@ -8,9 +8,9 @@ servers_to_reboot:
 #  - infra3
 #  - infra4 
 #  - kvm1
-  - kvm2
+#  - kvm2
 #  - kvm3
-#  - kvm4
+  - kvm5
 #  - bm1
 #  - haproxy1
 #  - rsyslog
@@ -398,12 +398,12 @@ target_hosts:
  kvm5:
     roles: novacompute
     network_interfaces:
-       enp2s0f0:
+       eno1:
          type: Ethernet
          bondedWith: bond1
          #when used directly  attributes address: , mask: , gateway:  can be used. Same is true for bond, vlan and bridges as well
          description:
-       enp2s0f1:
+       eno2:
          type: Ethernet
          bondedWith: bond2
          description:

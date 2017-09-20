@@ -2,10 +2,10 @@
 - name: Enable  Redhat Subscription
   redhat_subscription:
    state: present
-   force_register: no
+   force_register: yes
    username: "{{ redhat_subscription_username }}"
    password: "{{ redhat_subscription_password }}"
-   autosubscribe: false
+   autosubscribe: true
    #try the following if autosubscription doesnt work
    #activationkey:
    #org_id: 
