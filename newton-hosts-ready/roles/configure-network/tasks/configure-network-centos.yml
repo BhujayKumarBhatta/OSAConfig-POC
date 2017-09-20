@@ -1,0 +1,58 @@
+- name: Ensure all network packges are installed
+  yum:
+    name: "{{ item }}"
+    state: latest    
+  with_items:    
+     - bridge-utils
+     - iputils
+     #- NetworkManager 
+     #- NetworkManager-glib
+#     - libnm-qt-devel.x86_64
+#     - nm-connection-editor.x86_64
+#     - libsemanage-python
+#     - policycoreutils-python
+  tags:
+    - networking-pkg
+
+
+- name:  create network config files for redhat or CentOS
+  template:
+        src: ifcfg-nic.j2
+        dest: "/etc/sysconfig/network-scripts/ifcfg-{{ item.key }}"
+        #dest: "/root/bhujay/ifcfg-{{ item.key }}"
+        backup: yes
+  with_dict: "{{ target_hosts[ansible_hostname].network_interfaces }}"
+
+
+
+    
+#- name: Add the OS specific varibles
+#  include_vars: nic.yml
+        
+#- debug: 
+#    msg: "{{ item.name }}"
+#  with_items: "{{ target_hosts[ansible_hostname].Bond_Interfaces }}"
+#
+#- name: nmcli add Ethernet Interface
+#  nmcli:
+#      type: ethernet
+#      conn_name: '{{ item.name }}'
+#      ip4: '{{ item.address }}'
+#      gw4: '{{ item.gateway }}'
+#      state: present
+#  with_items: "{{ target_hosts[ansible_hostname].Physical_Interfaces }}"
+#  when: item.gateway
+#  
+#- name: Create Bond  
+#  nmcli:
+#      type: bond
+#      conn_name: "{{ item.name }}"
+#      ip4: "{{ item.address }}"
+#      gw4: "{{ item.gateway }}"
+#      mode: "{{ item.mode }}"
+#      state: present
+#  with_items: "{{ target_hosts[ansible_hostname].Bond_Interfaces }}"
+      
+
+
+

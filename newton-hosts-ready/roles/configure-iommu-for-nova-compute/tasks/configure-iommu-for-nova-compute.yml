@@ -1,9 +1,10 @@
 ---
 #virt-host-validate output should be checked for intel_iommu=on
 - name: validate if the host is capable of running KVM
-  shell: virt-host-validate|grep WARN|grep 'intel_iommu=on'
-#  shell: virt-host-validate|grep PASS
+#  shell: virt-host-validate|grep WARN|grep 'intel_iommu=on'
+  shell: virt-host-validate|grep WARN
   register: kvmtestresult
+  ignore_errors: yes
   tags: iommu
 - debug:
      msg: "{{ kvmtestresult }}"
@@ -15,7 +16,7 @@
     line: 'GRUB_CMDLINE_LINUX_DEFAULT="intel_iommu=on"'
     backup: yes
   register: grubfilestat
-  when: kvmtestresult.rc == 0
+#  when: kvmtestresult.rc == 0
   tags: iommu
 - name: Updating grub for ubuntu usinh grub-update
   command: update-grub

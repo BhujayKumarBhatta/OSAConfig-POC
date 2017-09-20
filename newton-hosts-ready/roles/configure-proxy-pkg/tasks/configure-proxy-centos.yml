@@ -1,0 +1,19 @@
+
+- name: enable EPEL repo
+  yum_repository:
+    file: epel
+    name: epel
+    baseurl: http://centos-hcm.viettelidc.com.vn
+    enabled: yes
+    description: epel
+    gpgcheck: no
+  #tags: config-pkg
+- name: Run yum update and upgrade
+  yum:
+    update_cache: yes
+    name: '*'
+    state: latest
+    #upgrade: dist    
+    disable_gpg_check: "{{ yum_gpg_check }}"
+    validate_certs: "{{ yum_validate_certs }}"
+  #tags:  config-pkg
