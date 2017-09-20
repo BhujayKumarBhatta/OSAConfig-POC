@@ -1,30 +1,9 @@
 
-- name: Enable  Redhat Subscription
-  redhat_subscription:
-   state: present
-   force_register: no
-   username: "{{ redhat_subscription_username }}"
-   password: "{{ redhat_subscription_password }}"
-   autosubscribe: false
-   #try the following if autosubscription doesnt work
-   #activationkey:
-   #org_id: 
-   #pool: '^(Red Hat Enterprise Server|Red Hat Virtualization)$'
-  #tags: config-pkg
-- name: enable redhat optional packages
-  yum_repository:
-    file: redhat
-    name: rhel-7-server-optional-rpms
-    baseurl: https://cdn.redhat.com/content/dist/rhel/server/7/$releaseserver/$basearch/optional/os
-    enabled: yes
-    description: optional-redhat
-    gpgcheck: yes
-  #tags: config-pkg
 - name: enable EPEL repo
   yum_repository:
     file: epel
     name: epel
-    baseurl: https://ftp.yz.yamagata-u.ac.jp/pub/linux/fedora-projects/epel/7/x86_64
+    baseurl: http://centos-hcm.viettelidc.com.vn
     enabled: yes
     description: epel
     gpgcheck: no
