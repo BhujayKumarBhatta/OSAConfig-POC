@@ -1,5 +1,5 @@
 - include: install-yum-pkg.yml
-  when: ansible_distribution == "CentOS"
+  when: ansible_distribution == "Redhat" or ansible_distribution == "CentOS"
   tags: package-install
 
 - include: install-apt-pkg.yml

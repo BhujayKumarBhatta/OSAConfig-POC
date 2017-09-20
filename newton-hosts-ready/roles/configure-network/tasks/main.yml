@@ -2,6 +2,11 @@
   when: ansible_distribution == "RedHat"
   tags: network
 
+- include: configure-network-centos.yml
+  when: ansible_distribution == "CentOS"
+  tags: network
+
+
 #- include: configure-proxy-apt.yml
 #  when: ansible_distribution == "Ubuntu"
 #  tags: package-manager
