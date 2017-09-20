@@ -468,7 +468,7 @@ target_hosts:
  
 #------------------------------------------------------------------------------------------------------------------   
  rsyslog1:
-   hostname: rsyslog
+   hostname: rsyslog1
    ssh_ip: 10.0.0.57
    roles: rsyslog
    change_network_interface_file: True
