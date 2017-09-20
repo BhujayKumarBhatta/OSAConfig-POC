@@ -5,7 +5,7 @@
 #  tags: package-manager
 
 - include: configure-proxy-yum.yml
-  when: ansible_distribution == "RedHat"
+  when: ansible_distribution == "CentOS"
   tags: package-manager
 
 - include: configure-proxy-apt.yml
