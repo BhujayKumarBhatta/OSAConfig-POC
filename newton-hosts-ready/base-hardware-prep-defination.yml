@@ -306,36 +306,30 @@ target_hosts:
          gateway: 20.0.0.1
 
 
-#---------------------Neutron1 staying with Compute network pod ----------------------------
+#---------------------Neutron1 staying with Compute network pod -POD 2 ---------------------------
 
  neutron1:
    hostname: neutron1
-   ssh_ip: 10.0.0.41
+   ssh_ip: 10.0.1.41
    roles: controller
    change_network_interface_file: True
    nic: 
      - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface eno1 , part of bond1 }
-     - {nicName: enp15s3f0,bonded_with: bond1 ,  bond_primary: False, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface enp15s3f0 , part of bond1 }
+             description: physical interface eno1 , part of bond1 }    
      - {nicName: eno2,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: physical interface part of bond 2 connected to switch ....}
-     - {nicName: enp15s3f1,bonded_with: bond3,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface part of bond 3 }                  
+                  
    bond: 
      - {bondName: bond1, bondNic: eno1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
              description: bond 1 using NIC eno1 }  
      - {bondName: bond2, bondNic: eno2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 2 using NIC eno2 }    
-     - {bondName: bond3, bondNic: enp15s3f1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 3 using NIC enp15s3f1 }          
+             description: bond 2 using NIC eno2 }                
    vNic:
      - {vNicName: bond1.10, vNicParent: bond1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: used by br-storage bridge } 
      - {vNicName: bond2.20,vNicParent: bond2, address: ,netmask: ,network: ,broadcast:  ,gateway: ,dns: , 
              description: used by br-vxlan bridge} 
-     - {vNicName: bond3.30,vNicParent: bond3, address: ,netmask: ,network: ,broadcast:  ,gateway: ,dns: , 
-             description: used by br-ceph bridge}                                 
+                                
    bridges: 
      - {brName: br-mgmt,brPort: bond1, address: 10.0.1.41 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 10.0.1.1,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }     
@@ -345,7 +339,7 @@ target_hosts:
              description: Used for tenant network , virtual network. On Controller this bridge will not have address}
       
 
-#------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------POD2 host --------------------------------------------------------------
  kvm1:
    hostname: kvm1
    ssh_ip: 10.0.1.31
@@ -375,7 +369,7 @@ target_hosts:
              description: USed for Provider Network flat or vlan , To be connected to external router gateway. Bridge doesn't have any IP}
      - {brName: br-vxlan,brPort: bond2.20, address: 30.0.1.31 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, 
              description: Used for tenant network , virtual network. On Compute node this will have address}   
-#-------------------------------------------------------------------------------------------------------------------   
+#-----------------------------------------POD 2 host --------------------------------------------------------------------------   
  kvm3:
     roles: novacompute
     network_interfaces:
@@ -423,7 +417,7 @@ target_hosts:
          address: 30.0.1.33
          netmask: 255.255.255.0
 
- #---------------------------------------------------------------------------------------------------------------- 
+ #--------------------------------POD 2 host -------------------------------------------------------------------------------- 
  kvm5:
     roles: novacompute
     network_interfaces:
@@ -470,35 +464,8 @@ target_hosts:
          type: Bridge
          address: 30.0.1.35
          netmask: 255.255.255.0
- storage1:
-   hostname: storage1
-   ssh_ip: 10.0.0.42
-   roles: controller
-   change_network_interface_file: True
-   nic: 
-     - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface eno1 , part of bond1 }
-     - {nicName: eno2,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface part of bond 2 connected to switch ....}                  
-   bond: 
-     - {bondName: bond1, bondNic: eno1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 1 using NIC eno1 }  
-     - {bondName: bond2, bondNic: eno2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 2 using NIC eno2 }             
-   vNic:
-     - {vNicName: bond1.10, vNicParent: bond1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: used by br-storage bridge } 
-     - {vNicName: bond2.20,vNicParent: bond2, address: ,netmask: ,network: ,broadcast:  ,gateway: ,dns: , 
-             description: used by br-vxlan bridge}            
-   bridges: 
-     - {brName: br-mgmt,brPort: bond1, address: 10.0.0.42 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
-             description: USed for Openstack Managment, SSH and api access }
-     - {brName: br-storage,brPort: bond1.10, address: 10.0.2.42 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
-             description: USed for Openstack Storage }
-     - {brName: br-vlan,brPort: bond2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
-             description: USed for Provider Network flat or vlan , To be connected to external router gateway. Bridge doesn't have any IP}
-     - {brName: br-vxlan,brPort: bond2.20, address: 10.0.1.42 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, 
-             description: Used for tenant network , virtual network. On Compute node this will have address}   
+      
+ 
 #------------------------------------------------------------------------------------------------------------------   
  rsyslog1:
    hostname: rsyslog
@@ -523,7 +490,7 @@ target_hosts:
    bridges: 
      - {brName: br-mgmt,brPort: bond1, address: 10.0.0.57 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 10.0.0.1 ,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
-     - {brName: br-storage,brPort: bond1.10, address: 20.0.1.57 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 20.0.0.1,dns: ,part_of_vlan: True,
+     - {brName: br-storage,brPort: bond1.10, address: 20.0.0.57 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 20.0.0.1,dns: ,part_of_vlan: True,
              description: USed for Openstack Storage }
 ##############################################################################################################
 #  Swift Nodes for OpenStack
@@ -548,9 +515,9 @@ target_hosts:
              description: used by br-storage bridge } 
                      
     bridges: 
-      - {brName: br-mgmt,brPort: bond1, address: 10.0.0.45 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+      - {brName: br-mgmt,brPort: bond1, address: 10.0.0.45 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 20.0.0.1,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
-      - {brName: br-storage,brPort: bond1.10, address: 10.0.2.45 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+      - {brName: br-storage,brPort: bond1.10, address: 20.0.0.45 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 20.0.0.1 ,dns: ,part_of_vlan: True,
              description: USed for Storage Network VLAN }
       - {brName: br-swift,brPort: bond2, address: 12.0.0.45 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: Used for Openstack Swift }
@@ -573,9 +540,9 @@ target_hosts:
      - {vNicName: bond1.10, vNicParent: bond1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: used by br-storage bridge }                         
     bridges: 
-      - {brName: br-mgmt,brPort: bond1, address: 10.0.0.46 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+      - {brName: br-mgmt,brPort: bond1, address: 10.0.0.46 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 20.0.0.1,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
-      - {brName: br-storage,brPort: bond1.10, address: 10.0.2.46 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+      - {brName: br-storage,brPort: bond1.10, address: 20.0.0.46 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 20.0.0.1,dns: ,part_of_vlan: True,
              description: USed for Storage Network VLAN }
       - {brName: br-swift,brPort: bond2, address: 12.0.0.46 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: Used for Openstack Swift }
@@ -599,9 +566,9 @@ target_hosts:
              description: used by br-storage bridge }                         
                         
     bridges: 
-      - {brName: br-mgmt,brPort: bond1, address: 10.0.0.47 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+      - {brName: br-mgmt,brPort: bond1, address: 10.0.0.47 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 20.0.0.1,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
-      - {brName: br-storage,brPort: bond1.10, address: 10.0.2.47 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+      - {brName: br-storage,brPort: bond1.10, address: 20.0.0.47 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 20.0.0.1,dns: ,part_of_vlan: True,
              description: USed for Storage Network VLAN }
       - {brName: br-swift,brPort: bond2, address: 12.0.0.47 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: Used for Openstack Swift }  
@@ -628,9 +595,9 @@ target_hosts:
              description: used by br-ceph bridge }                           
                         
     bridges: 
-      - {brName: br-mgmt,brPort: bond1, address: 10.0.0.91 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+      - {brName: br-mgmt,brPort: bond1, address: 10.0.0.91 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 10.0.0.1,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
-      - {brName: br-storage,brPort: bond1.10, address: 10.0.2.91 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+      - {brName: br-storage,brPort: bond1.10, address: 20.0.0.91 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 20.0.0.1,dns: ,part_of_vlan: True,
              description: USed for Storage Network VLAN }
       - {brName: br-ceph,brPort: bond2.30, address: 13.0.0.91 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: Used for Openstack Ceph }  
@@ -657,71 +624,14 @@ target_hosts:
              description: used by br-ceph bridge }                              
                         
     bridges: 
-      - {brName: br-mgmt,brPort: bond1, address: 10.0.0.92 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+      - {brName: br-mgmt,brPort: bond1, address: 10.0.0.92 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 10.0.0.1,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
-      - {brName: br-storage,brPort: bond1.10, address: 10.0.2.92 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+      - {brName: br-storage,brPort: bond1.10, address: 20.0.0.92 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 20.0.0.1,dns: ,part_of_vlan: True,
              description: USed for Storage Network VLAN }
       - {brName: br-ceph,brPort: bond2.30, address: 13.0.0.92 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: Used for Openstack Ceph }  
 
- ceph-osd3:
-    hostname: ceph-osd3
-    ssh_ip: 10.0.0.93
-    roles: controller
-    change_network_interface_file: True
-    nic: 
-      - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface eno1 , part of bond1 }
-      - {nicName: eno2,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface eno2 , part of bond 2 connected to switch ....}                  
-    bond: 
-      - {bondName: bond1, bondNic: eno1 , address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 1 using NIC eno1 }  
-      - {bondName: bond2, bondNic: eno2 , address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 2 using NIC eno2 }
-    vNic:
-     - {vNicName: bond1.10, vNicParent: bond1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: used by br-storage bridge }
-     - {vNicName: bond2.30, vNicParent: bond2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: used by br-ceph bridge }                             
-                        
-    bridges: 
-      - {brName: br-mgmt,brPort: bond1, address: 10.0.0.93 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
-             description: USed for Openstack Managment, SSH and api access }
-      - {brName: br-storage,brPort: bond1.10, address: 10.0.2.93 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
-             description: USed for Storage Network VLAN }
-      - {brName: br-ceph,brPort: bond2.30, address: 13.0.0.93 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
-             description: Used for Openstack Ceph } 
- ceph-osd4:
-    hostname: ceph-osd4
-    ssh_ip: 10.0.0.94
-    roles: controller
-    change_network_interface_file: True
-    nic: 
-      - {nicName: eno1,bonded_with: bond1 ,  bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface eno1 , part of bond1 }
-      - {nicName: eno2,bonded_with: bond2,bond_primary: True, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: physical interface eno2 , part of bond 2 connected to switch ....}                  
-    bond: 
-      - {bondName: bond1, bondNic: eno1 , address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 1 using NIC eno1 }  
-      - {bondName: bond2, bondNic: eno2 , address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
-             description: bond 2 using NIC eno2 }
-    vNic:
-     - {vNicName: bond1.10, vNicParent: bond1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: used by br-storage bridge }
-     - {vNicName: bond2.30, vNicParent: bond2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
-             description: used by br-ceph bridge }                             
-                        
-    bridges: 
-      - {brName: br-mgmt,brPort: bond1, address: 10.0.0.94 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
-             description: USed for Openstack Managment, SSH and api access }
-      - {brName: br-storage,brPort: bond1.10, address: 10.0.2.94 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
-             description: USed for Storage Network VLAN }
-      - {brName: br-ceph,brPort: bond2.30, address: 13.0.0.94 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
-             description: Used for Openstack Ceph }            
-   
-            
+             
              
 #############################################################################################################
 #    This section for defining conatiner that need to be created in one of the physical host 
