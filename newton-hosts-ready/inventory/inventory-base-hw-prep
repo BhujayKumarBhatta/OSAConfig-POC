@@ -8,7 +8,7 @@
 #infra4		ansible_host=10.0.0.24
 #kvm1		ansible_host=10.0.0.31
 #kvm2		ansible_host=10.0.0.32
-kvm3		ansible_host=10.0.0.33
+kvm5		ansible_host=10.0.0.35
 #kvm4		ansible_host=10.0.0.34
 #rsyslog 	ansible_host=10.0.0.57
 #storage1	ansible_host=10.0.0.42

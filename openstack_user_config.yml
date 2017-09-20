@@ -276,16 +276,16 @@ compute_hosts:
     container_vars:
       nova_virt_type: qemu 
     ip: 10.0.0.31
-#  kvm2:
-#    ip: 10.0.0.32   
+  kvm5:
+    ip: 10.0.0.35   
   kvm3:
     ip: 10.0.0.33
 # ceilometer compute agent (telemetry)
 metering-compute_hosts:
   kvm1:
     ip: 10.0.0.31
-#  kvm2:  
-#    ip: 10.0.0.32
+#  kvm5:  
+#    ip: 10.0.0.35
   kvm3: 
     ip: 10.0.0.33
 #  bm1:

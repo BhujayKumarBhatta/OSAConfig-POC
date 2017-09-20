@@ -9,8 +9,8 @@ servers_to_reboot:
 #  - infra4 
 #  - kvm1
 #  - kvm2
-  - kvm3
-#  - kvm4
+#  - kvm3
+  - kvm5
 #  - bm1
 #  - haproxy1
 #  - rsyslog
@@ -395,15 +395,15 @@ target_hosts:
      - {brName: br-vxlan,brPort: bond2.20, address: 10.0.1.34 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, 
              description: Used for tenant network , virtual network. On Compute node this will have address}    
 #---------------------------------------------------------------------------------------------------------------- 
- kvm3:
+ kvm5:
     roles: novacompute
     network_interfaces:
-       p3p1:
+       eno1:
          type: Ethernet
          bondedWith: bond1
          #when used directly  attributes address: , mask: , gateway:  can be used. Same is true for bond, vlan and bridges as well
          description:
-       p1p1:
+       eno2:
          type: Ethernet
          bondedWith: bond2
          description:
@@ -428,17 +428,17 @@ target_hosts:
          description:
        br-mgmt:
          type: Bridge
-         address: 10.0.0.33
+         address: 10.0.0.35
          netmask: 255.255.255.0
          gateway: 10.0.0.1
          description:
        br-storage:
          type: Bridge
-         address: 10.0.2.33
+         address: 10.0.2.35
          netmask: 255.255.255.0
        br-vxlan:
          type: Bridge
-         address: 10.0.1.33
+         address: 10.0.1.35
          netmask: 255.255.255.0
  storage1:
    hostname: storage1
