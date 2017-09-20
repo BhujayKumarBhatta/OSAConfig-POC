@@ -15,7 +15,7 @@
     - networking-pkg
 
 
-- name:  create network config files for redhat
+- name:  create network config files for redhat or CentOS
   template:
         src: ifcfg-nic.j2
         dest: "/etc/sysconfig/network-scripts/ifcfg-{{ item.key }}"
