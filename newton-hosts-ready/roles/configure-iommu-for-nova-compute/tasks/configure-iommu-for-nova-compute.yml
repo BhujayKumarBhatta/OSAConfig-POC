@@ -4,7 +4,7 @@
 #  shell: virt-host-validate|grep WARN|grep 'intel_iommu=on'
   shell: virt-host-validate|grep WARN
   register: kvmtestresult
-  ignore_error: yes
+  ignore_errors: yes
   tags: iommu
 - debug:
      msg: "{{ kvmtestresult }}"
