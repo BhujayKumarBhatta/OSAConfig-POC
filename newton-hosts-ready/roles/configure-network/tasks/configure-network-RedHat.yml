@@ -13,7 +13,7 @@
 #     - policycoreutils-python
   tags:
     - networking-pkg
-
+    - configure-network
 
 - name:  create network config files for redhat
   template:
@@ -22,7 +22,9 @@
         #dest: "/root/bhujay/ifcfg-{{ item.key }}"
         backup: yes
   with_dict: "{{ target_hosts[ansible_hostname].network_interfaces }}"
-
+  tags:
+    - networking-pkg
+    - configure-network
 
 
     
