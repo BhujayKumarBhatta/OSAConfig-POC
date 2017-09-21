@@ -8,7 +8,7 @@
     
     enabled: yes
     description: epel
-    gpgcheck: no
+    gpgcheck: yes
   #tags: config-pkg
 - name: Run yum update and upgrade
   yum:
