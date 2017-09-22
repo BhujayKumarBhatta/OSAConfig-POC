@@ -16,6 +16,7 @@ debug: false
 validate_certs: false
 percona_package_download_validate_certs: false
 haproxy_hatop_download_validate_certs: false
+
 #pip_validate_certs: false
 #galera_package_download_validate_certs: false
 # use the keepalived  floating ip  of haproxy server as the proxy to avoid dependency on 52
