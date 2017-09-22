@@ -1,0 +1,20 @@
+127.0.0.1       localhost
+10.0.0.54       ansiblenew
+
+# The following lines are desirable for IPv6 capable hosts
+::1     localhost ip6-localhost ip6-loopback
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+10.0.0.51       haproxy1
+10.0.0.52       haproxy2
+10.0.0.21       infra1
+10.0.0.22       infra2
+10.0.0.23       infra3
+10.0.0.24       infra4
+10.0.0.57       rsyslog1
+10.0.0.91       ceph-osd1
+10.0.0.92       ceph-osd2
+10.0.1.41       newtron1
+10.0.1.33       kvm3
+10.0.1.31       kvm1
+10.0.1.35       kvm5
