@@ -96,7 +96,7 @@ galera_package_download_validate_certs: false
 # apt install python-mysqldb
 
 galera_pip_packages: 
-   #  - MySQL-python
+      - MySQL-python
       - pycrypto
 
 # this is a place holder for nova config-drive , we will test it later
