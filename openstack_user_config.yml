@@ -236,10 +236,12 @@ shared-infra_hosts:
     ip: 10.0.0.23  
 # repository (apt cache, python packages, etc)
 repo-infra_hosts:
-  infra1:
-    ip: 10.0.0.21
+#  infra1:
+#    ip: 10.0.0.21
   infra2:
     ip: 10.0.0.22
+  infra3:
+    ip: 10.0.0.23 
 #  infra4:  
 #    ip: 10.0.0.24 
 ###
