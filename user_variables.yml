@@ -116,13 +116,15 @@ keepalived_use_latest_stable: True
 
 cephx: true
 ceph_mons:
-   - 20.0.0.248
-   - 20.0.0.112
-   - 20.0.0.136
+  - 20.0.0.248
+  - 20.0.0.112
+  - 20.0.0.136 
+
 monitor_interface: eth2
 #monitor_address: 20.0.0.0/24
 public_network: 20.0.0.0/24
 cluster_network: 13.0.0.0/24 
+
 #mon_group_name: ceph-mon
 
 # When nova_libvirt_images_rbd_pool is defined, ceph will be installed on nova
