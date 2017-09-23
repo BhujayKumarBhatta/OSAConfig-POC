@@ -16,6 +16,7 @@ debug: false
 validate_certs: false
 percona_package_download_validate_certs: false
 haproxy_hatop_download_validate_certs: false
+#lxc_hosts_validate_certs: false
 
 #pip_validate_certs: false
 #galera_package_download_validate_certs: false
@@ -89,6 +90,14 @@ keepalived_use_latest_stable: True
 #within the project and will be named using the *_validate_certs pattern
 pip_validate_certs: false
 galera_package_download_validate_certs: false
+
+#for galera problem " during mysql_user: execution it cant find python musqldb module
+#we are  removing  MySQL-python from galera pip pkgs and manually installing 
+# apt install python-mysqldb
+
+galera_pip_packages: 
+   #  - MySQL-python
+      - pycrypto
 
 # this is a place holder for nova config-drive , we will test it later
 

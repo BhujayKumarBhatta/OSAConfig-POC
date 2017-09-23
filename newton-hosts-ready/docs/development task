@@ -1,0 +1,24 @@
+in network template  for default gateway
+
+auto lo
+iface lo inet loopback
+auto eth0
+iface eth0 inet static
+    address 192.168.1.10
+    netmask 255.255.255.0
+    network 192.168.1.0
+    broadcast 192.168.1.254
+    post-up route add default gw 192.168.1.1 metric 1
+    pre-down route del default gw 192.168.1.1
+
+auto eth1
+iface eth1 inet static
+    address 192.168.2.10
+    netmask 255.255.255.0
+    network 192.168.2.0
+    broadcast 192.168.2.254
+    post-up route add default gw 192.168.2.1 metric 2
+    pre-down route del default gw 192.168.2.1
+    
+in centos epel repo gpg check = 0
+
