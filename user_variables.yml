@@ -1,5 +1,5 @@
 ---
-repo_build_venv_timeout: 120
+
 #lxc_net_mtu: "9000"
 #lxc_container_default_mtu: "9000"
 
@@ -17,9 +17,22 @@ validate_certs: false
 percona_package_download_validate_certs: false
 haproxy_hatop_download_validate_certs: false
 #lxc_hosts_validate_certs: false
+#+++++++++++++++++Proxying TLS traffic often interferes with the clients ability to perform 
+#successful validation of the certificate chain.Additional variables may exist
+#within the project and will be named using the *_validate_certs pattern
+pip_validate_certs: false
+galera_package_download_validate_certs: false
 
-#pip_validate_certs: false
-#galera_package_download_validate_certs: false
+repo_build_git_reclone: no
+repo_build_wheel_rebuild: no
+repo_build_venv_rebuild: yes
+repo_build_venv_timeout: 120
+# Optionally set this to a list of packages which must always have the wheel
+# compiled from source. This will ensure that a pre-compiled wheel is not
+# downloaded from any of the indexes.
+#repo_build_pip_no_binary:
+#  - libvirt-python
+
 # use the keepalived  floating ip  of haproxy server as the proxy to avoid dependency on 52
 proxy_env_url: "http://10.0.0.14:3128"
 # no_proxy_env: "localhost,127.0.0.1,{{ internal_lb_vip_address }},{{ external_lb_vip_address }},{% for host in groups['all_containers'] %}{{ hostvars[host]['container_address'] }}{% if not loop.last %},{% endif %}{% endfor %}"
@@ -85,11 +98,7 @@ haproxy_keepalived_internal_interface: br-mgmt
 keepalived_ping_address: 10.0.0.54
 #ocata
 keepalived_use_latest_stable: True
-#+++++++++++++++++Proxying TLS traffic often interferes with the clients ability to perform 
-#successful validation of the certificate chain.Additional variables may exist
-#within the project and will be named using the *_validate_certs pattern
-pip_validate_certs: false
-galera_package_download_validate_certs: false
+
 
 #for galera problem " during mysql_user: execution it cant find python musqldb module
 #we are  removing  MySQL-python from galera pip pkgs and manually installing 
