@@ -124,6 +124,7 @@ monitor_interface: eth2
 #monitor_address: 20.0.0.0/24
 public_network: 20.0.0.0/24
 cluster_network: 13.0.0.0/24 
+monitor_address_block: 20.0.0.0/24
 
 #mon_group_name: ceph-mon
 
