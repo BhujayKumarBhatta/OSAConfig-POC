@@ -25,7 +25,7 @@ galera_package_download_validate_certs: false
 
 repo_build_git_reclone: no
 repo_build_wheel_rebuild: no
-repo_build_venv_rebuild: yes
+repo_build_venv_rebuild: no
 repo_build_venv_timeout: 120
 # Optionally set this to a list of packages which must always have the wheel
 # compiled from source. This will ensure that a pre-compiled wheel is not
