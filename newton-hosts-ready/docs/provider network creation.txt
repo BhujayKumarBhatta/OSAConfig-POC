@@ -1,0 +1,107 @@
+openstack network create  --provider-physical-network vlan --provider-network-type vlan --provider-segment 303 --external --enable --share provider-303
+
+openstack subnet create --subnet-range 191.1.1.0/24  --allocation-pool start=191.1.1.10,end=191.1.1.250 --gateway 191.1.1.1 --network provider-303 sunet-303
+
+root@ansiblenew:/opt/openstack-ansible/playbooks# openstack network list
++--------------------------------------+--------------+--------------------------------------+
+| ID                                   | Name         | Subnets                              |
++--------------------------------------+--------------+--------------------------------------+
+| 64dbd227-872f-4361-9faf-9d6408a092e8 | provider-303 | d20afc72-ef4c-413e-a0c7-ee4f252e1d9d |
+| dd297a60-d651-4abb-b487-616dabfee9b9 | pocnet       | fb612554-72b0-4e63-9526-5ef33dd41e44 |
+
+
+root@ansiblenew:/opt/openstack-ansible/playbooks# ip link
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+2: enp5s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq master br-mgmt state UP mode DEFAULT group default qlen 1000
+    link/ether 00:18:8b:43:54:0f brd ff:ff:ff:ff:ff:ff
+3: enp9s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq master br-vlan state UP mode DEFAULT group default qlen 1000
+    link/ether 00:18:8b:43:54:11 brd ff:ff:ff:ff:ff:ff
+4: enp5s0.102@enp5s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br-storage state UP mode DEFAULT group default qlen 1000
+    link/ether 00:18:8b:43:54:0f brd ff:ff:ff:ff:ff:ff
+5: enp9s0.10@enp9s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br-vxlan state UP mode DEFAULT group default qlen 1000
+    link/ether 00:18:8b:43:54:11 brd ff:ff:ff:ff:ff:ff
+6: enp9s0.303@enp9s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br-provider state UP mode DEFAULT group default qlen 1000
+    link/ether 00:18:8b:43:54:11 brd ff:ff:ff:ff:ff:ff
+7: br-storage: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+    link/ether 00:18:8b:43:54:0f brd ff:ff:ff:ff:ff:ff
+8: br-vxlan: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+    link/ether 00:18:8b:43:54:11 brd ff:ff:ff:ff:ff:ff
+9: br-provider: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+    link/ether 00:18:8b:43:54:11 brd ff:ff:ff:ff:ff:ff
+10: br-mgmt: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+    link/ether 00:18:8b:43:54:0f brd ff:ff:ff:ff:ff:ff
+11: br-vlan: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+    link/ether 00:18:8b:43:54:11 brd ff:ff:ff:ff:ff:ff
+12: br-mgmt.101@br-mgmt: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+    link/ether 00:18:8b:43:54:0f brd ff:ff:ff:ff:ff:ff
+root@ansiblenew:/opt/openstack-ansible/playbooks#ip a 
+
+
+9: br-provider: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether 00:18:8b:43:54:11 brd ff:ff:ff:ff:ff:ff
+    inet 191.1.1.1/24 brd 191.1.1.255 scope global br-provider
+       valid_lft forever preferred_lft forever
+    inet6 fe80::218:8bff:fe43:5411/64 scope link
+
+
+
+Provider network is there and a gateway server with matching valn id 303 has been created , we need to check if  network ip within the openstack env 
+is reachable or not . Creating a server on this 303 net is the final goal , however a server reahbility depends on  security group and os image 
+proper functioning , hence a simple way to test will be creating a router and setting up  its gateway as this network .  The router will have a ip 
+(in this case 191.1.1.18 ) and we can check its reachability . 
+
+ openstack router create r1
+
+openstack router set --external-gateway provider-303 r1
+
+root@ansiblenew:/opt/openstack-ansible/playbooks# openstack router show r1
++-------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Field                   | Value                                                                                                                                                                                  |
++-------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| admin_state_up          | UP                                                                                                                                                                                     |
+| availability_zone_hints |                                                                                                                                                                                        |
+| availability_zones      | nova                                                                                                                                                                                   |
+| created_at              | 2017-09-24T06:13:51Z                                                                                                                                                                   |
+| description             |                                                                                                                                                                                        |
+| distributed             | False                                                                                                                                                                                  |
+| external_gateway_info   | {"network_id": "64dbd227-872f-4361-9faf-9d6408a092e8", "enable_snat": true, "external_fixed_ips": [{"subnet_id": "d20afc72-ef4c-413e-a0c7-ee4f252e1d9d", "ip_address": "191.1.1.18"}]} |
+| flavor_id               | None                                                                                                                                                                                   |
+| ha                      | False                                                                                                                                                                                  |
+| id                      | a5fd0f40-44dd-43d0-853d-a880e90612bb                                                                                                                                                   |
+| name                    | r1                                                                                                                                                                                     |
+| project_id              | 8e13cb3b05ec4c7d87bac8ffe9f2bd19                                                                                                                                                       |
+| revision_number         | 2                                                                                                                                                                                      |
+| routes                  |                                                                                                                                                                                        |
+| status                  | ACTIVE                                                                                                                                                                                 |
+| tags                    | []                                                                                                                                                                                     |
+| updated_at              | 2017-09-24T06:15:22Z                                                                                                                                                                   |
++-------------------------+---------------------------------------------
+
+
+root@ansiblenew:/opt/openstack-ansible/playbooks# ping 191.1.1.18
+PING 191.1.1.18 (191.1.1.18) 56(84) bytes of data.
+64 bytes from 191.1.1.18: icmp_seq=1 ttl=64 time=0.400 ms
+64 bytes from 191.1.1.18: icmp_seq=2 ttl=64 time=0.128 ms
+64 bytes from 191.1.1.18: icmp_seq=3 ttl=64 time=0.155 ms
+^C
+
+
+
+openstack server  create --nic net-id=64dbd227-872f-4361-9faf-9d6408a092e8 --image cirros  --flavor small --availability-zone nova:kvm1:kvm1 --security-group ssh-ping s3
+
+root@ansiblenew:/opt/openstack-ansible/playbooks# openstack server  create --nic net-id=64dbd227-872f-4361-9faf-9d6408a092e8 --image cirros  --flavor small  --security-group ssh-ping s2
+
+
+
+2017-09-24 11:55:33.588 18688 WARNING nova.compute.manager [req-346fbd67-92f6-405b-b080-df87e14f36d5 14cccf86a8f24a8787c40191c136700f 7bb422c109ed49108919341d4bbb7e33 - default default] [instance: 767f3cb8-6b32-45a4-97c4-e680e6583972] Received unexpected event network-vif-plugged-a4c2b8c4-50dd-490a-8dde-2bf5693121e6 for instance
+
+
+
+
+
+
+
+
+
+
