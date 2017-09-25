@@ -3,21 +3,21 @@
 
 
 servers_to_reboot:
-  - infra1
-  - infra2
-  - infra3
-  - infra4 
-  - kvm1
-  - kvm3
-  - kvm5
-  - haproxy1
-  - rsyslog
-  - haproxy2 
+#  - infra1
+#  - infra2
+#  - infra3
+#  - infra4 
+#  - kvm1
+#  - kvm3
+#  - kvm5
+#  - haproxy1
+#  - rsyslog
+#  - haproxy2 
 #  - swiftn1
 #  - swiftn2
 #  - swiftn3
-  - ceph-osd1
-  - ceph-osd2
+#  - ceph-osd1
+#  - ceph-osd2
 
 
 #################################################################################
