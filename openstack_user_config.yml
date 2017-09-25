@@ -371,9 +371,9 @@ compute_hosts:
       nova_virt_type: qemu 
     ip: 10.0.1.31
    
-#  kvm3:
-#    ip: 10.0.1.33
-#  
+  kvm3:
+    ip: 10.0.1.33
+  
   kvm5:
     container_vars:
       nova_virt_type: qemu 
