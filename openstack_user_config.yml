@@ -45,8 +45,8 @@ pod2_hosts:
     ip: 10.0.1.31   
   kvm3:
     ip: 10.0.1.33  
-#  kvm5:    
-#    ip: 10.0.1.35  
+  kvm5:    
+    ip: 10.0.1.35  
   neutron1:
     ip: 10.0.1.41
     
@@ -241,7 +241,9 @@ repo-infra_hosts:
   infra2:
     ip: 10.0.0.22
   infra3:
-    ip: 10.0.0.23 
+    ip: 10.0.0.23
+  kvm5:  
+    ip: 10.0.1.35 
 #  infra4:  
 #    ip: 10.0.0.24 
 #  
@@ -368,10 +370,12 @@ compute_hosts:
 #  kvm3:
 #    ip: 10.0.1.33
 #  
-#  kvm5:
-#    container_vars:
-#      nova_virt_type: qemu 
-#    ip: 10.0.1.35  
+  kvm5:
+    container_vars:
+      nova_virt_type: qemu 
+    ip: 10.0.1.35  
+    
+    
 # ceilometer compute agent (telemetry)
 metering-compute_hosts:
   kvm1:
@@ -380,8 +384,8 @@ metering-compute_hosts:
   kvm3: 
     ip: 10.0.1.33
    
-#  kvm5:  
-#    ip: 10.0.1.35
+  kvm5:  
+    ip: 10.0.1.35
 
 #  bm1:
 #    ip: 10.0.0.42  
