@@ -1,0 +1,11 @@
+[root@kvm5 sysconfig]# sudo firewall-cmd --zone=home --add-service=ssh
+Warning: ALREADY_ENABLED: 'ssh' already in 'home'
+success
+[root@kvm5 sysconfig]# firewall-cmd --state
+running
+
+
+otherwise to disable 
+
+iptables -F 
+systemctl stop firewalld
