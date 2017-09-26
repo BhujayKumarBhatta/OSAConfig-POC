@@ -1,3 +1,6 @@
+openstack server create --nic net-id=64dbd227-872f-4361-9faf-9d6408a092e8 --image cirrosraw --flavor small --security-group ssh-ping kvm3-vm1
+
+
 Sep 26 16:28:44 infra2-nova-scheduler-container-6bb7a99f nova-scheduler: 
 2017-09-26 16:28:41.730 3162 
 INFO nova.scheduler.host_manager 
@@ -33,5 +36,18 @@ default default] No nodes matched due to not matchi ng 'force_nodes' value of 'k
    ine 569, in _send\n    raise result\n', u'created': u'2017-09-26T10:58:42Z'} |
 | flavor                              | small (9c98dc03-f9f2-47e9-8d4b-7d49da2f6df6)   
 
-date time was wrong 
+date time was wrong  , rectified 
+
+br-vlan bridge manually created 
+
+rerun os-nova  -l kvm3 and os-neutron -l kvm3 
+
+all seems to be working including scheduler able to sync with kvm3  but vm wont create . The error was in the conductor 
+for No Valid host found. 
+
+Rerun os-nova without any limit .  And problem solved . 
+
+Looks like conductor or some container services  needed a restart 
+
+
 
