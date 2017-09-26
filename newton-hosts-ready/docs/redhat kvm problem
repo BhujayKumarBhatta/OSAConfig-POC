@@ -1,0 +1,37 @@
+Sep 26 16:28:44 infra2-nova-scheduler-container-6bb7a99f nova-scheduler: 
+2017-09-26 16:28:41.730 3162 
+INFO nova.scheduler.host_manager 
+[req-419e9277 -3f5d-4278-8d94-ebcdaf6b5bfd 30313bbe61fe452680c6c2ee9d8475fc 8e13cb3b05ec4c7d87bac8ffe9f2bd19 - 
+default default] No nodes matched due to not matchi ng 'force_nodes' value of 'kvm3'
+
+
+| fault | {u'message': u'No valid host was found. There are not enough hosts available.',
+ u'code': 500, u'details': 
+ u'  File "/openstack/venvs/nova-16.0.0/lib/python2.7/site-packages/nova/conductor/manager.py", line 937, 
+ in schedule_and_build_instances\n    
+ instance_uuids)\n  
+ File "/openstack/venvs/nova-16.0.0/lib/python2.7/site-packages/nova/conductor/manager.py", 
+ line 625, in _schedule_instances\n   
+  request_spec, instance_uuids)\n  
+  File "/openstack/venvs/nova-16.0.0/lib/python2.7/site-packages/nova/scheduler/utils.py", 
+  line 505, in wrapped\n    return func(*args, **kwargs)\n  
+  File "/openstack/venvs/nova-16.0.0/lib/python2.7/site-packages/nova/scheduler/client/__init__.py", line 52, 
+  in select_destinations\n    instance_uuids)\n  
+  File "/openstack/venvs/nova-16.0.0/lib/python2.7/site-packages/nova/scheduler/client/__init__.py", 
+  line 37, in __run_method\n    return getattr(self.instance, __name)(*args, **kwargs)\n  
+  File "/openstack/venvs/nova-16.0.0/lib/python2.7/site-packages/nova/scheduler/client/query.py",
+   line 33, in select_destinations\n    instance_uuids)\n  
+   File "/openstack/venvs/nova-16.0.0/lib/python2.7/site-packages/nova/scheduler/rpcapi.py", 
+   line 137, in select_destinations\n    return cctxt.call(ctxt, \'select_destinations\', **msg_args)\n  
+   File "/openstack/venvs/nova-16.0.0/lib/python2.7/site-packages/oslo_messaging/rpc/client.py", l
+   ine 169, in call\n    retry=self.retry)\n  
+   File "/openstack/venvs/nova-16.0.0/lib/python2.7/site-packages/oslo_messaging/transport.py", 
+   line 123, in _send\n    timeout=timeout, retry=retry)\n  
+   File "/openstack/venvs/nova-16.0.0/lib/python2.7/site-packages/oslo_messaging/_drivers/amqpdriver.py", 
+   line 578, in send\n    retry=retry)\n  
+   File "/openstack/venvs/nova-16.0.0/lib/python2.7/site-packages/oslo_messaging/_drivers/amqpdriver.py", l
+   ine 569, in _send\n    raise result\n', u'created': u'2017-09-26T10:58:42Z'} |
+| flavor                              | small (9c98dc03-f9f2-47e9-8d4b-7d49da2f6df6)   
+
+date time was wrong 
+

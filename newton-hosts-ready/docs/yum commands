@@ -154,3 +154,99 @@ libvirt-devel  libvirt-python  nfs-utils openstack-selinux python-libguestfs qem
 
 yum install  qemu-kvm-ev
 
+
+
+ceph problem 
+====================
+
+# Ceph GPG Keys
+
+ceph_gpg_keys: 'https://download.ceph.com/keys/release.asc'
+
+
+
+libvirt_package: libvirt-daemon-kvm
+
+libvirt_service_name: libvirtd
+
+
+
+python_ceph_package: python-ceph
+
+
+
+ceph_repo_url_region: "download" # see here for other mirros http://docs.ceph.com/docs/master/install/mirrors/
+
+ceph_yum_repo_url: "https://{{ ceph_repo_url_region }}.ceph.com/rpm-{{ ceph_stable_release }}/el7"
+
+
+
+
+          "name": [
+                "libvirt-daemon-kvm",
+                "ceph-common",
+                "python-ceph"
+            ],
+            "skip_broken": false,
+            "state": "latest",
+            "update_cache": false,
+            "validate_certs": true
+        }
+    },
+    "msg": "warning: /var/cache/yum/x86_64/7Server/epel/packages/leveldb-1.12.0-11.el7.x86_64.rpm: Header V3 RSA/SHA256 Signature, key ID 352c64e5: NOKEY\n\n\nPublic key for leveldb-1.12.0-11.el7.x86_64.rpm is not installed\n",
+
+
+
+yum install libvirt-daemon-kvm ceph-common python-ceph 
+
+warning: /var/cache/yum/x86_64/7Server/epel/packages/leveldb-1.12.0-11.el7.x86_64.rpm: Header V3 RSA/SHA256 Signature, key ID 352c64e5: NOKEY
+warning: /var/cache/yum/x86_64/7Server/epel/packages/debootstrap-1.0.87-1.el7.noarch.rpm: Header V3 RSA/SHA256 Signature, key ID 352c64e5: NOKEY
+
+
+dsiabled gpgcheck for ceph , epel and yumupdate solved the problem
+
+==================================
+
+neutron installation roblem
+
+TASK [os_neutron : Install neutron role packages] ********************************************************************************************
+Tuesday 26 September 2017  14:07:54 +0530 (0:00:03.347)       0:03:18.550 *****
+fatal: [kvm3]: FAILED! => {"changed": false, "failed": true, "msg": "No package matching 'dnsmasq-utils' found available, installed or updated", "rc": 126, "results": ["All packages providing dnsmasq are up to date", "No package matching 'dnsmasq-utils' found available, installed or updated"]}
+
+
+neutron_distro_packages:
+
+  - conntrack-tools
+
+  - dnsmasq
+
+  - dnsmasq-utils
+
+  - ebtables
+
+  - haproxy
+
+  - ipset
+
+  - iputils
+
+  - keepalived
+
+  - radvd
+
+  - which
+  
+  
+yum install   dnsmasq-utils
+
+yum --showduplicates list dnsmasq-utils
+
+vi redhat.repo and enable optional 
+
+
+
+
+
+
+
+

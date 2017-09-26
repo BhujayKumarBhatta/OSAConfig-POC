@@ -1,0 +1,6 @@
+move /etc/localtime /etc/localtime.old
+
+ln -s   /usr/share/zoneinfo/Asia/Kolkata  /etc/localtime
+
+chronyc makestep
+
