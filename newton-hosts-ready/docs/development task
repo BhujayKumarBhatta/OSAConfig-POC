@@ -20,5 +20,16 @@ iface eth1 inet static
     post-up route add default gw 192.168.2.1 metric 2
     pre-down route del default gw 192.168.2.1
     
+How to add default in redhat /centos
+
+
+br-vlan defination problem , shd be type should be bridge 
+    
 in centos epel repo gpg check = 0
+
+Host for LXc as well as KVM both port 22 are closed , Firewall on host is blocking this 
+
+
+
+
 

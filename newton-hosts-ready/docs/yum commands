@@ -1,0 +1,156 @@
+yum --showduplicates list qemu-kvm-ev
+
+in itc lan both installed and avilable version is  10:2.6.0-28-e17.10.1 coming from rdo-qemu-ev
+
+but for kvm3 in q-zone
+[root@kvm3 ~]# yum --showduplicates list qemu-kvm-ev|expand
+Loaded plugins: priorities, product-id, search-disabled-repos, subscription-
+              : manager
+952 packages excluded due to repository priority protections
+Available Packages
+qemu-kvm-ev.x86_64               10:2.6.0-28.el7.10.1                rdo-qemu-ev
+qemu-kvm-ev.x86_64               10:2.9.0-16.el7_4.5.1               rdo-qemu-ev
+
+
+and 
+
+
+yum install qemu-kvm-ev
+
+Error: Package: 10:qemu-kvm-ev-2.9.0-16.el7_4.5.1.x86_64 (rdo-qemu-ev)
+           Requires: ipxe-roms-qemu >= 20170123-1.git4e85b27.el7_4.1
+           Available: ipxe-roms-qemu-20130517-7.gitc4bce43.el7.noarch (rdo-qemu-ev)
+               ipxe-roms-qemu = 20130517-7.gitc4bce43.el7
+Error: Package: 10:qemu-kvm-ev-2.9.0-16.el7_4.5.1.x86_64 (rdo-qemu-ev)
+           Requires: seavgabios-bin >= 1.10.2-3.el7_4.1
+           Available: seavgabios-bin-1.7.5-11.el7.noarch (rdo-qemu-ev)
+               seavgabios-bin = 1.7.5-11.el7
+Error: Package: 10:qemu-kvm-ev-2.9.0-16.el7_4.5.1.x86_64 (rdo-qemu-ev)
+           Requires: seabios-bin >= 1.10.2-3.el7_4.1
+           Available: seabios-bin-1.7.5-11.el7.noarch (rdo-qemu-ev)
+               seabios-bin = 1.7.5-11.el7
+               
+               
+[root@kvm3 yum.repos.d]# yum --showduplicates list ipxe-roms-qemu|expand
+Loaded plugins: priorities, product-id, search-disabled-repos, subscription-
+              : manager
+741 packages excluded due to repository priority protections
+Available Packages
+ipxe-roms-qemu.noarch           20130517-7.gitc4bce43.el7            rdo-qemu-ev
+
+
+
+yum --disablerepo "*" --enablerepo "updates" update ipxe-roms-qemu
+
+[root@kvm3 yum.repos.d]# grep -ri priority /etc/yum.*
+/etc/yum.repos.d/epel.repo:failovermethod = priority
+/etc/yum.repos.d/epel.repo:failovermethod = priority
+/etc/yum.repos.d/rdo-release.repo:priority = 50
+/etc/yum.repos.d/epel-testing.repo:failovermethod=priority
+/etc/yum.repos.d/epel-testing.repo:failovermethod=priority
+/etc/yum.repos.d/epel-testing.repo:failovermethod=priority
+/etc/yum.repos.d/epel.repo.rpmnew:failovermethod=priority
+/etc/yum.repos.d/epel.repo.rpmnew:failovermethod=priority
+/etc/yum.repos.d/epel.repo.rpmnew:failovermethod=priority
+/etc/yum.repos.d/thm-lxc2.0.repo:priority = 50
+/etc/yum.repos.d/rdo-qemu-ev.repo:priority = 50
+
+ vi /etc/yum/pluginconf.d/priorities.conf
+
+[main]
+enabled = 0
+
+[root@kvm3 yum.repos.d]# yum --showduplicates list ipxe-roms-qemu|expand
+Loaded plugins: product-id, search-disabled-repos, subscription-manager
+Installed Packages
+ipxe-roms-qemu.noarch     20170123-1.git4e85b27.el7_4.1      @rhel-7-server-rpms
+Available Packages
+ipxe-roms-qemu.noarch     20130517-5.gitc4bce43.el7          rhel-7-server-rpms
+ipxe-roms-qemu.noarch     20130517-6.gitc4bce43.el7          rhel-7-server-rpms
+ipxe-roms-qemu.noarch     20130517-7.gitc4bce43.el7          rdo-qemu-ev
+ipxe-roms-qemu.noarch     20130517-7.gitc4bce43.el7          rhel-7-server-rpms
+ipxe-roms-qemu.noarch     20130517-8.gitc4bce43.el7_2.1      rhel-7-server-rpms
+ipxe-roms-qemu.noarch     20160127-5.git6366fa7a.el7         rhel-7-server-rpms
+ipxe-roms-qemu.noarch     20170123-1.git4e85b27.el7          rhel-7-server-rpms
+ipxe-roms-qemu.noarch     20170123-1.git4e85b27.el7_4.1      rhel-7-server-rpms
+
+
+yum install sucessfull
+               
+===================================================================================================               
+Trying 
+
+yum install   qemu-kvm-ev-10:2.6.0-28.el7.10.1
+
+No package qemu-kvm-ev-10:2.6.0-28.el7.10.1 available.
+
+
+
+[root@kvm3 yum.repos.d]# subscription-manager list --consumed
++-------------------------------------------+
+   Consumed Subscriptions
++-------------------------------------------+
+Subscription Name:   Red Hat Enterprise Linux Server, Standard (1-2 sockets) (Up to 4 guests)
+Provides:            Oracle Java (for RHEL Server)
+                     Red Hat Software Collections Beta (for RHEL Server)
+                     Red Hat Enterprise Linux Server
+                     dotNET on RHEL Beta (for RHEL Server)
+                     Red Hat Beta
+                     dotNET on RHEL (for RHEL Server)
+SKU:                 RH0149709F3
+Contract:            10814681
+Account:             1599052
+Serial:              7737893088277388143
+Pool ID:             8a85f98152ab64040152abca5d974b3d
+Provides Management: No
+Active:              True
+Quantity Used:       1
+Service Level:       Standard
+Service Type:        L1-L3
+Status Details:      Subscription is current
+Subscription Type:   Standard
+Starts:              11/04/2015
+Ends:                11/03/2018
+System Type:         Physical
+
+
+[root@kvm3 yum.repos.d]# subscription-manager remove --serial=7737893088277388143
+The entitlement server successfully removed these serial numbers:
+   7737893088277388143
+1 local certificate has been deleted.
+
+
+[root@kvm3 yum.repos.d]# subscription-manager unregister
+Unregistering from: subscription.rhsm.redhat.com:443/subscription
+System has been unregistered.
+
+
+
+
+[root@kvm3 yum.repos.d]# subscription-manager register
+Registering to: subscription.rhsm.redhat.com:443/subscription
+Username: redhatlinux.support
+Password:
+The system has been registered with ID: 5cdc6e79-374a-4cb5-a5fe-3ed2de906e3f
+[root@kvm3 yum.repos.d]#
+
+
+[root@kvm3 yum.repos.d]# subscription-manager attach --pool=
+
+
+
+
+
+
+
+
+yum install bzip2-devel  gcc  gnupg2  libaio  libstdc++  libgcc  libgcrypt  MariaDB-client  MariaDB-devel \
+MariaDB-shared  openssl-devel  python-devel
+
+
+yum install bridge-utils  device-mapper-multipath  dosfstools  genisoimage  iscsi-initiator-utils  kpartx \
+libvirt-daemon-config-nwfilter  libvirt-daemon-kvm  libvirt-daemon-driver-qemu  libvirt-client  qemu-kvm-ev \
+libvirt-devel  libvirt-python  nfs-utils openstack-selinux python-libguestfs qemu-img-ev  sysfsutils
+
+yum install  qemu-kvm-ev
+
