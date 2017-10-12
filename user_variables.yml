@@ -165,7 +165,7 @@ cinder_service_backup_program_enabled: True
 #ceilometer_db_type: mongodb
 #ceilometer_db_ip: 10.0.0.57
 #ceilometer_db_port: 27017
-gnocchi_storage_driver: ceph
+gnocchi_storage_driver: rbd 
 gnocchi_ceph_pool: "gnocchi"
 gnocchi_ceph_username: "gnocchi"
 
