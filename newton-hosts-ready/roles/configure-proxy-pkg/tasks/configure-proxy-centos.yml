@@ -3,8 +3,8 @@
   yum_repository:
     file: epel
     name: epel
-    #baseurl: http://centos-hcm.viettelidc.com.vn
-    baseurl: https://ftp.yz.yamagata-u.ac.jp/pub/linux/fedora-projects/epel/7/x86_64
+    baseurl: http://centos-hcm.viettelidc.com.vn
+#    baseurl: https://ftp.yz.yamagata-u.ac.jp/pub/linux/fedora-projects/epel/7/x86_64
     
     enabled: yes
     description: epel
