@@ -376,7 +376,7 @@ target_hosts:
              description: USed for Openstack Storage }
      - {brName: br-vlan,brPort: bond2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Provider Network flat or vlan , To be connected to external router gateway. Bridge doesn't have any IP}
-     - {brName: br-vxlan,brPort: bond2.203, address: 30.0.1.31 ,netmask: 255.255.255.0 ,network: 30.0.1.0 ,broadcast: 30.0.1.255 ,gateway: 30.0.1.1 ,dns: ,part_of_vlan: True, 
+     - {brName: br-vxlan,brPort: bond2.203, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, 
              description: Used for tenant network , virtual network. On Compute node this will have address}   
 #-----------------------------------------POD 2 host --------------------------------------------------------------------------   
  kvm3:
