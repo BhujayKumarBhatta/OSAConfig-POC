@@ -7,7 +7,7 @@ servers_to_reboot:
 #  - infra2
 #  - infra3
 #  - infra4 
-  - kvm1
+#  - kvm1
   - neutron1
 #  - kvm3
 #  - kvm5
