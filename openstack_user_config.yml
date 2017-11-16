@@ -242,8 +242,8 @@ repo-infra_hosts:
     ip: 10.0.0.22
   infra3:
     ip: 10.0.0.23
-  kvm3:  
-    ip: 10.0.1.33 
+#  kvm3:   last working rdhat repo
+#    ip: 10.0.1.33 
 #  infra4:  
 #    ip: 10.0.0.24 
 #  
