@@ -3,16 +3,16 @@
 
 
 servers_to_reboot:
-#  - infra1
-#  - infra2
-#  - infra3
-#  - infra4 
-#  - kvm1
+  - infra1
+  - infra2
+  - infra3
+  - infra4 
+  - kvm1
   - neutron1
 #  - kvm3
 #  - kvm5
 #  - haproxy1
-#  - rsyslog1
+  - rsyslog1
 #  - haproxy2 
 #  - swiftn1
 #  - swiftn2
@@ -160,7 +160,7 @@ target_hosts:
    bridges: 
      - {brName: br-mgmt,brPort: bond1.101, address: 10.0.0.21 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 10.0.0.1,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
-     - {brName: br-storage,brPort: bond1.102, address: 20.0.0.21 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 20.0.0.1,dns: ,part_of_vlan: True,
+     - {brName: br-storage,brPort: bond1.102, address: 20.0.0.21 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Openstack Storage }
      - {brName: br-vlan,brPort: bond2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Provider Network flat or vlan , To be connected to external router gateway.Bridge will not have any IP}
@@ -209,7 +209,7 @@ target_hosts:
    bridges: 
      - {brName: br-mgmt,brPort: bond1.101, address: 10.0.0.22 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 10.0.0.1 ,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
-     - {brName: br-storage,brPort: bond1.102, address: 20.0.0.22 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 20.0.0.1,dns: ,part_of_vlan: True,
+     - {brName: br-storage,brPort: bond1.102, address: 20.0.0.22 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Openstack Storage }
      - {brName: br-vlan,brPort: bond2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Provider Network flat or vlan , To be connected to external router gateway.Bridge will not have any IP}
@@ -256,7 +256,7 @@ target_hosts:
    bridges: 
      - {brName: br-mgmt,brPort: bond1.101, address: 10.0.0.23 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 10.0.0.1,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
-     - {brName: br-storage,brPort: bond1.102, address: 20.0.0.23 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 20.0.0.1,dns: ,part_of_vlan: True,
+     - {brName: br-storage,brPort: bond1.102, address: 20.0.0.23 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Openstack Storage }
      - {brName: br-vlan,brPort: bond2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Provider Network flat or vlan , To be connected to external router gateway.Bridge will not have any IP}
@@ -343,7 +343,7 @@ target_hosts:
              description: USed for Openstack Managment, SSH and api access }     
      - {brName: br-vlan,brPort: bond2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Provider Network flat or vlan , To be connected to external router gateway.Bridge will not have any IP}
-     - {brName: br-vxlan,brPort: bond2.203, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, 
+     - {brName: br-vxlan,brPort: bond2.203, address: 30.0.1.41 ,netmask: 255.255.255.0 ,network: 30.0.1.0 ,broadcast: 30.0.1.255 ,gateway: ,dns: ,part_of_vlan: True, 
              description: Used for tenant network , virtual network. On Controller this bridge will not have address}
       
 
@@ -502,7 +502,7 @@ target_hosts:
    bridges: 
      - {brName: br-mgmt,brPort: bond1.101, address: 10.0.0.57 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 10.0.0.1 ,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
-     - {brName: br-storage,brPort: bond1.102, address: 20.0.0.57 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 20.0.0.1,dns: ,part_of_vlan: True,
+     - {brName: br-storage,brPort: bond1.102, address: 20.0.0.57 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Openstack Storage }
 ##############################################################################################################
 #  Swift Nodes for OpenStack
