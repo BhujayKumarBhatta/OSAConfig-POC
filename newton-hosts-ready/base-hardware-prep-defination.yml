@@ -158,17 +158,17 @@ target_hosts:
      - {vNicName: bond3.105,vNicParent: bond3, address: ,netmask: ,network: ,broadcast:  ,gateway: ,dns: , 
              description: used by br-ceph bridge}          
    bridges: 
-     - {brName: br-mgmt,brPort: bond1.101, address: 10.0.0.21 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 10.0.0.1,dns: ,part_of_vlan: True,
+     - {brName: br-mgmt,brPort: bond1.101, address: 10.0.0.21 ,netmask: 255.255.255.0 ,network: 10.0.0.0 ,broadcast: 10.0.0.255 ,gateway: 10.0.0.1,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
-     - {brName: br-storage,brPort: bond1.102, address: 20.0.0.21 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
+     - {brName: br-storage,brPort: bond1.102, address: 20.0.0.21 ,netmask: 255.255.255.0 ,network: 20.0.0.0 ,broadcast: 20.0.0.255 ,gateway: 20.0.0.1 ,dns: ,part_of_vlan: True,
              description: USed for Openstack Storage }
      - {brName: br-vlan,brPort: bond2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Provider Network flat or vlan , To be connected to external router gateway.Bridge will not have any IP}
-     - {brName: br-vxlan,brPort: bond2.103, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, 
+     - {brName: br-vxlan,brPort: bond2.103, address: 30.0.0.21 ,netmask: 255.255.255.0 ,network: 30.0.0.0 ,broadcast: 30.0.0.255 ,gateway: 30.0.0.1 ,dns: ,part_of_vlan: True, 
              description: Used for tenant network , virtual network. On Controller this bridge will not have address}
-     - {brName: br-swift,brPort: bond3.104, address: 12.0.0.21 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: False, 
+     - {brName: br-swift,brPort: bond3.104, address: 12.0.0.21 ,netmask: 255.255.255.0 ,network: 12.0.0.0 ,broadcast: 12.0.0.255 ,gateway: 12.0.0.1 ,dns: ,part_of_vlan: False, 
              description: Used for swift cluster }
-     - {brName: br-ceph,brPort: bond3.105, address: 13.0.0.21 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: False, 
+     - {brName: br-ceph,brPort: bond3.105, address: 13.0.0.21 ,netmask: 255.255.255.0 ,network: 13.0.0.0 ,broadcast: 13.0.0.255 ,gateway: 13.0.0.1 ,dns: ,part_of_vlan: False, 
              description: Used for ceph cluster }
 #---------------------------------------------------------------------------------------------------------------------------------
  infra2:

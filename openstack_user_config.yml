@@ -315,53 +315,55 @@ metering-infra_hosts:
     ip: 10.0.0.21
   
 # The infra nodes that will be running the dnsaas services
-dnsaas_hosts:
-  infra1:
-    ip: 10.0.0.21
-  infra2:
-    ip: 10.0.0.22
+#dnsaas_hosts:
+#  infra1:
+#    ip: 10.0.0.21
+#  infra2:
+#    ip: 10.0.0.22
 
 # aodh (telemetry alarm service)
 metering-alarm_hosts:
-  infra1:
-    ip: 10.0.0.21
+  infra2:
+    ip: 10.0.0.22
   
 # gnocchi (telemetry metrics storage)
 metrics_hosts:
-  infra1:
-    ip: 10.0.0.21
+  infra3:
+    ip: 10.0.0.23
   
-# Bare metal api  
-ironic-infra_hosts:
-  infra1:
-    ip: 10.0.0.21
-  infra2:
-    ip: 10.0.0.22  
-# magnum api 
-magnum-infra_hosts:
-  infra1:
-    ip: 10.0.0.21
-  infra2:
-    ip: 10.0.0.22  
-# The infra nodes that will be running the trove services
-trove-infra_hosts:
-  infra1:
-    ip: 10.0.0.21
-  infra2:
-    ip: 10.0.0.22
-  infra4:
-    ip: 10.0.0.24
-#Sahara api
-sahara-infra_hosts:
-  infra1:
-    ip: 10.0.0.21
-  infra2:
-    ip: 10.0.0.22
+## Bare metal api  
+#ironic-infra_hosts:
+#  infra1:
+#    ip: 10.0.0.21
+#  infra2:
+#    ip: 10.0.0.22  
+## magnum api 
+#magnum-infra_hosts:
+#  infra1:
+#    ip: 10.0.0.21
+#  infra2:
+#    ip: 10.0.0.22  
+## The infra nodes that will be running the trove services
+#trove-infra_hosts:
+#  infra1:
+#    ip: 10.0.0.21
+#  infra2:
+#    ip: 10.0.0.22
+#  infra4:
+#    ip: 10.0.0.24
+##Sahara api
+#sahara-infra_hosts:
+#  infra1:
+#    ip: 10.0.0.21
+#  infra2:
+#    ip: 10.0.0.22
 
 # neutron server, agents (L3, etc)
 network_hosts:
   neutron1:
     ip: 10.0.1.41
+  infra1:
+    ip: 10.0.0.21
   
 ####################################################################################################
 # nova hypervisors
@@ -371,13 +373,13 @@ compute_hosts:
       nova_virt_type: qemu 
     ip: 10.0.1.31
    
-  kvm3:
-    ip: 10.0.1.33
-  
-  kvm5:
-    container_vars:
-      nova_virt_type: qemu 
-    ip: 10.0.1.35  
+#  kvm3:
+#    ip: 10.0.1.33
+#  
+#  kvm5:
+#    container_vars:
+#      nova_virt_type: qemu 
+#    ip: 10.0.1.35  
     
     
 # ceilometer compute agent (telemetry)
@@ -385,11 +387,11 @@ metering-compute_hosts:
   kvm1:
     ip: 10.0.1.31
 
-  kvm3: 
-    ip: 10.0.1.33
-   
-  kvm5:  
-    ip: 10.0.1.35
+#  kvm3: 
+#    ip: 10.0.1.33
+#   
+#  kvm5:  
+#    ip: 10.0.1.35
 
 #  bm1:
 #    ip: 10.0.0.42  
@@ -481,22 +483,22 @@ storage_hosts:
 #       destroy_empty_storage_group: False
 #  limit_container_types: cinder_volume
   
-#Swift-proxy
-swift-proxy_hosts:
-  infra1:
-    ip: 10.0.0.21
-  infra2:
-    ip: 10.0.0.22 
-  infra3:
-    ip: 10.0.0.23    
-# Swift-Object-Storage-Nodes  
-swift_hosts:
-  swiftn1:
-    ip: 10.0.0.45
-  swiftn2:
-    ip: 10.0.0.46
-#  swiftn3:
-#    ip: 10.0.0.47  
+##Swift-proxy
+#swift-proxy_hosts:
+#  infra1:
+#    ip: 10.0.0.21
+#  infra2:
+#    ip: 10.0.0.22 
+#  infra3:
+#    ip: 10.0.0.23    
+## Swift-Object-Storage-Nodes  
+#swift_hosts:
+#  swiftn1:
+#    ip: 10.0.0.45
+#  swiftn2:
+#    ip: 10.0.0.46
+##  swiftn3:
+##    ip: 10.0.0.47  
  
 #ocata
 #       rbd_secret_uuid: "{{ cinder_ceph_client_uuid }}"
