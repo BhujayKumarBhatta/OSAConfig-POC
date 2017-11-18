@@ -4,15 +4,15 @@
 
 servers_to_reboot:
   - infra1
-  - infra2
-  - infra3
-  - infra4 
-  - kvm1
-  - neutron1
+#  - infra2
+#  - infra3
+#  - infra4 
+#  - kvm1
+#  - neutron1
 #  - kvm3
 #  - kvm5
 #  - haproxy1
-  - rsyslog1
+#  - rsyslog1
 #  - haproxy2 
 #  - swiftn1
 #  - swiftn2
