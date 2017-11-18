@@ -3,11 +3,11 @@
 
 
 servers_to_reboot:
-  - infra1
+#  - infra1
 #  - infra2
 #  - infra3
 #  - infra4 
-#  - kvm1
+  - kvm1
 #  - neutron1
 #  - kvm3
 #  - kvm5
@@ -373,11 +373,11 @@ target_hosts:
    bridges: 
      - {brName: br-mgmt,brPort: bond1.201, address: 10.0.1.31 ,netmask: 255.255.255.0 ,network: 10.0.1.0 ,broadcast: 10.0.1.255 ,gateway: 10.0.1.1 ,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
-     - {brName: br-storage,brPort: bond1.202, address: 20.0.1.31 ,netmask: 255.255.255.0 ,network: 20.0.1.0 ,broadcast: 20.0.1.255 ,gateway: ,dns: ,part_of_vlan: True,
+     - {brName: br-storage,brPort: bond1.202, address: 20.0.1.31 ,netmask: 255.255.255.0 ,network: 20.0.1.0 ,broadcast: 20.0.1.255 ,gateway: 20.0.1.1 ,dns: ,part_of_vlan: True,
              description: USed for Openstack Storage }
      - {brName: br-vlan,brPort: bond2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Provider Network flat or vlan , To be connected to external router gateway. Bridge doesn't have any IP}        
-     - {brName: br-vxlan,brPort: bond2.203, address: 30.0.1.31 ,netmask: 255.255.255.0 ,network: 30.0.1.0 ,broadcast: 30.0.1.255 ,gateway: ,dns: ,part_of_vlan: True,  
+     - {brName: br-vxlan,brPort: bond2.203, address: 30.0.1.31 ,netmask: 255.255.255.0 ,network: 30.0.1.0 ,broadcast: 30.0.1.255 ,gateway: 30.0.1.1 ,dns: ,part_of_vlan: True,  
              description: Used for tenant network , virtual network. On Compute node this will have address}  
 #-----------------------------------------POD 2 host --------------------------------------------------------------------------   
  kvm3:
