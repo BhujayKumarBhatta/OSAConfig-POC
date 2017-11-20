@@ -92,7 +92,7 @@ global_overrides:
         is_ssh_address: true
         static_routes:
           # Route to container networks
-          - cidr: 10.0.0.0/24
+          - cidr: 10.0.1.0/24
             gateway: 10.0.1.1  
         
     - network:
@@ -160,7 +160,7 @@ global_overrides:
         reference_group: "pod2_hosts" 
         static_routes:
           # Route to container networks
-          - cidr: 20.0.0.0/24
+          - cidr: 20.0.1.0/24
             gateway: 20.0.1.1   
         #container_mtu: "9000"
         type: "raw"
@@ -362,8 +362,8 @@ metrics_hosts:
 network_hosts:
   neutron1:
     ip: 10.0.1.41
-  infra1:
-    ip: 10.0.0.21
+#  infra1:
+#    ip: 10.0.0.21
   
 ####################################################################################################
 # nova hypervisors
