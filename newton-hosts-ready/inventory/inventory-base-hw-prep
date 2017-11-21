@@ -12,7 +12,7 @@ kvm1		ansible_host=10.0.1.31
 #kvm5		ansible_host=10.0.1.35
 #rsyslog1 	ansible_host=10.0.0.57
 #ceph-osd1	ansible_host=10.0.0.91
-#ceph-osd2	ansible_host=10.0.0.92
+ceph-osd2	ansible_host=10.0.0.92
 
 
 [lxc_hosts]

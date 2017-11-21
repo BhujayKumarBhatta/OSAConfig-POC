@@ -1,6 +1,6 @@
 # include the host name in inventory-base-hw-prep and run with -i option as below
 # ansible-playbook base-hw-prep.yml  -i inventory-base-hw-prep
-
+#test
 
 servers_to_reboot:
   - infra1
