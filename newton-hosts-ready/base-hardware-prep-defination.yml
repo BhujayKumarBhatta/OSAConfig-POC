@@ -12,7 +12,7 @@ servers_to_reboot:
 #  - kvm3
 #  - kvm5
 #  - haproxy1
-#  - rsyslog1
+  - rsyslog1
 #  - haproxy2 
 #  - swiftn1
 #  - swiftn2
