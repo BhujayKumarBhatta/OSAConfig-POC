@@ -4,7 +4,7 @@
 #lxc_container_default_mtu: "9000"
 
 ## set security hardening to false during upgrade
-apply_security_hardening: False 
+apply_security_hardening: True
 # chrony configuration is getting overwriiten by these settings
 security_enable_chrony: false    
 security_ntp_servers:
