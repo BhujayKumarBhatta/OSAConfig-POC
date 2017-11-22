@@ -289,7 +289,8 @@ ceph_origin: 'upstream' # or 'distro' or  'local'
 
 # COMMUNITY VERSION
 ceph_stable: true # use ceph stable branch
-ceph_stable_release: kraken  # ceph stable release
+#ceph_stable_release: kraken  # ceph stable release
+ceph_stable_release: luminous
 #ceph_stable_repo: "{{ ceph_mirror }}/debian-{{ ceph_stable_release }}"
 ceph_release_num:
 #  dumpling: 0.67
