@@ -366,7 +366,7 @@ journal_collocation: true
 ##  - '@Development Tools'
 ##  - cmake
 #  - git
-#  - krb5-devel              # required to build pykerberos
+#  - krb5-devel               # required to build pykerberos
 #  - liberasurecode-devel    # required to build pyeclib
 #  - libffi-devel            # required to build xattr
 #  - libjpeg-turbo-devel     # required to build pillow
