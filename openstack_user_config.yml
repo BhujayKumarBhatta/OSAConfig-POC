@@ -393,7 +393,7 @@ metering-compute_hosts:
 #  kvm5:  
 #    ip: 10.0.1.35
 
-#  bm1:
+#  bm1: ##
 #    ip: 10.0.0.42  
 
 # Ironic compute hosts. These compute hosts will be used to
