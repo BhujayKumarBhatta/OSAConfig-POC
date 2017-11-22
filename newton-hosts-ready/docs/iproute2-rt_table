@@ -1,0 +1,51 @@
+=================================================================
+infra1
+    post-up ip route add 20.0.0.0/24 dev br-storage src 20.0.0.21 table br-storage
+    post-up ip route add default via 20.0.0.1 dev br-storage table br-storage
+    post-up ip rule add from 20.0.0.21/32 table br-storage
+    post-up ip rule add to 20.0.0.21/32 table br-storage
+===============================================================
+infra2
+    post-up ip route add 20.0.0.0/24 dev br-storage src 20.0.0.22 table br-storage
+    post-up ip route add default via 20.0.0.1 dev br-storage table br-storage
+    post-up ip rule add from 20.0.0.22/32 table br-storage
+    post-up ip rule add to 20.0.0.22/32 table br-storage
+
+===============================================================
+infra3
+    post-up ip route add 20.0.0.0/24 dev br-storage src 20.0.0.23 table br-storage
+    post-up ip route add default via 20.0.0.1 dev br-storage table br-storage
+    post-up ip rule add from 20.0.0.23/32 table br-storage
+    post-up ip rule add to 20.0.0.23/32 table br-storage
+==================================================================
+kvm1
+    post-up ip route add 20.0.1.0/24 dev br-storage src 20.0.1.31 table br-storage
+    post-up ip route add default via 20.0.1.1 dev br-storage table br-storage
+    post-up ip rule add from 20.0.1.31/32 table br-storage
+    post-up ip rule add to 20.0.1.31/32 table br-storage
+==================================================================
+=================================================================
+osd1
+    post-up ip route add 20.0.0.0/24 dev br-storage src 20.0.0.91 table br-storage
+    post-up ip route add default via 20.0.0.1 dev br-storage table br-storage
+    post-up ip rule add from 20.0.0.91/32 table br-storage
+    post-up ip rule add to 20.0.0.91/32 table br-storage
+
+==================================================================
+osd2
+    post-up ip route add 20.0.0.0/24 dev br-storage src 20.0.0.92 table br-storage
+    post-up ip route add default via 20.0.0.1 dev br-storage table br-storage
+    post-up ip rule add from 20.0.0.92/32 table br-storage
+    post-up ip rule add to 20.0.0.92/32 table br-storage
+==================================================================
+rsyslog1
+    post-up ip route add 20.0.0.0/24 dev br-storage src 20.0.0.57 table br-storage
+    post-up ip route add default via 20.0.0.1 dev br-storage table br-storage
+    post-up ip rule add from 20.0.0.57/32 table br-storage
+    post-up ip rule add to 20.0.0.57/32 table br-storage
+====================================================================
+ansible
+    post-up ip route add 20.0.0.0/24 dev br-storage src 20.0.0.54 table br-storage
+    post-up ip route add default via 20.0.0.1 dev br-storage table br-storage
+    post-up ip rule add from 20.0.0.54/32 table br-storage
+    post-up ip rule add to 20.0.0.54/32 table br-storage

@@ -1,0 +1,132 @@
+Infra-1
+echo "1 br-storage_net_routing" >> /etc/iproute2/rt_tables
+ip route add 20.0.0.0/24 dev br-storage src 20.0.0.21 table br-storage_net_routing
+ip route add default via 20.0.0.1 dev br-storage table br-storage_net_routing
+ip rule add from 20.0.0.21/32 table br-storage_net_routing
+ip rule add to 20.0.0.21/32 table br-storage_net_routing
+
+echo "2 br-vxlan_net_routing" >> /etc/iproute2/rt_tables
+ip route add 30.0.0.0/24 dev br-vxlan src 30.0.0.21 table br-vxlan_net_routing
+ip route add default via 30.0.0.1 dev br-vxlan table br-vxlan_net_routing
+ip rule add from 30.0.0.21/32 table br-vxlan_net_routing
+ip rule add to 30.0.0.21/32 table br-vxlan_net_routing
+
+echo "3 br-vlan_net_routing" >> /etc/iproute2/rt_tables
+ip route add 50.0.0.0/24 dev br-vlan src 50.0.0.21 table br-vlan_net_routing
+ip route add default via 50.0.0.1 dev br-vlan table br-vlan_net_routing
+ip rule add from 50.0.0.21/32 table br-vlan_net_routing
+ip rule add to 50.0.0.21/32 table br-vlan_net_routing
+
+delete-----
+ip route del 50.0.0.0/24 dev br-storage src 50.0.0.21 table br-vlan_net_routing
+ip route del default via 50.0.0.1 dev br-storage table br-vlan_net_routing
+
+
+root@infra1:~# ip route show table br-vlan_net_routing
+
+=============================================================
+Kvm-1
+echo "1 br-storage_net_routing" >> /etc/iproute2/rt_tables
+ip route add 20.0.1.0/24 dev br-storage src 20.0.1.31 table br-storage_net_routing
+ip route add default via 20.0.1.1 dev br-storage table br-storage_net_routing
+ip rule add from 20.0.1.31/32 table br-storage_net_routing
+ip rule add to 20.0.1.31/32 table br-storage_net_routing
+============%%%%%%%%%%%%%%%%%%%%%%=====================
+permanent-routing to /etc/network/interfaces   -- 
+
+
+
+
+Next step..
+case-neutron only in pod2
+
+1. in pod1 no br-vlan , br-vxlan---no card...
+2. br-vlan untagged in linux side , part of switch vlan209 , native vlan 209 , allowed vlan 203,209 , no ip address
+3. br-vxlan tagged 203 in linux side , part of switch vlan 203 with ip range 30.0.1.X
+4. ( default route 30.0.1.1/24 with policy based routing to avoid vx-lan traffic going through vlan interface br-vlan ) - OPTIONAL
+
+
+earlier problems 
+1)br-mgmt and br-storage both were tagged at linux side , however   br-vlan  was untagged and br-vxlan was tagged (203) -was there  traffic problem ?
+Now make it part of native vlan 
+
+2) openstack_user_config.yml    pod ip route range  subnet mask was defined as 16 instead of 24.
+
+
+make PXE boot as first 
+
+
+they connect to only two places 
+1) mariadb  through haproxy 
+2) Api through haproxy
+3) RabbitMQ directly
+All of them through br-mgmt
+
+
+
+Case-2 Neutron in pod2 & in pod1
+1. pod1 will also have br-vlan & br-vxlan 
+2. both side br-vlan will be untagged at linux , part of sw vlan 109 & 209 for pod1 & pod 2 respectively. also allowed vlan 109,103 for pod1 & 203,209 for pod2 , no ip on interface
+3. br-vxlan tagged 103 & 203 in linux side foe pod1 &2 respectivly with ip range 30.0.0.X/24 & 30.0.1.X/24
+4. policy based routing for br-vlan..? ( how to do this without ip ) for both side br-vxlan also
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+============%%%%%%%%%%%%%%%%%%%%%%%%%==================
+
+echo "2 br-vxlan_net_routing" >> /etc/iproute2/rt_tables
+ip route add 30.0.1.0/24 dev br-vxlan src 30.0.1.31 table br-vxlan_net_routing
+ip route add default via 30.0.1.1 dev br-vxlan table br-vxlan_net_routing
+ip rule add from 30.0.1.31/32 table br-vxlan_net_routing
+ip rule add to 30.0.1.31/32 table br-vxlan_net_routing
+
+echo "3 br-vlan_net_routing" >> /etc/iproute2/rt_tables
+ip route add 50.0.1.0/24 dev br-vlan src 50.0.1.31 table br-vlan_net_routing
+ip route add default via 50.0.1.1 dev br-vlan table br-vlan_net_routing
+ip rule add from 50.0.1.31/32 table br-vlan_net_routing
+ip rule add to 50.0.1.31/32 table br-vlan_net_routing
+======================================================================
+
+
+
+Infra-2
+echo "2 br-storage" >> /etc/iproute2/rt_tables
+ip route add 20.0.0.0/24 dev br-storage src 20.0.0.22 table br-storage
+ip route add default via 20.0.0.1 dev br-storage table br-storage
+ip rule add from 20.0.0.22/32 table br-storage
+ip rule add to 20.0.0.22/32 table br-storage
+============================================================================
+
+
+switch(config)# int vlan 109
+switch(config-if)# ip address 50.0.0.1/24
+switch(config-if)# no shutdown
+switch(config-if)#
+
+
+
+
+up ip route add 172.16.0.0/24 via 192.168.10.1 || true
+up ip route add 192.168.0.0/16 via 192.168.10.1 || true
+
+post-up route add -net 10.0.0.0 netmask 255.0.0.0 gw 10.70.201.6
+
+

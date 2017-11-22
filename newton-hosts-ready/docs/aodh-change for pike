@@ -1,0 +1,11 @@
+[service_credentials]
+auth_type = {{ aodh_keystone_auth_plugin }}
+auth_url = {{ keystone_service_internalurl }}
+project_domain_id = {{ aodh_service_project_domain_id }}
+user_domain_id = {{ aodh_service_user_domain_id }}
+project_name = {{ aodh_service_project_name }}
+username = {{ aodh_service_user_name }}
+tenant_name = {{ aodh_service_tenant_name }}
+password = {{ aodh_service_password }}
+region_name = {{ aodh_service_region }}
+interface = {{ aodh_service_endpoint_type }}
