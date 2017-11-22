@@ -301,6 +301,7 @@ ceph_release_num:
 #  infernalis: 9
   jewel: 10
   kraken: 11.2.0
+  luminous: 12.2.1
 
 
 
