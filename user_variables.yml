@@ -299,8 +299,8 @@ ceph_release_num:
 #  giant: 0.87
 #  hammer: 0.94
 #  infernalis: 9
-# jewel: 10
-#  kraken: 11.2.0
+  jewel: 10
+  kraken: 11.2.0
   luminous: 12
 
 
