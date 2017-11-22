@@ -11,7 +11,7 @@ security_ntp_servers:
   - 10.0.0.51
   - 10.0.0.52
                    
-## Debug and Verbose options.
+## Debug and Verbose options.#
 debug: false
 validate_certs: false
 percona_package_download_validate_certs: false
