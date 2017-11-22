@@ -209,7 +209,7 @@ horizon_enable_ironic_ui: True
 neutron_designate_enabled: True
 neutron_dns_domain: itc.in. 
 # Enable/Disable Ceilometer
-neutron_ceilometer_enabled: True
+#neutron_ceilometer_enabled: True
 neutron_plugin_base:
    - router
    - metering   
