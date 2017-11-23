@@ -1,0 +1,6 @@
+
+root@ansiblenew:/opt/openstack-ansible/playbooks# rm -rf ansible_facts
+mv openstack_hostnames_ips.yml  openstack_hostnames_ips.yml.old
+mv  openstack_inventory.json  openstack_inventory.json.old
+tar xvf backup_openstack_inventory.tar
+mv openstack_inventory.json-20171122_152531.json openstack_inventory.json
