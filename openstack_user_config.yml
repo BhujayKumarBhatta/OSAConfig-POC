@@ -61,7 +61,7 @@ global_overrides:
         container_bridge: "br-mgmt"
         container_type: "veth"
         container_interface: "eth1"
-      #  container_mtu: "9000"
+      #  container_mtu: "9000" 
         ip_from_q: "pod1_container"
         address_prefix: "container"        
         type: "raw"
