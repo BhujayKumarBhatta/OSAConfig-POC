@@ -5,23 +5,20 @@ cidr_networks:
    pod1_storage: 20.0.0.0/24
    pod1_tunnel: 30.0.0.0/24
    
-#X   pod2_container: 10.0.1.0/24   
-#X   pod2_storage: 20.0.1.0/24
-#X   pod2_tunnel: 30.0.1.0/24   
+   pod2_container: 10.0.1.0/24   
+   pod2_storage: 20.0.1.0/24
+   pod2_tunnel: 30.0.1.0/24   
 
    brswift: 12.0.0.0/24
    brceph: 13.0.0.0/24
 
 used_ips:
-   - 10.0.0.100
    - "10.0.0.1,10.0.0.100"
    - "20.0.0.1,20.0.0.100"
    - "30.0.0.1,30.0.0.100"
-#X   - 10.0.1.100
-#X   - "10.0.1.1,10.0.1.100"
-#X   - "20.0.1.1,20.0.1.100"
-#X   - "30.0.1.1,30.0.1.100"
-
+   - "10.0.1.1,10.0.1.100"
+   - "20.0.1.1,20.0.1.100"
+   - "30.0.1.1,30.0.1.100"
    - "12.0.0.1,12.0.0.100" 
    - "13.0.0.1,13.0.0.100"
 
@@ -36,23 +33,13 @@ pod1_hosts:
     ip: 10.0.0.22
    infra3:
     ip: 10.0.0.23  
-   kvm1:
-    ip: 10.0.0.31
-   neutron1:
-    ip: 10.0.0.41
-#  infra4:  
-#    ip: 10.0.0.24
    rsyslog1:
     ip: 10.0.0.57 
-#Xpod2_hosts:
-#X  kvm1:     
-#X    ip: 10.0.1.31   
-#  kvm3:
-#    ip: 10.0.1.33  
-#  kvm5:    
-#    ip: 10.0.1.35  
-#X  neutron1:
-#X    ip: 10.0.1.41
+pod2_hosts:
+   kvm1:     
+    ip: 10.0.1.31   
+   neutron1:
+    ip: 10.0.1.41
     
 
 global_overrides:
@@ -65,7 +52,6 @@ global_overrides:
         container_bridge: "br-mgmt"
         container_type: "veth"
         container_interface: "eth1"
-      #  container_mtu: "9000" 
         ip_from_q: "pod1_container"
         address_prefix: "container"        
         type: "raw"
@@ -76,15 +62,14 @@ global_overrides:
         is_container_address: true
         is_ssh_address: true
         static_routes:
-          # Route to container networks
-          - cidr: 10.0.0.0/24
-            gateway: 10.0.0.1    
+          # Route to pod2 container from pod1 networks
+          - cidr: 10.0.1.0/24
+            gateway: 10.0.1.1    
              
     - network:
         container_bridge: "br-mgmt"
         container_type: "veth"
         container_interface: "eth1"
-      #  container_mtu: "9000"
         ip_from_q: "pod2_container"
         address_prefix: "container"        
         type: "raw"
@@ -95,15 +80,14 @@ global_overrides:
         is_container_address: true
         is_ssh_address: true
         static_routes:
-          # Route to container networks
-          - cidr: 10.0.1.0/24
-            gateway: 10.0.1.1  
+          # Route to pod1 container from pod2 networks
+          - cidr: 10.0.0.0/24
+            gateway: 10.0.0.1  
         
     - network:
         container_bridge: "br-vxlan"
         container_type: "veth"
         container_interface: "eth10"
-       # container_mtu: "9000"
         ip_from_q: "pod2_tunnel"
         reference_group: "pod2_hosts"   
         type: "vxlan"
@@ -115,9 +99,7 @@ global_overrides:
     - network:
         container_bridge: "br-vlan"
         container_type: "veth"
-        container_interface: "eth12"
-        #container_mtu: "9000"
-        #host_bind_override: "bond2" #?????? this ovverrides is trying to search eth2 on compute node 
+        container_interface: "eth12"        
         host_bind_override: "bond2" #?????? this ovverrides is trying to search eth2 on compute node  
         type: "flat"
         net_name: "flat"
@@ -142,10 +124,11 @@ global_overrides:
         container_interface: "eth2"
         ip_from_q: "pod1_storage"
         reference_group: "pod1_hosts" 
+        address_prefix: "storage"
         static_routes:
-          # Route to container networks
-          - cidr: 20.0.0.0/24
-            gateway: 20.0.0.1   
+          # Route to pod2 container from pod1 networks
+          - cidr: 20.0.1.0/24
+            gateway: 20.0.1.1   
         #container_mtu: "9000"
         type: "raw"
         group_binds:
@@ -164,8 +147,8 @@ global_overrides:
         reference_group: "pod2_hosts" 
         static_routes:
           # Route to container networks
-          - cidr: 20.0.1.0/24
-            gateway: 20.0.1.1   
+          - cidr: 20.0.0.0/24
+            gateway: 20.0.0.1   
         #container_mtu: "9000"
         type: "raw"
         group_binds:          
@@ -246,18 +229,6 @@ repo-infra_hosts:
     ip: 10.0.0.22
   infra3:
     ip: 10.0.0.23
-#  kvm3:   last working rdhat repo
-#    ip: 10.0.1.33 
-#  infra4:  
-#    ip: 10.0.0.24 
-#  
-###
-### OpenStack
-###
-#os-infra_hosts:
-# List of target hosts on which to deploy the glance API, nova API, heat API,
-# and horizon.
-
 # keystone
 identity_hosts:
   infra1:
@@ -267,13 +238,13 @@ identity_hosts:
   infra3:
     ip: 10.0.0.23  
 # Barbican
-key-manager_hosts: 
-  infra1:
-    ip: 10.0.0.21
-  infra2:
-    ip: 10.0.0.22
-  infra3:
-    ip: 10.0.0.23  
+#Xkey-manager_hosts: 
+#X  infra1:
+#X    ip: 10.0.0.21
+#X  infra2:
+#X    ip: 10.0.0.22
+#X  infra3:
+#X    ip: 10.0.0.23  
 # cinder api services
 storage-infra_hosts:
   infra1:
@@ -298,11 +269,11 @@ compute-infra_hosts:
   infra3:
     ip: 10.0.0.23  
 # heat
-orchestration_hosts:
-  infra1:
-    ip: 10.0.0.21
-  infra2:
-    ip: 10.0.0.22
+#Xorchestration_hosts:
+#X  infra1:
+#X    ip: 10.0.0.21
+#X  infra2:
+#X    ip: 10.0.0.22
 # horizon
 dashboard_hosts:
   infra1:
@@ -314,61 +285,25 @@ dashboard_hosts:
 
    
 # ceilometer (telemetry API)
-metering-infra_hosts:
-  infra1:
-    ip: 10.0.0.21
+#Xmetering-infra_hosts:
+#X  infra1:
+#X    ip: 10.0.0.21
   
-# The infra nodes that will be running the dnsaas services
-#dnsaas_hosts:
-#  infra1:
-#    ip: 10.0.0.21
-#  infra2:
-#    ip: 10.0.0.22
-
 # aodh (telemetry alarm service)
-metering-alarm_hosts:
-  infra2:
-    ip: 10.0.0.22
+#Xmetering-alarm_hosts:
+#X  infra2:
+#X    ip: 10.0.0.22
   
 # gnocchi (telemetry metrics storage)
-metrics_hosts:
-  infra3:
-    ip: 10.0.0.23
-  
-## Bare metal api  
-#ironic-infra_hosts:
-#  infra1:
-#    ip: 10.0.0.21
-#  infra2:
-#    ip: 10.0.0.22  
-## magnum api 
-#magnum-infra_hosts:
-#  infra1:
-#    ip: 10.0.0.21
-#  infra2:
-#    ip: 10.0.0.22  
-## The infra nodes that will be running the trove services
-#trove-infra_hosts:
-#  infra1:
-#    ip: 10.0.0.21
-#  infra2:
-#    ip: 10.0.0.22
-#  infra4:
-#    ip: 10.0.0.24
-##Sahara api
-#sahara-infra_hosts:
-#  infra1:
-#    ip: 10.0.0.21
-#  infra2:
-#    ip: 10.0.0.22
+#Xmetrics_hosts:
+#X  infra3:
+#X    ip: 10.0.0.23
 
 # neutron server, agents (L3, etc)
 network_hosts:
   neutron1:
     ip: 10.0.1.41
-#  infra1:
-#    ip: 10.0.0.21
-  
+
 ####################################################################################################
 # nova hypervisors
 compute_hosts:
@@ -377,35 +312,10 @@ compute_hosts:
       nova_virt_type: qemu 
     ip: 10.0.1.31
    
-#  kvm3:
-#    ip: 10.0.1.33
-#  
-#  kvm5:
-#    container_vars:
-#      nova_virt_type: qemu 
-#    ip: 10.0.1.35  
-    
-    
 # ceilometer compute agent (telemetry)
 metering-compute_hosts:
   kvm1:
     ip: 10.0.1.31
-
-#  kvm3: 
-#    ip: 10.0.1.33
-#   
-#  kvm5:  
-#    ip: 10.0.1.35
-
-#  bm1: ##
-#    ip: 10.0.0.42  
-
-# Ironic compute hosts. These compute hosts will be used to
-#  facilitate ironic's interactions through nova.
-#ironic-compute_hosts:
-#  bm1:
-#    ip: 10.0.0.42
-#    
 
 ##########################CEPH STORAGE#############CEPH STORGE####################################
 # The infra nodes where the Ceph mon services will run
