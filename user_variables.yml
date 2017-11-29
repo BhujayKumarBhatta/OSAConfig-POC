@@ -116,9 +116,13 @@ keepalived_use_latest_stable: True
 
 cephx: true
 ceph_mons:
-  - 20.0.0.248
-  - 20.0.0.112
-  - 20.0.0.136 
+  - 20.0.0.199
+  - 20.0.0.187
+  - 20.0.0.212
+
+#  - 20.0.0.248
+#  - 20.0.0.112
+#  - 20.0.0.136 
 
 monitor_interface: eth2
 #monitor_address: 20.0.0.0/24
