@@ -5,9 +5,9 @@ cidr_networks:
    pod1_storage: 20.0.0.0/24
    pod1_tunnel: 30.0.0.0/24
    
-   pod2_container: 10.0.1.0/24   
-   pod2_storage: 20.0.1.0/24
-   pod2_tunnel: 30.0.1.0/24   
+#@   pod2_container: 10.0.1.0/24   
+#@   pod2_storage: 20.0.1.0/24
+#@   pod2_tunnel: 30.0.1.0/24   
 
    brswift: 12.0.0.0/24
    brceph: 13.0.0.0/24
@@ -16,9 +16,9 @@ used_ips:
    - "10.0.0.1,10.0.0.100"
    - "20.0.0.1,20.0.0.100"
    - "30.0.0.1,30.0.0.100"
-   - "10.0.1.1,10.0.1.100"
-   - "20.0.1.1,20.0.1.100"
-   - "30.0.1.1,30.0.1.100"
+#@   - "10.0.1.1,10.0.1.100"
+#@   - "20.0.1.1,20.0.1.100"
+#@   - "30.0.1.1,30.0.1.100"
    - "12.0.0.1,12.0.0.100" 
    - "13.0.0.1,13.0.0.100"
 
@@ -35,11 +35,15 @@ pod1_hosts:
     ip: 10.0.0.23  
    rsyslog1:
     ip: 10.0.0.57 
-pod2_hosts:
-   kvm1:     
-    ip: 10.0.1.31   
-   neutron1:
-    ip: 10.0.1.41
+   kvm1:  
+    ip: 10.0.0.31 
+   
+    
+#@pod2_hosts:
+#@   kvm1:     
+#@    ip: 10.0.1.31   
+#@   neutron1:
+#@    ip: 10.0.1.41
     
 
 global_overrides:
@@ -63,33 +67,33 @@ global_overrides:
         is_ssh_address: true
         static_routes:
           # Route to pod2 container from pod1 networks
-          - cidr: 10.0.1.0/24
-            gateway: 10.0.1.1    
-             
-    - network:
-        container_bridge: "br-mgmt"
-        container_type: "veth"
-        container_interface: "eth1"
-        ip_from_q: "pod2_container"
-        address_prefix: "container"        
-        type: "raw"
-        group_binds:
-          - all_containers
-          - hosts
-        reference_group: "pod2_hosts"        
-        is_container_address: true
-        is_ssh_address: true
-        static_routes:
-          # Route to pod1 container from pod2 networks
           - cidr: 10.0.0.0/24
-            gateway: 10.0.0.1  
+            gateway: 10.0.0.1    
+             
+#    - network:
+#        container_bridge: "br-mgmt"
+#        container_type: "veth"
+#        container_interface: "eth1"
+#        ip_from_q: "pod2_container"
+#        address_prefix: "container"        
+#        type: "raw"
+#        group_binds:
+#          - all_containers
+#          - hosts
+#        reference_group: "pod2_hosts"        
+#        is_container_address: true
+#        is_ssh_address: true
+#        static_routes:
+#          # Route to pod1 container from pod2 networks
+#          - cidr: 10.0.0.0/24
+#            gateway: 10.0.0.1  
         
     - network:
         container_bridge: "br-vxlan"
         container_type: "veth"
         container_interface: "eth10"
-        ip_from_q: "pod2_tunnel"
-        reference_group: "pod2_hosts"   
+        ip_from_q: "pod1_tunnel"
+        reference_group: "pod1_hosts"   
         type: "vxlan"
         range: "1:1000"
         net_name: "vxlan"
@@ -127,8 +131,8 @@ global_overrides:
         address_prefix: "storage"
         static_routes:
           # Route to pod2 container from pod1 networks
-          - cidr: 20.0.1.0/24
-            gateway: 20.0.1.1   
+          - cidr: 20.0.0.0/24
+            gateway: 20.0.0.1   
         #container_mtu: "9000"
         type: "raw"
         group_binds:
@@ -139,20 +143,20 @@ global_overrides:
           - gnocchi_all
           - ceph-mon
           
-    - network:
-        container_bridge: "br-storage"
-        container_type: "veth"
-        container_interface: "eth2"
-        ip_from_q: "pod2_storage"
-        reference_group: "pod2_hosts" 
-        static_routes:
-          # Route to container networks
-          - cidr: 20.0.0.0/24
-            gateway: 20.0.0.1   
-        #container_mtu: "9000"
-        type: "raw"
-        group_binds:          
-          - nova_compute
+#    - network:
+#        container_bridge: "br-storage"
+#        container_type: "veth"
+#        container_interface: "eth2"
+#        ip_from_q: "pod2_storage"
+#        reference_group: "pod2_hosts" 
+#        static_routes:
+#          # Route to container networks
+#          - cidr: 20.0.0.0/24
+#            gateway: 20.0.0.1   
+#        #container_mtu: "9000"
+#        type: "raw"
+#        group_binds:          
+#          - nova_compute
             
      
     - network:
@@ -301,8 +305,8 @@ dashboard_hosts:
 
 # neutron server, agents (L3, etc)
 network_hosts:
-  neutron1:
-    ip: 10.0.1.41
+  infra1:
+    ip: 10.0.0.21
 
 ####################################################################################################
 # nova hypervisors
@@ -310,12 +314,12 @@ compute_hosts:
   kvm1: 
     container_vars:
       nova_virt_type: qemu 
-    ip: 10.0.1.31
+    ip: 10.0.0.31
    
 # ceilometer compute agent (telemetry)
-metering-compute_hosts:
-  kvm1:
-    ip: 10.0.1.31
+#@metering-compute_hosts:
+#@  kvm1:
+#@    ip: 10.0.1.31
 
 ##########################CEPH STORAGE#############CEPH STORGE####################################
 # The infra nodes where the Ceph mon services will run
@@ -333,8 +337,6 @@ ceph-osd_hosts:
     ip: 10.0.0.91
   osd2:
     ip: 10.0.0.92
-#  osd3:
-#    ip: 10.0.0.93
 
 # ########## SWIFT STORAGE ########################SWIFT STORAGE#######################
 storage_hosts:
