@@ -35,9 +35,6 @@ pod1_hosts:
     ip: 10.0.0.23  
    rsyslog1:
     ip: 10.0.0.57 
-#   kvm1:  
-#    ip: 10.0.0.31 
-   
     
 pod2_hosts:
    kvm1:     
@@ -231,16 +228,16 @@ repo-infra_hosts:
 #    ip: 10.0.0.21
   infra2:
     ip: 10.0.0.22
-  infra3:
-    ip: 10.0.0.23
+#  infra3:
+#    ip: 10.0.0.23
 # keystone
 identity_hosts:
   infra1:
     ip: 10.0.0.21
-  infra2:
-    ip: 10.0.0.22
-  infra3:
-    ip: 10.0.0.23  
+#  infra2:
+#    ip: 10.0.0.22
+#  infra3:
+#    ip: 10.0.0.23  
 # Barbican
 #Xkey-manager_hosts: 
 #X  infra1:
@@ -261,17 +258,17 @@ storage-infra_hosts:
 image_hosts:
   infra1:
     ip: 10.0.0.21
-  infra2:
-    ip: 10.0.0.22
-  
+#  infra2:
+#    ip: 10.0.0.22
+#  
 # nova 
 compute-infra_hosts:
   infra1:
     ip: 10.0.0.21
-  infra2:
-    ip: 10.0.0.22
-  infra3:
-    ip: 10.0.0.23  
+#  infra2:
+#    ip: 10.0.0.22
+#  infra3:
+#    ip: 10.0.0.23  
 # heat
 #Xorchestration_hosts:
 #X  infra1:
@@ -280,12 +277,12 @@ compute-infra_hosts:
 #X    ip: 10.0.0.22
 # horizon
 dashboard_hosts:
-  infra1:
-    ip: 10.0.0.21
+#  infra1:
+#    ip: 10.0.0.21
   infra2:
     ip: 10.0.0.22
-  infra3:
-    ip: 10.0.0.23  
+#  infra3:
+#    ip: 10.0.0.23  
 
    
 # ceilometer (telemetry API)
