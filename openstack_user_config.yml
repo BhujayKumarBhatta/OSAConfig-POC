@@ -35,8 +35,8 @@ pod1_hosts:
     ip: 10.0.0.23  
    rsyslog1:
     ip: 10.0.0.57 
-   kvm1:  
-    ip: 10.0.0.31 
+#   kvm1:  
+#    ip: 10.0.0.31 
    
     
 pod2_hosts:
