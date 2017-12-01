@@ -117,7 +117,7 @@ keepalived_use_latest_stable: True
 cephx: true
 ceph_mons:
   - 20.0.0.232
-  - 20.0.0.235
+  - 20.0.0.119
   - 20.0.0.249
 
 #  - 20.0.0.248
