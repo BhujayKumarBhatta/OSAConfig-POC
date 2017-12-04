@@ -304,8 +304,9 @@ ceph_release_num:
 #  hammer: 0.94
 #  infernalis: 9
   jewel: 10
-  kraken: 11.2.0
+  kraken: 11
   luminous: 12
+  mimic: 13
 
 
 
