@@ -72,23 +72,23 @@ global_overrides:
           - cidr: 10.0.1.0/24
             gateway: 10.0.1.1    
              
-    - network:
-        container_bridge: "br-mgmt"
-        container_type: "veth"
-        container_interface: "eth1"
-        ip_from_q: "pod2_container"
-        address_prefix: "container"        
-        type: "raw"
-        group_binds:
-          - all_containers
-          - hosts
-        reference_group: "pod2_hosts"        
-        is_container_address: true
-        is_ssh_address: true
-        static_routes:
-          # Route to pod1 container from pod2 networks
-          - cidr: 10.0.0.0/24
-            gateway: 10.0.0.1  
+#    - network:
+#        container_bridge: "br-mgmt"
+#        container_type: "veth"
+#        container_interface: "eth1"
+#        ip_from_q: "pod2_container"
+#        address_prefix: "container"        
+#        type: "raw"
+#        group_binds:
+#          - all_containers
+#          - hosts
+#        reference_group: "pod2_hosts"        
+#        is_container_address: true
+#        is_ssh_address: true
+#        static_routes:
+#          # Route to pod1 container from pod2 networks
+#          - cidr: 10.0.0.0/24
+#            gateway: 10.0.0.1  
         
     - network:
         container_bridge: "br-vxlan"
@@ -145,20 +145,20 @@ global_overrides:
           - gnocchi_all
           - ceph-mon
           
-    - network:
-        container_bridge: "br-storage"
-        container_type: "veth"
-        container_interface: "eth2"
-        ip_from_q: "pod2_storage"
-        reference_group: "pod2_hosts" 
-        static_routes:
-          # Route to container networks
-          - cidr: 20.0.0.0/24
-            gateway: 20.0.0.1   
-        #container_mtu: "9000"
-        type: "raw"
-        group_binds:          
-          - nova_compute
+#    - network:
+#        container_bridge: "br-storage"
+#        container_type: "veth"
+#        container_interface: "eth2"
+#        ip_from_q: "pod2_storage"
+#        reference_group: "pod2_hosts" 
+#        static_routes:
+#          # Route to container networks
+#          - cidr: 20.0.0.0/24
+#            gateway: 20.0.0.1   
+#        #container_mtu: "9000"
+#        type: "raw"
+#        group_binds:          
+#          - nova_compute
             
      
     - network:
