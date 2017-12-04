@@ -32,15 +32,18 @@ pod1_hosts:
    infra2:
     ip: 10.0.0.22
    infra3:
-    ip: 10.0.0.23  
+    ip: 10.0.0.23
+   neutron1: 
+    ip: 10.0.0.41  
    rsyslog1:
     ip: 10.0.0.57 
-   kvm3:
-    ip: 10.0.0.33
+   kvm1:
+    ip: 10.0.0.31
+     
     
 pod2_hosts:
-   kvm1:     
-    ip: 10.0.1.31   
+   kvm3:     
+    ip: 10.0.1.33   
 #@   neutron1:
 #@    ip: 10.0.1.41
     
@@ -304,8 +307,8 @@ dashboard_hosts:
 
 # neutron server, agents (L3, etc)
 network_hosts:
-  infra1:
-    ip: 10.0.0.21
+  neutron1:
+    ip: 10.0.0.41
 
 ####################################################################################################
 # nova hypervisors
@@ -313,10 +316,10 @@ compute_hosts:
   kvm1: 
     container_vars:
       nova_virt_type: qemu 
-    ip: 10.0.1.31
+    ip: 10.0.0.31
     
   kvm3:
-    ip: 10.0.0.33
+    ip: 10.0.1.33
 # ceilometer compute agent (telemetry)
 #@metering-compute_hosts:
 #@  kvm1:

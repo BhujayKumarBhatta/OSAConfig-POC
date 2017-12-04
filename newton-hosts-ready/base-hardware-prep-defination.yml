@@ -151,15 +151,15 @@ target_hosts:
    bridges: 
      - {brName: br-mgmt,brPort: bond1 , address: 10.0.0.21 ,netmask: 255.255.255.0 ,network: 10.0.0.0 ,broadcast: 10.0.0.255 ,gateway: 10.0.0.1,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
-     - {brName: br-storage,brPort: bond1.102, address: 20.0.0.21 ,netmask: 255.255.255.0 ,network: 20.0.0.0 ,broadcast: 20.0.0.255 ,gateway: 20.0.0.1 ,dns: ,part_of_vlan: True,
+     - {brName: br-storage,brPort: bond1.102, address: 20.0.0.21 ,netmask: 255.255.255.0 ,network: 20.0.0.0 ,broadcast: 20.0.0.255 ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Openstack Storage }
      - {brName: br-vlan,brPort: bond2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Provider Network flat or vlan , To be connected to external router gateway.Bridge will not have any IP}
-     - {brName: br-vxlan,brPort: bond2.103, address: 30.0.0.21 ,netmask: 255.255.255.0 ,network: 30.0.0.0 ,broadcast: 30.0.0.255 ,gateway: 30.0.0.1 ,dns: ,part_of_vlan: True, 
+     - {brName: br-vxlan,brPort: bond2.103, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True, 
              description: Used for tenant network , virtual network. On Controller this bridge will not have address}
-     - {brName: br-swift,brPort: bond3.104, address: 12.0.0.21 ,netmask: 255.255.255.0 ,network: 12.0.0.0 ,broadcast: 12.0.0.255 ,gateway: 12.0.0.1 ,dns: ,part_of_vlan: False, 
+     - {brName: br-swift,brPort: bond3.104, address: 12.0.0.21 ,netmask: 255.255.255.0 ,network: 12.0.0.0 ,broadcast: 12.0.0.255 ,gateway: ,dns: ,part_of_vlan: False, 
              description: Used for swift cluster }
-     - {brName: br-ceph,brPort: bond3.105, address: 13.0.0.21 ,netmask: 255.255.255.0 ,network: 13.0.0.0 ,broadcast: 13.0.0.255 ,gateway: 13.0.0.1 ,dns: ,part_of_vlan: False, 
+     - {brName: br-ceph,brPort: bond3.105, address: 13.0.0.21 ,netmask: 255.255.255.0 ,network: 13.0.0.0 ,broadcast: 13.0.0.255 ,gateway: ,dns: ,part_of_vlan: False, 
              description: Used for ceph cluster }
 #---------------------------------------------------------------------------------------------------------------------------------
  infra2:
@@ -302,7 +302,7 @@ target_hosts:
 
  neutron1:
    hostname: neutron1
-   ssh_ip: 10.0.1.41
+   ssh_ip: 10.0.0.41
    roles: controller
    change_network_interface_file: True
    nic: 
@@ -317,22 +317,22 @@ target_hosts:
      - {bondName: bond2, bondNic: eno2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
              description: bond 2 using NIC eno2 }                
    vNic:
-     - {vNicName: bond2.203,vNicParent: bond2, address: ,netmask: ,network: ,broadcast:  ,gateway: ,dns: , 
+     - {vNicName: bond2.103,vNicParent: bond2, address: ,netmask: ,network: ,broadcast:  ,gateway: ,dns: , 
              description: used by br-vxlan bridge} 
                                 
    bridges: 
-     - {brName: br-mgmt,brPort: bond1 , address: 10.0.1.41 ,netmask: 255.255.255.0 ,network: 10.0.1.0 ,broadcast: 10.0.1.255 ,gateway: 10.0.1.1,dns: ,part_of_vlan: True,
+     - {brName: br-mgmt,brPort: bond1 , address: 10.0.0.41 ,netmask: 255.255.255.0 ,network: 10.0.0.0 ,broadcast: 10.0.0.255 ,gateway: 10.0.0.1,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }     
      - {brName: br-vlan,brPort: bond2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Provider Network flat or vlan , To be connected to external router gateway.Bridge will not have any IP}
-     - {brName: br-vxlan,brPort: bond2.203, address: 30.0.1.41 ,netmask: 255.255.255.0 ,network: 30.0.1.0 ,broadcast: 30.0.1.255 ,gateway: 30.0.1.1 ,dns: ,part_of_vlan: True, 
+     - {brName: br-vxlan,brPort: bond2.103, address: ,netmask:  ,network: ,broadcast: ,gateway:  ,dns: ,part_of_vlan: True, 
              description: Used for tenant network , virtual network. On Controller this bridge will not have address}
       
 
 #----------------------------------------------------POD2 host --------------------------------------------------------------
  kvm1:
    hostname: kvm1
-   ssh_ip: 10.0.1.31
+   ssh_ip: 10.0.0.31
    roles: novacompute
    change_network_interface_file: True
    nic: 
@@ -346,23 +346,23 @@ target_hosts:
      - {bondName: bond2, bondNic: eno2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
              description: bond 2 using NIC eno2 }             
    vNic:
-     - {vNicName: bond1.202, vNicParent: bond1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+     - {vNicName: bond1.102, vNicParent: bond1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: used by br-storage bridge } 
-     - {vNicName: bond2.203,vNicParent: bond2, address: ,netmask: ,network: ,broadcast:  ,gateway: ,dns: , 
+     - {vNicName: bond2.103,vNicParent: bond2, address: ,netmask: ,network: ,broadcast:  ,gateway: ,dns: , 
              description: used by br-vxlan bridge}            
    bridges: 
-     - {brName: br-mgmt,brPort: bond1 , address: 10.0.1.31 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 10.0.1.1 ,dns: ,part_of_vlan: True,
+     - {brName: br-mgmt,brPort: bond1 , address: 10.0.0.31 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 10.0.0.1 ,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
-     - {brName: br-storage,brPort: bond1.202, address: 20.0.1.31 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 20.0.1.1 ,dns: ,part_of_vlan: True,
+     - {brName: br-storage,brPort: bond1.102, address: 20.0.0.31 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway:  ,dns: ,part_of_vlan: True,
              description: USed for Openstack Storage }
      - {brName: br-vlan,brPort: bond2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Provider Network flat or vlan , To be connected to external router gateway. Bridge doesn't have any IP}        
-     - {brName: br-vxlan,brPort: bond2.203, address: 30.0.1.31 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 30.0.1.1 ,dns: ,part_of_vlan: True,  
+     - {brName: br-vxlan,brPort: bond2.103, address: 30.0.0.31 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,  
              description: Used for tenant network , virtual network. On Compute node this will have address}  
 #------------------------------------------------------kvm3 -------------------------------------------------------------------
  kvm3:
    hostname: kvm3
-   ssh_ip: 10.0.0.33
+   ssh_ip: 10.0.1.33
    roles: novacompute
    change_network_interface_file: True
    nic: 
@@ -376,18 +376,18 @@ target_hosts:
      - {bondName: bond2, bondNic: enp3s0, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: , 
              description: bond 2 using NIC eno2 }             
    vNic:
-     - {vNicName: bond1.102, vNicParent: bond1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
+     - {vNicName: bond1.202, vNicParent: bond1, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,
              description: used by br-storage bridge } 
-     - {vNicName: bond2.103,vNicParent: bond2, address: ,netmask: ,network: ,broadcast:  ,gateway: ,dns: , 
+     - {vNicName: bond2.203,vNicParent: bond2, address: ,netmask: ,network: ,broadcast:  ,gateway: ,dns: , 
              description: used by br-vxlan bridge}            
    bridges: 
-     - {brName: br-mgmt,brPort: bond1 , address: 10.0.0.33 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 10.0.0.1 ,dns: ,part_of_vlan: True,
+     - {brName: br-mgmt,brPort: bond1 , address: 10.0.1.33 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 10.0.1.1 ,dns: ,part_of_vlan: True,
              description: USed for Openstack Managment, SSH and api access }
-     - {brName: br-storage,brPort: bond1.102, address: 20.0.0.33 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 20.0.0.1 ,dns: ,part_of_vlan: True,
+     - {brName: br-storage,brPort: bond1.202, address: 20.0.1.33 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Openstack Storage }
      - {brName: br-vlan,brPort: bond2, address: ,netmask: ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,
              description: USed for Provider Network flat or vlan , To be connected to external router gateway. Bridge doesn't have any IP}        
-     - {brName: br-vxlan,brPort: bond2.103, address: 30.0.0.33 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: 30.0.0.1 ,dns: ,part_of_vlan: True,  
+     - {brName: br-vxlan,brPort: bond2.203, address: 30.0.1.33 ,netmask: 255.255.255.0 ,network: ,broadcast: ,gateway: ,dns: ,part_of_vlan: True,  
              description: Used for tenant network , virtual network. On Compute node this will have address}  
 #-----------------------------------------POD 2 host --------------------------------------------------------------------------   
  kvm4:
