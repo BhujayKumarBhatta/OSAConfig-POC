@@ -27,6 +27,10 @@ repo_build_git_reclone: no
 repo_build_wheel_rebuild: no
 repo_build_venv_rebuild: no
 repo_build_venv_timeout: 120
+
+repo_build_use_upper_constraints: true
+repo_build_package_state: "latest"
+repo_build_pip_package_state: "latest"
 # Optionally set this to a list of packages which must always have the wheel
 # compiled from source. This will ensure that a pre-compiled wheel is not
 # downloaded from any of the indexes.
