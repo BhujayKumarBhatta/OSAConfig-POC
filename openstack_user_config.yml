@@ -41,9 +41,9 @@ pod1_hosts:
     ip: 10.0.0.31
      
     
-pod2_hosts:
-   kvm3:     
-    ip: 10.0.1.33   
+#pod2_hosts:
+#   kvm3:     
+#    ip: 10.0.1.33   
 #@   neutron1:
 #@    ip: 10.0.1.41
     
@@ -318,8 +318,8 @@ compute_hosts:
       nova_virt_type: qemu 
     ip: 10.0.0.31
     
-  kvm3:
-    ip: 10.0.1.33
+#  kvm3:
+#    ip: 10.0.1.33
 # ceilometer compute agent (telemetry)
 #@metering-compute_hosts:
 #@  kvm1:
