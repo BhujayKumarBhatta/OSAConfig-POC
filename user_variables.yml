@@ -289,7 +289,7 @@ debian_ceph_packages:
 #  - ceph-fs-common #|--> however while proceding to rolling upgrades and the 'ceph' package upgrade
   - ceph-fuse      #|--> they don't get update so we need to force them
 
-ceph_origin: 'upstream' # or 'distro' or  'local'
+ceph_origin: 'repository' # earlier it was 'upstream' # or 'distro' or  'local'
 
 # COMMUNITY VERSION
 ceph_stable: true # use ceph stable branch
