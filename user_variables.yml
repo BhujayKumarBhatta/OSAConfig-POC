@@ -27,6 +27,7 @@ repo_build_git_reclone: no
 repo_build_wheel_rebuild: no
 repo_build_venv_rebuild: no
 repo_build_venv_timeout: 120
+
 # Optionally set this to a list of packages which must always have the wheel
 # compiled from source. This will ensure that a pre-compiled wheel is not
 # downloaded from any of the indexes.
@@ -306,9 +307,7 @@ ceph_release_num:
   jewel: 10
   kraken: 11
   luminous: 12
-  mimic: 13
-
-
+  
 
 journal_size: 5120 # OSD journal size in MB
 osd_mkfs_type: xfs
