@@ -145,6 +145,7 @@ global_overrides:
           - swift_proxy
           - gnocchi_all
           - ceph-mon
+          - nova-compute
           
 #    - network:
 #        container_bridge: "br-storage"
