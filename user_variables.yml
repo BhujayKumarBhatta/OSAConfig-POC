@@ -107,7 +107,7 @@ keepalived_use_latest_stable: True
 
 
 #galera_pip_packages: 
-#   #  - MySQL-python
+#   #  - MySQL-python 
 #      - pycrypto
 
 
