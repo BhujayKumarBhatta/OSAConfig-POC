@@ -33,19 +33,19 @@ pod1_hosts:
     ip: 10.0.0.22
    infra3:
     ip: 10.0.0.23
-   neutron1: 
-    ip: 10.0.0.41  
+#   neutron1: 
+#    ip: 10.0.0.41  
    rsyslog1:
     ip: 10.0.0.57 
-   kvm1:
-    ip: 10.0.0.31
+#   kvm1:
+#    ip: 10.0.0.31
      
     
-#pod2_hosts:
-#   kvm3:     
-#    ip: 10.0.1.33   
-#@   neutron1:
-#@    ip: 10.0.1.41
+pod2_hosts:
+   kvm3:     
+    ip: 10.0.1.33   
+   neutron1:
+    ip: 10.0.1.41
     
 
 global_overrides:
@@ -72,30 +72,30 @@ global_overrides:
           - cidr: 10.0.1.0/24
             gateway: 10.0.1.1    
              
-#    - network:
-#        container_bridge: "br-mgmt"
-#        container_type: "veth"
-#        container_interface: "eth1"
-#        ip_from_q: "pod2_container"
-#        address_prefix: "container"        
-#        type: "raw"
-#        group_binds:
-#          - all_containers
-#          - hosts
-#        reference_group: "pod2_hosts"        
-#        is_container_address: true
-#        is_ssh_address: true
-#        static_routes:
-#          # Route to pod1 container from pod2 networks
-#          - cidr: 10.0.0.0/24
-#            gateway: 10.0.0.1  
+    - network:
+        container_bridge: "br-mgmt"
+        container_type: "veth"
+        container_interface: "eth1"
+        ip_from_q: "pod2_container"
+        address_prefix: "container"        
+        type: "raw"
+        group_binds:
+          - all_containers
+          - hosts
+        reference_group: "pod2_hosts"        
+        is_container_address: true
+        is_ssh_address: true
+        static_routes:
+          # Route to pod1 container from pod2 networks
+          - cidr: 10.0.0.0/24
+            gateway: 10.0.0.1  
         
     - network:
         container_bridge: "br-vxlan"
         container_type: "veth"
         container_interface: "eth10"
-        ip_from_q: "pod1_tunnel"
-        reference_group: "pod1_hosts"
+        ip_from_q: "pod2_tunnel"
+        reference_group: "pod2_hosts"
         address_prefix: "tunnel"   
         type: "vxlan"
         range: "1:1000"
@@ -147,20 +147,21 @@ global_overrides:
           - ceph-mon
           - nova-compute
           
-#    - network:
-#        container_bridge: "br-storage"
-#        container_type: "veth"
-#        container_interface: "eth2"
-#        ip_from_q: "pod2_storage"
-#        reference_group: "pod2_hosts" 
-#        static_routes:
-#          # Route to container networks
-#          - cidr: 20.0.0.0/24
-#            gateway: 20.0.0.1   
-#        #container_mtu: "9000"
-#        type: "raw"
-#        group_binds:          
-#          - nova_compute
+    - network:
+        container_bridge: "br-storage"
+        container_type: "veth"
+        container_interface: "eth2"
+        ip_from_q: "pod2_storage"
+        reference_group: "pod2_hosts"
+        address_prefix: "storage" 
+        static_routes:
+          # Route to container networks
+          - cidr: 20.0.0.0/24
+            gateway: 20.0.0.1   
+        #container_mtu: "9000"
+        type: "raw"
+        group_binds:          
+          - nova_compute
             
      
     - network:
@@ -310,7 +311,7 @@ dashboard_hosts:
 # neutron server, agents (L3, etc)
 network_hosts:
   neutron1:
-    ip: 10.0.0.41
+    ip: 10.0.1.41
 
 ####################################################################################################
 # nova hypervisors
@@ -318,7 +319,7 @@ compute_hosts:
   kvm1: 
     container_vars:
       nova_virt_type: qemu 
-    ip: 10.0.0.31
+    ip: 10.0.1.31
     
 #  kvm3:
 #    ip: 10.0.1.33
