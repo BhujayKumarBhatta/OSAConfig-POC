@@ -1,0 +1,1555 @@
+
+Finally the problem was solved with these steps 
+
+
+1.  at the switch level -  create a vlan (l2 and l3  ).
+ make the br-vlan ( no tag ) and br-vxlan( tag ) at the server end 
+switch  port should belong to native vlan so that both tag and untagged traffic flows 
+
+policy based routing for vxlan was not required since both neutron and kvm was in pod2 
+
+
+2.  it was observed that  address_prefix: "tunnel"   not being used in defining the br-vxlan network in openstack_user_config.yml
+caused a huge problem.  This  was the reason of  local_ip: <ip of br-mgmt>  in /etc/neutron/plugin/ml2/linuxbridge-agant.ini
+ and thus the traffic from neutron agant and vm within kvm were going towards br-mgmt.
+
+3. It was also observed that even after correction , a reboot of the server kvm and neutron was required to 
+route the traiifc towards br-vxlan . a policy based routing  dinn't help
+
+4.  ip netns exec qdhcp-c969c0e1-5dc8-48f4-ae3f-b550bd543c17 ping 70.0.0.13 ,
+ tcpdump -AXxnl -vvvv -i br-vxlan | grep < mac address of vm>   
+and virsh console < id >   were  key tool for debugging this problem
+
+
+5. m1.yml to debug the container ip statistics 
+
+---
+#- hosts:  neutron1_neutron_agents_container-f940d14a
+- hosts:  kvm1
+  tasks:
+    - debug:
+        msg: "{{ hostvars[inventory_hostname]['container_networks'] }}"
+
+
+
+
+
+
+
+root@infra1-neutron-agents-container-f8b1fffd:~# ip netns exec qdhcp-b066ef34-5661-46b6-aa82-5d7fdfee2800 ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: ns-1f49a0f0-5c: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UP group default qlen 1000
+    link/ether fa:16:3e:b3:49:01 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 169.254.169.254/16 brd 169.254.255.255 scope global ns-1f49a0f0-5c
+       valid_lft forever preferred_lft forever
+    inet 70.0.0.10/24 brd 70.0.0.255 scope global ns-1f49a0f0-5c
+       valid_lft forever preferred_lft forever
+    inet6 fe80::f816:3eff:feb3:4901/64 scope link
+       valid_lft forever preferred_lft forever
+
+
+========================================================
+
+root@infra1-neutron-agents-container-f8b1fffd:~# ip a |grep brq
+2: tap1f49a0f0-5c: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue master brqb066ef34-56 state UP group default qlen 1000
+3: tap4bd63610-9a@if2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master brq886ae83c-a3 state UP group default qlen 1000
+4: brq886ae83c-a3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+5: vxlan-91: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue master brqb066ef34-56 state UNKNOWN group default qlen 1000
+6: brqb066ef34-56: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UP group default qlen 1000
+239: eth12@if240: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master brq886ae83c-a3 state UP group default qlen 1000
+root@infra1-neutron-agents-container-f8b1fffd:~#
+================================================================
+
+root@kvm1:~# ip a |grep brq
+15: brqb066ef34-56: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UP group default qlen 1000
+34: brq886ae83c-a3: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default qlen 1000
+54: tap37204579-fa: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc pfifo_fast master brqb066ef34-56 state UNKNOWN group default qlen 1000
+55: vxlan-91: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue master brqb066ef34-56 state UNKNOWN group default qlen 1000
+56: tap6c4d81a1-96: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc pfifo_fast master brqb066ef34-56 state UNKNOWN group default qlen 1000
+root@kvm1:~#
+
+
+
+tap6c4d81a1-96  kvm
+tap1f49a0f0-5c  neutron-agent
+
+
+
+
+
+vm2-ubuntu-provider login:
+root@kvm3:~#
+root@kvm3:~# virsh console 1
+Connected to domain instance-00000025
+Escape character is ^]
+
+$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 16436 qdisc noqueue
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc pfifo_fast qlen 1000
+    link/ether fa:16:3e:69:11:64 brd ff:ff:ff:ff:ff:ff
+    inet 70.0.0.16/24 brd 70.0.0.255 scope global eth0
+    inet6 fe80::f816:3eff:fe69:1164/64 scope link
+       valid_lft forever preferred_lft forever
+
+14: tap98fba63c-23: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc pfifo_fast master brqb066ef34-56 state UNKNOWN group default qlen 1000
+    link/ether fe:16:3e:69:11:64 brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::fc16:3eff:fe69:1164/64 scope link
+       valid_lft forever preferred_lft forever
+
+
+
+============================================================
+Ping from VM within kvm1 
+
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast qlen 1000
+    link/ether fa:16:3e:c0:86:65 brd ff:ff:ff:ff:ff:ff
+    inet 70.0.0.18/24 scope global eth0
+    inet6 fe80::f816:3eff:fec0:8665/64 scope link
+       valid_lft forever preferred_lft f
+$ ping 70.0.0.10
+PING 70.0.0.10 (70.0.0.10): 56 data bytes
+
+
+
+root@kvm1:~# tcpdump -AxnXl -vvvv -i vxlan-91
+tcpdump: listening on vxlan-91, link-type EN10MB (Ethernet), capture size 262144 bytes
+14:33:06.629278 ARP, Ethernet (len 6), IPv4 (len 4), Request who-has 70.0.0.10 tell 70.0.0.18, length 28
+        0x0000:  0001 0800 0604 0001 fa16 3ec0 8665 4600  ..........>..eF.
+        0x0010:  0012 0000 0000 0000 4600 000a            ........F...
+14:33:07.632599 ARP, Ethernet (len 6), IPv4 (len 4), Request who-has 70.0.0.10 tell 70.0.0.18, length 28
+        0x0000:  0001 0800 0604 0001 fa16 3ec0 8665 4600  ..........>..eF.
+        0x0010:  0012 0000 0000 0000 4600 000a            ........F...
+14:33:08.629295 ARP, Ethernet (len 6), IPv4 (len 4), Request who-has 70.0.0.10 tell 70.0.0.18, length 28
+        0x0000:  0001 0800 0604 0001 fa16 3ec0 8665 4600  ..........>..eF.
+        0x0010:  0012 0000 0000 0000 4600 000a            ........F...
+
+root@kvm1:~# tcpdump -AxnXl -vvvv -i br-mgmt |grep 'fa16 3ec0 8665'
+tcpdump: listening on br-mgmt, link-type EN10MB (Ethernet), capture size 262144 bytes
+        0x0020:  0000 5b00 ffff ffff ffff fa16 3ec0 8665  ..[.........>..e
+        0x0030:  0806 0001 0800 0604 0001 fa16 3ec0 8665  ............>..e
+        0x0020:  0000 5b00 ffff ffff ffff fa16 3ec0 8665  ..[.........>..e
+        0x0030:  0806 0001 0800 0604 0001 fa16 3ec0 8665  ............>..e
+        0x0020:  0000 5b00 ffff ffff ffff fa16 3ec0 8665  ..[.........>..e
+        0x0030:  0806 0001 0800 0604 0001 fa16 3ec0 8665  ............>..e
+        0x0020:  0000 5b00 ffff ffff ffff fa16 3ec0 8665  ..[.........>..e
+        0x0030:  0806 0001 0800 0604 0001 fa16 3ec0 8665  ............>..e
+^C441 packets captured
+449 packets received by filter
+0 packets dropped by kernel
+
+
+=============================
+$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 16436 qdisc noqueue
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc pfifo_fast qlen 1000
+    link/ether fa:16:3e:47:bd:4a brd ff:ff:ff:ff:ff:ff
+    inet 70.0.0.19/24 brd 70.0.0.255 scope global eth0
+    inet6 fe80::f816:3eff:fe47:bd4a/64 scope link
+       valid_lft forever preferred_lft forever
+$ ping 70.0.0.1
+PING 70.0.0.1 (70.0.0.1): 56 data bytes
+
+
+root@kvm3:~# tcpdump -AnXlx  -i vxlan-91   -vvvv
+tcpdump: listening on vxlan-91, link-type EN10MB (Ethernet), capture size 262144 bytes
+14:55:00.202835 ARP, Ethernet (len 6), IPv4 (len 4), Request who-has 70.0.0.1 tell 70.0.0.19, length 28
+        0x0000:  0001 0800 0604 0001 fa16 3e47 bd4a 4600  ..........>G.JF.
+        0x0010:  0013 0000 0000 0000 4600 0001            ........F...
+14:55:01.202846 ARP, Ethernet (len 6), IPv4 (len 4), Request who-has 70.0.0.1 tell 70.0.0.19, length 28
+        0x0000:  0001 0800 0604 0001 fa16 3e47 bd4a 4600  ..........>G.JF.
+        0x0010:  0013 0000 0000 0000 4600 0001            ........F...
+14:55:02.205273 ARP, Ethernet (len 6), IPv4 (len 4), Request who-has 70.0.0.1 tell 70.0.0.19, length 28
+        0x0000:  0001 0800 0604 0001 fa16 3e47 bd4a 4600  ..........>G.JF.
+        0x0010:  0013 0000 0000 0000 4600 0001            ........F...
+14:55:03.202976 ARP, Ethernet (len 6), IPv4 (len 4), Request who-has 70.0.0.1 tell 70.0.0.19, length 28
+        0x0000:  0001 0800 0604 0001 fa16 3e47 bd4a 4600  ..........>G.JF.
+        0x0010:  0013 0000 0000 0000 4600 0001            ........F...
+^C
+
+root@kvm3:~# tcpdump -AnXlx  -i br-mgmt   -vvvv  |grep 'fa16 3e47 bd4a'
+tcpdump: listening on br-mgmt, link-type EN10MB (Ethernet), capture size 262144 bytes
+        0x0020:  0000 5b00 ffff ffff ffff fa16 3e47 bd4a  ..[.........>G.J
+        0x0030:  0806 0001 0800 0604 0001 fa16 3e47 bd4a  ............>G.J
+        0x0020:  0000 5b00 ffff ffff ffff fa16 3e47 bd4a  ..[.........>G.J
+        0x0030:  0806 0001 0800 0604 0001 fa16 3e47 bd4a  ............>G.J
+        0x0020:  0000 5b00 ffff ffff ffff fa16 3e47 bd4a  ..[.........>G.J
+        0x0030:  0806 0001 0800 0604 0001 fa16 3e47 bd4a  ............>G.J
+^C186 packets captured
+206 packets received by filter
+0 packets dropped by kernel
+
+
+
+
+
+
+
+
+
+85: br-vxlan: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether 00:18:8b:43:53:da brd ff:ff:ff:ff:ff:ff
+    inet 30.0.0.31/24 brd 30.0.0.255 scope global br-vxlan
+       valid_lft forever preferred_lft forever
+    inet6 fe80::218:8bff:fe43:53da/64 scope link
+       valid_lft forever preferred_lft forever
+86: tap6c4d81a1-96: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc pfifo_fast master brqb066ef34-56 state UNKNOWN group default qlen 1000
+    link/ether fe:16:3e:c0:86:65 brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::fc16:3eff:fec0:8665/64 scope link
+       valid_lft forever preferred_lft forever
+87: vxlan-91: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue master brqb066ef34-56 state UNKNOWN group default qlen 1000
+    link/ether 02:c3:87:17:da:a0 brd ff:ff:ff:ff:ff:ff
+root@kvm1:~#
+
+
+
+
+root@infra1-neutron-agents-container-f8b1fffd:~# ip netns exec qdhcp-b066ef34-5661-46b6-aa82-5d7fdfee2800 ping 70.0.0.19PING 70.0.0.19 (70.0.0.19) 56(84) bytes of data.
+From 70.0.0.10 icmp_seq=1 Destination Host Unreachable
+From 70.0.0.10 icmp_seq=2 Destination Host Unreachable
+From 70.0.0.10 icmp_seq=3 Destination Host Unreachable
+^C
+--- 70.0.0.19 ping statistics ---
+6 packets transmitted, 0 received, +3 errors, 100% packet loss, time 5032ms
+
+
+
+root@infra1-neutron-agents-container-f8b1fffd:~# tcpdump -AXnxl -i vxlan-91
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on vxlan-91, link-type EN10MB (Ethernet), capture size 262144 bytes
+15:01:10.028025 ARP, Request who-has 70.0.0.19 tell 70.0.0.10, length 28
+        0x0000:  0001 0800 0604 0001 fa16 3eb3 4901 4600  ..........>.I.F.
+        0x0010:  000a 0000 0000 0000 4600 0013            ........F...
+15:01:11.026120 ARP, Request who-has 70.0.0.19 tell 70.0.0.10, length 28
+        0x0000:  0001 0800 0604 0001 fa16 3eb3 4901 4600  ..........>.I.F.
+        0x0010:  000a 0000 0000 0000 4600 0013            ........F...
+15:01:12.026127 ARP, Request who-has 70.0.0.19 tell 70.0.0.10, length 28
+        0x0000:  0001 0800 0604 0001 fa16 3eb3 4901 4600  ..........>.I.F.
+        0x0010:  000a 0000 0000 0000 4600 0013            ........F...
+
+
+root@infra1-neutron-agents-container-f8b1fffd:~# ip netns exec qdhcp-b066ef34-5661-46b6-aa82-5d7fdfee2800 ping 70.0.0.18PING 70.0.0.18 (70.0.0.18) 56(84) bytes of data.
+
+From 70.0.0.10 icmp_seq=1 Destination Host Unreachable
+From 70.0.0.10 icmp_seq=2 Destination Host Unreachable
+From 70.0.0.10 icmp_seq=3 Destination Host Unreachable
+From 70.0.0.10 icmp_seq=4 Destination Host Unreachable
+From 70.0.0.10 icmp_seq=5 Destination Host Unreachable
+From 70.0.0.10 icmp_seq=6 Destination Host Unreachable
+^C
+
+15:02:40.982123 ARP, Request who-has 70.0.0.18 tell 70.0.0.10, length 28
+        0x0000:  0001 0800 0604 0001 fa16 3eb3 4901 4600  ..........>.I.F.
+        0x0010:  000a 0000 0000 0000 4600 0012            ........F...
+15:02:41.982481 ARP, Request who-has 70.0.0.18 tell 70.0.0.10, length 28
+        0x0000:  0001 0800 0604 0001 fa16 3eb3 4901 4600  ..........>.I.F.
+        0x0010:  000a 0000 0000 0000 4600 0012            ........F...
+15:02:42.982198 ARP, Request who-has 70.0.0.18 tell 70.0.0.10, length 28
+        0x0000:  0001 0800 0604 0001 fa16 3eb3 4901 4600  ..........>.I.F.
+        0x0010:  000a 0000 0000 0000 4600 0012            ........F...
+15:02:43.986124 ARP, Request who-has 70.0.0.18 tell 70.0.0.10, length 28
+        0x0000:  0001 0800 0604 0001 fa16 3eb3 4901 4600  ..........>.I.F.
+        0x0010:  000a 0000 0000 0000 4600 0012            ........F...
+
+
+root@infra1-neutron-agents-container-f8b1fffd:~# ip netns exec qdhcp-b066ef34-5661-46b6-aa82-5d7fdfee2800 ping 70.0.0.18PING 70.0.0.18 (70.0.0.18) 56(84) bytes of data.
+From 70.0.0.10 icmp_seq=1 Destination Host Unreachable
+From 70.0.0.10 icmp_seq=2 Destination Host Unreachable
+From 70.0.0.10 icmp_seq=3 Destination Host Unreachable
+^C
+
+root@infra1:~# tcpdump -AXxnl -i br-mgmt -vvvv|grep 'fa16 3eb3 4901'
+tcpdump: listening on br-mgmt, link-type EN10MB (Ethernet), capture size 262144 bytes
+        0x0020:  0000 5b00 ffff ffff ffff fa16 3eb3 4901  ..[.........>.I.
+        0x0030:  0806 0001 0800 0604 0001 fa16 3eb3 4901  ............>.I.
+        0x0020:  0000 5b00 ffff ffff ffff fa16 3eb3 4901  ..[.........>.I.
+        0x0030:  0806 0001 0800 0604 0001 fa16 3eb3 4901  ............>.I.
+        0x0020:  0000 5b00 ffff ffff ffff fa16 3eb3 4901  ..[.........>.I.
+        0x0030:  0806 0001 0800 0604 0001 fa16 3eb3 4901  ............>.I.
+        0x0020:  0000 5b00 ffff ffff ffff fa16 3eb3 4901  ..[.........>.I.
+        0x0030:  0806 0001 0800 0604 0001 fa16 3eb3 4901  ............>.I.
+        0x0020:  0000 5b00 ffff ffff ffff fa16 3eb3 4901  ..[.........>.I.
+        0x0030:  0806 0001 0800 0604 0001 fa16 3eb3 4901  ............>.I.
+        0x0020:  0000 5b00 ffff ffff ffff fa16 3eb3 4901  ..[.........>.I.
+
+
+
+
+
+
+
+
+
+echo 0 > /proc/sys/net/ipv4/ip_forward
+
+service networking restart
+service nova-compute restart
+service neutron-linuxbridge-agent restart
+
+root@kvm3:~# tcpdump -AnXlx  -i br-mgmt   -vvvv  |grep 'fa16 3e47 bd4a'
+tcpdump: listening on br-mgmt, link-type EN10MB (Ethernet), capture size 262144                                                                      bytes
+        0x0020:  0000 5b00 ffff ffff ffff fa16 3e47 bd4a  ..[.........>G.J
+        0x0030:  0806 0001 0800 0604 0001 fa16 3e47 bd4a  ............>G.J
+        0x0020:  0000 5b00 ffff ffff ffff fa16 3e47 bd4a  ..[.........>G.J
+        0x0030:  0806 0001 0800 0604 0001 fa16 3e47 bd4a  ............>G.J
+        0x0020:  0000 5b00 ffff ffff ffff fa16 3e47 bd4a  ..[.........>G.J
+        0x0030:  0806 0001 0800 0604 0001 fa16 3e47 bd4a  ............>G.J
+sysctl -w net.ipv4.ip_forward=1 0x0020:  0000 5b00 ffff ffff ffff fa16 3e47 bd4                                                                        ..[.........>G.J
+        0x0030:  0806 0001 0800 0604 0001 fa16 3e47 bd4a  ............>G.J
+        0x0020:  0000 5b00 ffff ffff ffff fa16 3e47 bd4a  ..[.........>G.J
+        0x0030:  0806 0001 0800 0604 0001 fa16 3e47 bd4a  ............>G.J
+        0x0020:  0000 5b00 ffff ffff ffff fa16 3e47 bd4a  ..[.........>G.J
+        0x0030:  0806 0001 0800 0604 0001 fa16 3e47 bd4a  ............>G.J
+        0x0020:  0000 5b00 ffff ffff ffff fa16 3e47 bd4a  ..[.........>G.J
+        0x0030:  0806 0001 0800 0604 0001 fa16 3e47 bd4a  ............>G.J
+        0x0020:  0000 5b00 ffff ffff ffff fa16 3e47 bd4a  ..[.........>G.J
+        0x0030:  0806 0001 0800 0604 0001 fa16 3e47 bd4a  ............>G.J
+        0x0020:  0000 5b00 ffff ffff ffff fa16 3e47 bd4a  ..[.........>G.J
+        0x0030:  0806 0001 0800 0604 0001 fa16 3e47 bd4a  ............>G.J
+        0x0020:  0000 5b00 ffff ffff ffff fa16 3e47 bd4a  ..[.........>G.J
+        0x0030:  0806 0001 0800 0604 0001 fa16 3e47 bd4a  ............>G.J
+^C942 packets captured
+
+cat /proc/sys/net/ipv4/ip_forward
+
+
+openstack server create --nic net-id=b8fd0e2c-6d60-4072-bdad-511d1eef84e7 --image cirrosraw --flavor small --security-group ssh-ping --avilability-zone nova:kvm1 bhujay2
+
+
+$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 16436 qdisc noqueue
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast qlen 1000
+    link/ether fa:16:3e:02:da:c7 brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::f816:3eff:fe02:dac7/64 scope link
+       valid_lft forever preferred_lft forever
+
+fa16 3e02 dac7
+
+
+
+
+$ ip route get 20.10.3.3 
+20.10.3.3 via 10.0.0.1 dev em1  src 192.168.23.5     cache 
+
+
+
+
+
+root@kvm3:~# brctl show
+bridge name     bridge id               STP enabled     interfaces
+br-mgmt         8000.00e04c680733       no              bond1
+br-storage              8000.00e04c680733       no              bond1.102
+br-vlan         8000.00e04c68016a       no              bond2
+br-vxlan                8000.00e04c68016a       no              bond2.103
+brqb066ef34-56          8000.e6f647c9a9bb       no              tap5ff3c330-ce
+                                                        vxlan-91
+brqb8fd0e2c-6d          8000.c2c41968b6c5       no              tapad1e8aa2-42
+                                                        vxlan-85
+root@kvm3:~# virsh list
+ Id    Name                           State
+----------------------------------------------------
+ 1     instance-0000002e              running
+ 2     instance-00000031              running
+
+root@kvm3:~# ip tuntap list
+tapad1e8aa2-42: tap vnet_hdr
+tap5ff3c330-ce: tap vnet_hdr
+root@kvm3:~# ifconfig tapad1e8aa2-42
+tapad1e8aa2-42 Link encap:Ethernet  HWaddr fe:16:3e:02:da:c7
+          inet6 addr: fe80::fc16:3eff:fe02:dac7/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1450  Metric:1
+          RX packets:162 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:55 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:17462 (17.4 KB)  TX bytes:7408 (7.4 KB)
+
+root@kvm3:~# virsh console 1
+Connected to domain instance-0000002e
+Escape character is ^]
+
+$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 16436 qdisc noqueue
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast qlen 1000
+    link/ether fa:16:3e:47:bd:4a brd ff:ff:ff:ff:ff:ff
+    inet 70.0.0.19/24 scope global eth0
+    inet6 fe80::f816:3eff:fe47:bd4a/64 scope link
+       valid_lft forever preferred_lft forever
+$
+root@kvm3:~# ifconfig tap5ff3c330-ce
+tap5ff3c330-ce Link encap:Ethernet  HWaddr fe:16:3e:47:bd:4a
+          inet6 addr: fe80::fc16:3eff:fe47:bd4a/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1450  Metric:1
+          RX packets:15 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:10 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:1713 (1.7 KB)  TX bytes:828 (828.0 B)
+
+root@kvm3:~# ifconfig  vxlan-91
+vxlan-91  Link encap:Ethernet  HWaddr e6:f6:47:c9:a9:bb
+          UP BROADCAST RUNNING MULTICAST  MTU:1450  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:10 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:0 (0.0 B)  TX bytes:914 (914.0 B)
+
+root@kvm3:~# ifconfig br-vxlan
+br-vxlan  Link encap:Ethernet  HWaddr 00:e0:4c:68:01:6a
+          inet addr:30.0.0.33  Bcast:30.0.0.255  Mask:255.255.255.0
+          inet6 addr: fe80::2e0:4cff:fe68:16a/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:8265 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:45 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:414834 (414.8 KB)  TX bytes:3154 (3.1 KB)
+
+root@kvm3:~# ifconfig brqb066ef34-56
+brqb066ef34-56 Link encap:Ethernet  HWaddr e6:f6:47:c9:a9:bb
+          UP BROADCAST RUNNING MULTICAST  MTU:1450  Metric:1
+          RX packets:15 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:1503 (1.5 KB)  TX bytes:0 (0.0 B)
+
+root@kvm3:~#
+root@kvm3:~# timed out waiting for input: auto-logout
+Connection to kvm3 closed.
+root@ansiblenew:/opt/openstack-ansible/playbooks# openstack network list
++--------------------------------------+---------------+--------------------------------------+
+| ID                                   | Name          | Subnets                              |
++--------------------------------------+---------------+--------------------------------------+
+| 886ae83c-a397-43f4-b7d6-aafa7e9c1ff8 | Provider-Flat | 672cc876-6da5-45a2-b8f1-827fd52ebec1 |
+| b066ef34-5661-46b6-aa82-5d7fdfee2800 | pocnet        | c685de96-102f-4738-a21e-277433c2af7d |
+| b8fd0e2c-6d60-4072-bdad-511d1eef84e7 | tnet2         | cd159c87-6a50-4a2b-9397-c4b80539a66f |
++--------------------------------------+---------------+--------------------------------------+
+root@ansiblenew:/opt/openstack-ansible/playbooks#
+
+
+
+network id and the brq-number is same 
+tap and vm  hw address is same 
+vxlan-id and bridge brq-netid  id is same 
+
+
+how the quantam bridge connects to  physical network 
+
+
+
+ tcpdump -AXxnl -i br-vxlan -vvvv|grep 'fa16 3e02 dac7'       71.0.0.11  kvm3 
+
+ip netns exec qdhcp-b8fd0e2c-6d60-4072-bdad-511d1eef84e7  ping 71.0.0.15
+
+
+
+
+eth10@if370
+
+
+
+
+
+
+============================
+TASK [Gather address fact] **************************************************************************************************************************
+task path: /opt/openstack-ansible/playbooks/common-tasks/dynamic-address-fact.yml:16
+Tuesday 05 December 2017  16:31:04 +0530 (0:00:03.128)       0:06:29.218 ******
+container_name: "neutron1_neutron_agents_container-faf167e2"
+physical_host: "neutron1"
+Container confirmed
+ok: [neutron1_neutron_agents_container-faf167e2] => {
+    "ansible_facts": {
+        "_lookup_address": "10.0.0.239"
+    },
+    "changed": false
+}
+
+TASK [Set address fact] *****************************************************************************************************************************
+task path: /opt/openstack-ansible/playbooks/common-tasks/dynamic-address-fact.yml:47
+Tuesday 05 December 2017  16:31:05 +0530 (0:00:01.413)       0:06:30.632 ******
+container_name: "neutron1_neutron_agents_container-faf167e2"
+physical_host: "neutron1"
+Container confirmed
+ok: [neutron1_neutron_agents_container-faf167e2] => {
+    "ansible_facts": {
+        "tunnel_address": "10.0.0.239"
+    },
+    "changed": false
+}
+
+
+
+
+
+============================
+kvm1
+fa16 3e1a 02de  vm 70.0.0.18
+
+
+11:11:01.885187 IP (tos 0x0, ttl 64, id 6229, offset 0, flags [none], proto UDP (17), length 134)
+    30.0.0.31.50250 > 30.0.0.165.8472: [no cksum] OTV, flags [I] (0x08), overlay 0, instance 41
+IP (tos 0x0, ttl 64, id 39670, offset 0, flags [DF], proto ICMP (1), length 84)
+    70.0.0.18 > 70.0.0.1: ICMP echo request, id 13057, seq 1392, length 64
+        0x0000:  4500 0086 1855 0000 4011 254f 1e00 001f  E....U..@.%O....
+        0x0010:  1e00 00a5 c44a 2118 0072 0000 0800 0000  .....J!..r......
+        0x0020:  0000 2900 fa16 3e22 2bd9 fa16 3e1a 02de  ..)...>"+...>...
+        0x0030:  0800 4500 0054 9af6 4000 4001 13a0 4600  ..E..T..@.@...F.
+        0x0040:  0012 4600 0001 0800 e656 3301 0570 3bcf  ..F......V3..p;.
+        0x0050:  9d68 0000 0000 0000 0000 0000 0000 0000  .h..............
+        0x0060:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+        0x0070:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+        0x0080:  0000 0000 0000                       
+
+
+
+=============================================================
+
+neutron agent
+
+11:09:34.829872 STP 802.1w, Rapid STP, Flags [Learn, Forward], bridge-id 8067.18:e7:2                                                                8:12:f6:01.8092, length 42
+        message-age 0.00s, max-age 20.00s, hello-time 2.00s, forwarding-delay 15.00s
+        root-id 8067.18:e7:28:12:f6:01, root-pathcost 0, port-role Designated
+        0x0000:  0000 0202 3c80 6718 e728 12f6 0100 0000  ....<.g..(......
+        0x0010:  0080 6718 e728 12f6 0180 9200 0014 0002  ..g..(..........
+        0x0020:  000f 0000 0000 0002 0067                 .........g
+11:09:35.757250 IP (tos 0x0, ttl 64, id 60559, offset 0, flags [none], proto UDP (17)                                                                , length 134)
+    30.0.0.31.50250 > 30.0.0.165.8472: [no cksum] OTV, flags [I] (0x08), overlay 0, i                                                                nstance 41
+
+
+   30.0.0.165.34649 > 30.0.0.31.8472: [no cksum] OTV, flags [I] (0x08), overlay 0, instance 41
+IP (tos 0x0, ttl 64, id 47629, offset 0, flags [none], proto ICMP (1), length 84)
+    70.0.0.1 > 70.0.0.18: ICMP echo reply, id 13057, seq 1228, length 64
+        0x0000:  4500 0086 8e07 0000 4011 af9c 1e00 00a5  E.......@.......
+        0x0010:  1e00 001f 8759 2118 0072 0000 0800 0000  .....Y!..r......
+        0x0020:  0000 2900 fa16 3e1a 02de fa16 3e22 2bd9  ..)...>.....>"+.
+        0x0030:  0800 4500 0054 ba0d 0000 4001 3489 4600  ..E..T....@.4.F.
+        0x0040:  0001 4600 0012 0000 6c1b 3301 04cc 87b8  ..F.....l.3.....
+        0x0050:  d45e 0000 0000 0000 0000 0000 0000 0000  .^..............
+        0x0060:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+        0x0070:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+        0x0080:  0000 0000 0000                           ......
+
+
+
+
+
+
+Tuesday 05 December 2017  15:58:48 +0530 (0:00:00.024)       2:18:39.254 ******
+changed: [neutron1_neutron_agents_container-faf167e2] => {"changed": true, "network_flat_networks": "flat", "network_flat_networks_list": ["flat"], "network_mappings": "flat:eth12,vlan:eth11", "network_mappings_list": ["flat:eth12", "vlan:eth11"], "network_sriov_mappings": "", "network_sriov_mappings_list": [], "network_types": "vxlan,flat,vlan", "network_vlan_ranges": "vlan:1:1", "network_vlan_ranges_list": ["vlan:1:1"], "network_vxlan_ranges": "1:1000", "network_vxlan_ranges_list": ["1:1000"]}
+
+
+TASK [os_neutron : Generate neutron agent only Config] **********************************************************************************************
+task path: /etc/ansible/roles/os_neutron/tasks/neutron_post_install.yml:74
+Tuesday 05 December 2017  16:03:34 +0530 (0:00:17.882)       2:23:25.190 ******
+changed: [neutron1_neutron_agents_container-faf167e2] => (item={u'service_conf_path': u'/etc/neutron', u'start_order': 2, u'config_options': u'--config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini --config-file /etc/neutron/plugins/ml2/linuxbridge_agent.ini --log-file=/var/log/neutron/neutron-linuxbridge-agent.log', u'group': u'neutron_linuxbridge_agent', u'service_name': u'neutron-linuxbridge-agent', u'service_rootwrap': u'rootwrap.d/linuxbridge-plugin.filters', u'init_config_overrides': {}, u'config_type': u'ini', u'service_en': True, u'config_overrides': {}, u'service_conf': u'plugins/ml2/linuxbridge_agent.ini', 'service_key': u'neutron-linuxbridge-agent'}) => {"changed": true, "checksum": "f1456ddf6a6e3f74abf51b1f3a955d4d11f932b2", "dest": "/etc/neutron/plugins/ml2/linuxbridge_agent.ini", "gid": 999, "group": "neutron", "item": {"config_options": "--config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini --config-file /etc/neutron/plugins/ml2/linuxbridge_agent.ini --log-file=/var/log/neutron/neutron-linuxbridge-agent.log", "config_overrides": {}, "config_type": "ini", "group": "neutron_linuxbridge_agent", "init_config_overrides": {}, "service_conf": "plugins/ml2/linuxbridge_agent.ini", "service_conf_path": "/etc/neutron", "service_en": true, "service_key": "neutron-linuxbridge-agent", "service_name": "neutron-linuxbridge-agent", "service_rootwrap": "rootwrap.d/linuxbridge-plugin.filters", "start_order": 2}, "md5sum": "4d5c0d92c79d3e2f0b4796f680724da1", "mode": "0640", "owner": "root", "size": 409, "src": "/root/.ansible/tmp/ansible-tmp-1512470016.45-163762621914799/source", "state": "file", "uid": 0}
+
+
+root@neutron1-neutron-agents-container-faf167e2:~# cat   /etc/neutron/plugins/ml2/linuxbridge_agent.ini
+# Ansible managed
+
+# Linux bridge agent physical interface mappings
+[linux_bridge]
+
+physical_interface_mappings = flat:eth12,vlan:eth11
+
+# Linux bridge agent VXLAN networks
+[vxlan]
+
+enable_vxlan = True
+vxlan_group = 239.1.1.1
+# VXLAN local tunnel endpoint
+local_ip = 10.0.0.239
+l2_population = False
+
+
+# Agent
+[agent]
+
+# Security groups
+[securitygroup]
+firewall_driver = iptables
+enable_security_group = True
+root@neutron1-neutron-agents-container-faf167e2:~#
+
+
+
+
+
+
+
+TASK [Create the neutron provider networks facts] ***************************************************************************************************
+task path: /opt/openstack-ansible/playbooks/common-playbooks/neutron.yml:69
+Tuesday 05 December 2017  16:08:31 +0530 (0:00:00.025)       2:28:21.755 ******
+changed: [kvm1] => {"changed": true, "network_flat_networks": "flat", "network_flat_networks_list": ["flat"], "network_mappings": "flat:bond2,vlan:br-vlan", "network_mappings_list": ["flat:bond2", "vlan:br-vlan"], "network_sriov_mappings": "", "network_sriov_mappings_list": [], "network_types": "vxlan,flat,vlan", "network_vlan_ranges": "vlan:1:1", "network_vlan_ranges_list": ["vlan:1:1"], "network_vxlan_ranges": "1:1000", "network_vxlan_ranges_list": ["1:1000"]}
+
+TASK [Set provider network fact(s)] *****************************************************************************************************************
+task path: /opt/openstack-ansible/playbooks/common-playbooks/neutron.yml:78
+Tuesday 05 December 2017  16:08:33 +0530 (0:00:01.871)       2:28:23.627 ******
+ok: [kvm1] => {"ansible_facts": {"_provider_networks": {"changed": true, "network_flat_networks": "flat", "network_flat_networks_list": ["flat"], "network_mappings": "flat:bond2,vlan:br-vlan", "network_mappings_list": ["flat:bond2", "vlan:br-vlan"], "network_sriov_mappings": "", "network_sriov_mappings_list": [], "network_types": "vxlan,flat,vlan", "network_vlan_ranges": "vlan:1:1", "network_vlan_ranges_list": ["vlan:1:1"], "network_vxlan_ranges": "1:1000", "network_vxlan_ranges_list": ["1:1000"]}}, "changed": false}
+META: ran handlers
+
+
+
+
+root@neutron1-neutron-agents-container-faf167e2:~# ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+45: eth0@if46: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether 00:16:3e:1d:9b:03 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 10.0.3.215/24 brd 10.0.3.255 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::216:3eff:fe1d:9b03/64 scope link
+       valid_lft forever preferred_lft forever
+47: eth12@if48: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether 00:16:3e:b7:68:96 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet6 fe80::216:3eff:feb7:6896/64 scope link
+       valid_lft forever preferred_lft forever
+49: eth1@if50: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether 00:16:3e:bf:45:51 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 10.0.0.239/24 brd 10.0.0.255 scope global eth1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::216:3eff:febf:4551/64 scope link
+       valid_lft forever preferred_lft forever
+51: eth10@if52: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether 00:16:3e:1b:cf:ee brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 30.0.0.138/24 brd 30.0.0.255 scope global eth10
+       valid_lft forever preferred_lft forever
+    inet6 fe80::216:3eff:fe1b:cfee/64 scope link
+       valid_lft forever preferred_lft forever
+53: eth11@if54: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether 00:16:3e:dc:9f:e5 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet6 fe80::216:3eff:fedc:9fe5/64 scope link
+       valid_lft forever preferred_lft forever
+root@neutron1-neutron-agents-container-faf167e2:~#
+
+
+
+
+TASK [Set provider network fact(s)] *****************************************************************************************************************
+task path: /opt/openstack-ansible/playbooks/common-playbooks/neutron.yml:78
+Tuesday 05 December 2017  16:33:37 +0530 (0:00:01.646)       0:09:02.300 ******
+container_name: "neutron1_neutron_agents_container-faf167e2"
+physical_host: "neutron1"
+Container confirmed
+ok: [neutron1_neutron_agents_container-faf167e2] => {
+    "ansible_facts": {
+        "_provider_networks": {
+            "changed": true,
+            "network_flat_networks": "flat",
+            "network_flat_networks_list": [
+                "flat"
+            ],
+            "network_mappings": "flat:eth12,vlan:eth11",
+            "network_mappings_list": [
+                "flat:eth12",
+                "vlan:eth11"
+            ],
+            "network_sriov_mappings": "",
+            "network_sriov_mappings_list": [],
+            "network_types": "vxlan,flat,vlan",
+            "network_vlan_ranges": "vlan:1:1",
+            "network_vlan_ranges_list": [
+                "vlan:1:1"
+            ],
+            "network_vxlan_ranges": "1:1000",
+            "network_vxlan_ranges_list": [
+                "1:1000"
+            ]
+        }
+    },
+    "changed": false
+
+
+
+==================================
+
+06/12/2017
+===
+
+root@neutron1-neutron-agents-container-89f91ce9:~# cat /var/lib/neutron/dhcp/be5adc7e-2b33-412b-888d-743dbaf531e4/host
+fa:16:3e:b0:19:13,host-70-0-0-10.itc.in.,70.0.0.10
+fa:16:3e:1a:02:de,vm1.itc.in.,70.0.0.18
+fa:16:3e:22:2b:d9,host-70-0-0-1.itc.in.,70.0.0.1
+fa:16:3e:7a:83:37,bb1.itc.in.,70.0.0.15
+
+brqbe5adc7e-2b          8000.aaa221bc2b90       no              tap2a2a5fef-88
+                                                        tap6d9512d5-78
+                                                        vxlan-41
+
+
+vm- tap - fa16 3e1a 02de
+brq - aaa2 21bc 2b90
+vxlan-41  aaa2 21bc 2b90
+br-vxlan  - 0018 8b43 53da
+
+
+agent 
+br-vxlan - 00:1d:09:6f:51:47
+vxlan-41 - ba:88:d0:ac:2a:75
+ns-217d25ed-95  - fa:16:3e:b0:19:13
+qrouter-8d8753ad-c193-467a-a407-2cd1776abe1b - 
+ qr-579ca163-50@if8  - fa:16:3e:22:2b:d9  (70.0.0.1)
+
+
+
+
+
+
+
+
+
+2: ns-217d25ed-95: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UP group default qlen 1000
+    link/ether fa:16:3e:b0:19:13 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 169.254.169.254/16 brd 169.254.255.255 scope global ns-217d25ed-95
+       valid_lft forever preferred_lft forever
+    inet 70.0.0.10/24 brd 70.0.0.255 scope global ns-217d25ed-95
+       valid_lft forever preferred_lft forever
+    inet6 fe80::f816:3eff:feb0:1913/64 scope link
+       valid_lft forever preferred_lft forever
+
+In kvm 
+-------------------
+
+
+IP (tos 0x0, ttl 64, id 52414, offset 0, flags [DF], proto ICMP (1), length 84)
+    70.0.0.18 > 70.0.0.1: ICMP echo request, id 13057, seq 2548, length 64
+        0x0000:  4500 0086 5582 0000 4011 e821 1e00 001f  E...U...@..!....
+        0x0010:  1e00 00a5 c44a 2118 0072 0000 0800 0000  .....J!..r......
+        0x0020:  0000 2900 fa16 3e22 2bd9 fa16 3e1a 02de  ..)...>"+...>...
+        0x0030:  0800 4500 0054 ccbe 4000 4001 e1d7 4600  ..E..T..@.@...F.
+        0x0040:  0012 4600 0001 0800 e03b 3301 09f4 4221  ..F......;3...B!
+        0x0050:  98ad 0000 0000 0000 0000 0000 0000 0000  ................
+        0x0060:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+        0x0070:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+        0x0080:  0000 0000 0000                           ......
+11:30:19.148062 IP (tos 0x0, ttl 64, id 6718, offset 0, flags [none], proto UDP (17), length 134)
+    30.0.0.165.34649 > 30.0.0.31.8472: [no cksum] OTV, flags [I] (0x08), overlay 0, instance 41
+IP (tos 0x0, ttl 64, id 13011, offset 0, flags [none], proto ICMP (1), length 84)
+    70.0.0.1 > 70.0.0.18: ICMP echo reply, id 13057, seq 2548, length 64
+        0x0000:  4500 0086 1a3e 0000 4011 2366 1e00 00a5  E....>..@.#f....
+        0x0010:  1e00 001f 8759 2118 0072 0000 0800 0000  .....Y!..r......
+        0x0020:  0000 2900 fa16 3e1a 02de fa16 3e22 2bd9  ..)...>.....>"+.
+        0x0030:  0800 4500 0054 32d3 0000 4001 bbc3 4600  ..E..T2...@...F.
+        0x0040:  0001 4600 0012 0000 e83b 3301 09f4 4221  ..F......;3...B!
+        0x0050:  98ad 0000 0000 0000 0000 0000 0000 0000  ................
+        0x0060:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+        0x0070:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+        0x0080:  0000 0000 0000                           ......
+
+
+
+in agent
+----------------------
+11:27:54.943399 IP (tos 0x0, ttl 64, id 53135, offset 0, flags [none], proto UDP (17), length 134)
+    30.0.0.165.34649 > 30.0.0.31.8472: [no cksum] OTV, flags [I] (0x08), overlay 0, instance 41
+IP (tos 0x0, ttl 64, id 61914, offset 0, flags [none], proto ICMP (1), length 84)
+    70.0.0.1 > 70.0.0.18: ICMP echo reply, id 13057, seq 2404, length 64
+        0x0000:  4500 0086 cf8f 0000 4011 6e14 1e00 00a5  E.......@.n.....
+        0x0010:  1e00 001f 8759 2118 0072 0000 0800 0000  .....Y!..r......
+        0x0020:  0000 2900 fa16 3e1a 02de fa16 3e22 2bd9  ..)...>.....>"+.
+        0x0030:  0800 4500 0054 f1da 0000 4001 fcbb 4600  ..E..T....@...F.
+        0x0040:  0001 4600 0012 0000 2594 3301 0964 9d61  ..F.....%.3..d.a
+        0x0050:  00a5 0000 0000 0000 0000 0000 0000 0000  ................
+        0x0060:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+        0x0070:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+        0x0080:  0000 0000 0000                           ......
+11:27:55.941215 IP (tos 0x0, ttl 64, id 4826, offset 0, flags [none], proto UDP (17), length 134)
+    30.0.0.31.50250 > 30.0.0.165.8472: [no cksum] OTV, flags [I] (0x08), overlay 0, instance 41
+IP (tos 0x0, ttl 64, id 35475, offset 0, flags [DF], proto ICMP (1), length 84)
+    70.0.0.18 > 70.0.0.1: ICMP echo request, id 13057, seq 2405, length 64
+        0x0000:  4500 0086 12da 0000 4011 2aca 1e00 001f  E.......@.*.....
+        0x0010:  1e00 00a5 c44a 2118 0072 0000 0800 0000  .....J!..r......
+        0x0020:  0000 2900 fa16 3e22 2bd9 fa16 3e1a 02de  ..)...>"+...>...
+        0x0030:  0800 4500 0054 8a93 4000 4001 2403 4600  ..E..T..@.@.$.F.
+        0x0040:  0012 4600 0001 0800 be4c 3301 0965 eda7  ..F......L3..e..
+        0x0050:  0fa5 0000 0000 0000 0000 0000 0000 0000  ................
+        0x0060:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+        0x0070:  0000 0000 0000 0000 0000 0000 0000 0000  ................
+        0x0080:  0000 0000 0000            
+
+
+
+
+
+
+
+12:24:12.171004 IP (tos 0x0, ttl 1, id 46764, offset 0, flags [none], proto UDP (17), length 78)
+    30.0.0.31.43202 > 239.1.1.1.8472: [no cksum] OTV, flags [I] (0x08), overlay 0, instance 41
+ARP, Ethernet (len 6), IPv4 (len 4), Request who-has 70.0.0.1 tell 70.0.0.15, length 28
+        0x0000:  4500 004e b6ac 0000 0111 f4d1 1e00 001f  E..N............
+        0x0010:  ef01 0101 a8c2 2118 003a 0000 0800 0000  ......!..:......
+        0x0020:  0000 2900 ffff ffff ffff fa16 3e7a 8337  ..).........>z.7
+        0x0030:  0806 0001 0800 0604 0001 fa16 3e7a 8337  ............>z.7
+        0x0040:  4600 000f 0000 0000 0000 4600 0001       F.........F...
+
+
+
+
+
+~
+~
+good traffic at neutron
+
+        0x0080:  3233 3435 3637                           234567
+10:40:06.987383 IP (tos 0x0, ttl 64, id 58567, offset 0, flags [none], proto UDP                                                                     (17), length 134)
+    30.0.1.31.56364 > 30.0.1.234.8472: [no cksum] OTV, flags [I] (0x08), overlay                                                                     0, instance 97
+IP (tos 0x0, ttl 64, id 30911, offset 0, flags [none], proto ICMP (1), length 84)
+    70.0.0.13 > 70.0.0.10: ICMP echo reply, id 5480, seq 1840, length 64
+        0x0000:  4500 0086 e4c7 0000 4011 5697 1e00 011f  E.......@.V.....
+        0x0010:  1e00 01ea dc2c 2118 0072 0000 0800 0000  .....,!..r......
+        0x0020:  0000 6100 fa16 3e98 d98f fa16 3e04 7f1b  ..a...>.....>...
+        0x0030:  0800 4500 0054 78bf 0000 4001 75d3 4600  ..E..Tx...@.u.F.
+        0x0040:  000d 4600 000a 0000 4267 1568 0730 2ecd  ..F.....Bg.h.0..
+        0x0050:  285a 0000 0000 7c06 0f00 0000 0000 1011  (Z....|.........
+        0x0060:  1213 1415 1617 1819 1a1b 1c1d 1e1f 2021  ...............!
+        0x0070:  2223 2425 2627 2829 2a2b 2c2d 2e2f 3031  "#$%&'()*+,-./01
+        0x0080:  3233 3435 3637                           234567
+10:40:07.984829 IP (tos 0x0, ttl 64, id 46870, offset 0, flags [none], proto UDP                                                                     (17), length 134)
+    30.0.1.234.36658 > 30.0.1.31.8472: [no cksum] OTV, flags [I] (0x08), overlay                                                                     0, instance 97
+IP (tos 0x0, ttl 64, id 13967, offset 0, flags [DF], proto ICMP (1), length 84)
+    70.0.0.10 > 70.0.0.13: ICMP echo request, id 5480, seq 1841, length 64
+        0x0000:  4500 0086 b716 0000 4011 8448 1e00 01ea  E.......@..H....
+        0x0010:  1e00 011f 8f32 2118 0072 0000 0800 0000  .....2!..r......
+        0x0020:  0000 6100 fa16 3e04 7f1b fa16 3e98 d98f  ..a...>.....>...
+        0x0030:  0800 4500 0054 368f 4000 4001 7803 4600  ..E..T6.@.@.x.F.
+        0x0040:  000a 4600 000d 0800 0766 1568 0731 2fcd  ..F......f.h.1/.
+        0x0050:  285a 0000 0000 ae06 0f00 0000 0000 1011  (Z..............
+        0x0060:  1213 1415 1617 1819 1a1b 1c1d 1e1f 2021  ...............!
+        0x0070:  2223 2425 2627 2829 2a2b 2c2d 2e2f 3031  "#$%&'()*+,-./01
+        0x0080:  3233 3435 3637                           234567
+10:40:07.986777 IP (tos 0x0, ttl 64, id 58695, offset 0, flags [none], proto UDP                                                                     (17), length 134)
+    30.0.1.31.56364 > 30.0.1.234.8472: [no cksum] OTV, flags [I] (0x08), overlay                                                                     0, instance 97
+IP (tos 0x0, ttl 64, id 30964, offset 0, flags [none], proto ICMP (1), length 84)
+    70.0.0.13 > 70.0.0.10: ICMP echo reply, id 5480, seq 1841, length 64
+        0x0000:  4500 0086 e547 0000 4011 5617 1e00 011f  E....G..@.V.....
+        0x0010:  1e00 01ea dc2c 2118 0072 0000 0800 0000  .....,!..r......
+        0x0020:  0000 6100 fa16 3e98 d98f fa16 3e04 7f1b  ..a...>.....>...
+        0x0030:  0800 4500 0054 78f4 0000 4001 759e 4600  ..E..Tx...@.u.F.
+        0x0040:  000d 4600 000a 0000 0f66 1568 0731 2fcd  ..F......f.h.1/.
+        0x0050:  285a 0000 0000 ae06 0f00 0000 0000 1011  (Z..............
+        0x0060:  1213 1415 1617 1819 1a1b 1c1d 1e1f 2021  ...............!
+        0x0070:  2223 2425 2627 2829 2a2b 2c2d 2e2f 3031  "#$%&'()*+,-./01
+        0x0080:  3233 3435 3637                           234567
+
+
+
+Good traffic at KVM 
+
+IP (tos 0x0, ttl 64, id 17822, offset 0, flags [none], proto ICMP (1), length                                                                         84)
+    70.0.0.13 > 70.0.0.10: ICMP echo reply, id 5480, seq 1742, length 64
+        0x0000:  4500 0086 b213 0000 4011 894b 1e00 011f  E.......@..K....
+        0x0010:  1e00 01ea dc2c 2118 0072 0000 0800 0000  .....,!..r......
+        0x0020:  0000 6100 fa16 3e98 d98f fa16 3e04 7f1b  ..a...>.....>...
+        0x0030:  0800 4500 0054 459e 0000 4001 a8f4 4600  ..E..TE...@...F.
+        0x0040:  000d 4600 000a 0000 f4ed 1568 06ce cccc  ..F........h....
+        0x0050:  285a 0000 0000 2ee2 0c00 0000 0000 1011  (Z..............
+        0x0060:  1213 1415 1617 1819 1a1b 1c1d 1e1f 2021  ...............!
+        0x0070:  2223 2425 2627 2829 2a2b 2c2d 2e2f 3031  "#$%&'()*+,-./01
+        0x0080:  3233 3435 3637                           234567
+16:03:46.453476 IP (tos 0x0, ttl 64, id 33184, offset 0, flags [none], proto                                                                         UDP (17), length 134)
+    30.0.1.234.36658 > 30.0.1.31.8472: [no cksum] OTV, flags [I] (0x08), over                                                                        lay 0, instance 97
+IP (tos 0x0, ttl 64, id 801, offset 0, flags [DF], proto ICMP (1), length 84)
+    70.0.0.10 > 70.0.0.13: ICMP echo request, id 5480, seq 1743, length 64
+        0x0000:  4500 0086 81a0 0000 4011 b9be 1e00 01ea  E.......@.......
+        0x0010:  1e00 011f 8f32 2118 0072 0000 0800 0000  .....2!..r......
+        0x0020:  0000 6100 fa16 3e04 7f1b fa16 3e98 d98f  ..a...>.....>...
+        0x0030:  0800 4500 0054 0321 4000 4001 ab71 4600  ..E..T.!@.@..qF.
+        0x0040:  000a 4600 000d 0800 10e6 1568 06cf cdcc  ..F........h....
+        0x0050:  285a 0000 0000 09e9 0c00 0000 0000 1011  (Z..............
+        0x0060:  1213 1415 1617 1819 1a1b 1c1d 1e1f 2021  ...............!
+        0x0070:  2223 2425 2627 2829 2a2b 2c2d 2e2f 3031  "#$%&'()*+,-./01
+        0x0080:  3233 3435 3637                           234567
+16:03:46.454856 IP (tos 0x0, ttl 64, id 45835, offset 0, flags [none], proto                                                                         UDP (17), length 134)
+    30.0.1.31.56364 > 30.0.1.234.8472: [no cksum] OTV, flags [I] (0x08), over                                                                        lay 0, instance 97
+IP (tos 0x0, ttl 64, id 18016, offset 0, flags [none], proto ICMP (1), length                                                                         84)
+    70.0.0.13 > 70.0.0.10: ICMP echo reply, id 5480, seq 1743, length 64
+        0x0000:  4500 0086 b30b 0000 4011 8853 1e00 011f  E.......@..S....
+        0x0010:  1e00 01ea dc2c 2118 0072 0000 0800 0000  .....,!..r......
+        0x0020:  0000 6100 fa16 3e98 d98f fa16 3e04 7f1b  ..a...>.....>...
+        0x0030:  0800 4500 0054 4660 0000 4001 a832 4600  ..E..TF`..@..2F.
+        0x0040:  000d 4600 000a 0000 18e6 1568 06cf cdcc  ..F........h....
+        0x0050:  285a 0000 0000 09e9 0c00 0000 0000 1011  (Z..............
+        0x0060:  1213 1415 1617 1819 1a1b 1c1d 1e1f 2021  ...............!
+        0x0070:  2223 2425 2627 2829 2a2b 2c2d 2e2f 3031  "#$%&'()*+,-./01
+        0x0080:  3233 3435 3637                           234567
+
+
+
+
+Related ansible playbooks and roles 
+====================================================================
+
+
+- name: Gather address fact
+
+  set_fact:
+
+    # NOTE(cloudnull):
+
+    #  Collect the interface address from hostvars of a target node.
+
+    #  Check if the host is running in a container. If not, pull the bridge data from the
+
+    #  network interface. If an interface bridge is defined, pull the IP address from the
+
+    #  physical network device. If no physical bridge is defined collect the address from
+
+    #  the "<INTERFACE>_network_data" variable. If nothing is defined use the
+
+    #  "ansible_host" address.
+
+    _lookup_address: >-
+
+      {%- set _network_data = hostvars[inventory_hostname]['container_networks'][network_address] | default({}) -%}
+
+      {%- if is_metal is defined and is_metal | bool -%}
+
+      {%-   set _bridge = _network_data['bridge'] | default('no_bridge_defined') | replace('-', '_') -%}
+
+      {%- else -%}
+
+      {%-   set _bridge = 'no_bridge_defined' -%}
+
+      {%- endif -%}
+
+      {%- if _bridge != 'no_bridge_defined' and hostvars[inventory_hostname]['ansible_' + _bridge]['ipv4'] is defined-%}
+
+      {{ hostvars[inventory_hostname]['ansible_' + _bridge]['ipv4']['address'] }}
+
+      {%- elif _network_data['address'] is defined -%}
+
+      {{ _network_data['address'] }}
+
+      {%- else -%}
+
+      {{ ansible_host }}
+
+      {%- endif -%}
+
+  tags:
+
+    - common-address
+
+    - always
+
+
+
+# NOTE(cloudnull):
+
+#  This task is not in dict formation because it is
+
+#  dynamically loading facts based on the network_address
+
+#  and the _lookup_address.
+
+- name: Set address fact
+
+  set_fact: "{{ network_address }}={{ _lookup_address }}"
+
+  tags:
+
+    - common-address
+
+    - always
+
+
+
+
+
+    - name: Determine tunnel bridge IP address
+
+      include: ../common-tasks/dynamic-address-fact.yml
+
+      vars:
+
+        network_address: "tunnel_address"
+
+
+
+    - name: Configure container (neutron-agent)
+
+      include: ../common-tasks/os-lxc-container-setup.yml
+
+      vars:
+
+        aa_profile: "unconfined"
+
+        list_of_bind_mounts:
+
+          - bind_dir_path: "{{ (ansible_pkg_mgr == 'apt') | ternary('/lib/modules', '/usr/lib/modules') }}"
+
+            mount_path: "{{ (ansible_pkg_mgr == 'apt') | ternary('/lib/modules', '/usr/lib/modules') }}"
+
+        extra_container_config:
+
+          - "lxc.cgroup.devices.allow=a *:* rmw"
+
+        extra_container_config_no_restart:
+
+          - "lxc.start.order=29"
+
+      when:
+
+        - "'neutron_agent' in group_names"
+
+
+
+    - name: Configure container (other services)
+
+      include: ../common-tasks/os-lxc-container-setup.yml
+
+      when:
+
+        - "'neutron_agent' not in group_names"
+
+
+
+    - name: Configure log directories (on metal)
+
+      include: ../common-tasks/os-log-dir-setup.yml
+
+      vars:
+
+        log_dirs:
+
+          - src: "/openstack/log/{{ inventory_hostname }}-neutron"
+
+            dest: "/var/log/neutron"
+
+
+
+    - name: Configure log directories (on metal) (calico)
+
+      include: ../common-tasks/os-log-dir-setup.yml
+
+      vars:
+
+        log_dirs:
+
+          - src: "/openstack/log/{{ inventory_hostname }}-calico"
+
+            dest: "/var/log/calico"
+
+      when:
+
+        - "'neutron_calico_dhcp_agent' in group_names"
+
+
+
+    - name: Configure package proxy cache
+
+      include: ../common-tasks/package-cache-proxy.yml
+
+
+
+    - name: Create the neutron provider networks facts
+
+      provider_networks:
+
+        provider_networks: "{{ provider_networks }}"
+
+        bind_prefix: "{{ provider_network_bind_prefix | default('') }}"
+
+        is_metal: "{{ is_metal }}"
+
+      register: pndata
+
+      tags:
+
+        - always
+
+
+
+    - name: Set provider network fact(s)
+
+      set_fact:
+
+        _provider_networks: "{{ pndata }}"
+
+      tags:
+
+        - always
+
+
+
+  roles:
+
+    - role: "os_neutron"
+
+      neutron_overlay_network: "{{ _overlay_network }}"
+
+      neutron_provider_networks: "{{ _provider_networks }}"
+
+      neutron_local_ip: "{{ tunnel_address }}"
+
+
+
+ 
+ 
+https://github.com/openstack/openstack-ansible-os_neutron/blob/stable/pike/templates/plugins/ml2/linuxbridge_agent.ini.j2
+
+# {{ ansible_managed }}
+
+
+
+# Linux bridge agent physical interface mappings
+
+[linux_bridge]
+
+
+
+{% if neutron_provider_networks.network_mappings is defined and ((neutron_provider_networks.network_mappings | length) > 0) %}
+
+physical_interface_mappings = {{ neutron_provider_networks.network_mappings }}
+
+{% endif %}
+
+
+
+# Linux bridge agent VXLAN networks
+
+[vxlan]
+
+
+
+{% if neutron_vxlan_enabled | bool %}
+
+enable_vxlan = True
+
+vxlan_group = {{ neutron_vxlan_group }}
+
+# VXLAN local tunnel endpoint
+
+local_ip = {{ neutron_local_ip }}
+
+l2_population = {{ neutron_plugins[neutron_plugin_type].l2_population }}
+
+
+
+{% else %}
+
+
+
+# Disable VXLAN for deployments with only flat or VLAN networks
+
+enable_vxlan = False
+
+{% endif %}
+
+
+
+# Agent
+
+[agent]
+
+{% if 'ml2.sriov' in neutron_plugin_types and 'nova_compute' in group_names %}
+
+extensions = fdb
+
+
+
+# If an interface is shared between sriov ports and normal ports, it must be defined here
+
+# to allow traffic between the two ports on the same host
+
+[FDB]
+
+shared_physical_device_mappings = {{ neutron_provider_networks.network_sriov_mappings }}
+
+{% endif %}
+
+
+
+# Security groups
+
+[securitygroup]
+
+firewall_driver = {{ neutron_plugins[neutron_plugin_type].driver_firewall }}
+
+enable_security_group = True
+
+
+
+===========================================
+
+
+root@ansiblenew:/opt/openstack-ansible/playbooks# openstack network list
++--------------------------------------+---------------+--------------------------------------+
+| ID                                   | Name          | Subnets                              |
++--------------------------------------+---------------+--------------------------------------+
+| 6abf6249-2c8f-467f-b56d-d426dcdae6f1 | Net-30        | 26ad78d6-25e2-4f4b-bd8d-3469fae3e989 |
+| fb143a1f-d84b-4650-8e52-b369810f4190 | Provider-Flat | 54e0f637-1235-4a35-aaed-7e49f8fb68f5 |
++--------------------------------------+---------------+--------------------------------------+
+
+
+openstack server create --nic net-id=6abf6249-2c8f-467f-b56d-d426dcdae6f1 --image cirrosraw --flavor small --key-name k2 --security-group ssh-ping cirrosk1
+
+
+
+
+Nov 16 17:04:45 neutron1-neutron-agents-container-f6882a35 neutron-dhcp-agent: 2017-11-16 17:04:40.658 4886 INFO neutron.agent.dhcp.agent [req-74fd514c-c7e8-4c0a-b4c2-29961bcfa1e9 30313bbe61fe452680c6c2ee9d8475fc 8e13cb3b05ec4c7d87bac8ffe9f2bd19 - - -] Trigger reload_allocations for port admin_state_up=True, allowed_address_pairs=[], binding:host_id=, binding:profile=, binding:vif_details=, binding:vif_type=unbound, binding:vnic_type=normal, created_at=2017-11-16T11:34:39Z, description=, device_id=e7cc4603-e3eb-45b4-992c-f1de2f9bbb57, device_owner=, dns_assignment=[{u'hostname': u'host-30-1-1-13', u'ip_address': u'30.1.1.13', u'fqdn': u'host-30-1-1-13.itc.in.'}], dns_name=, extra_dhcp_opts=[], fixed_ips=[{u'subnet_id': u'26ad78d6-25e2-4f4b-bd8d-3469fae3e989', u'ip_address': u'30.1.1.13'}], id=916f615d-bb3c-4dbf-8a0a-ae4feb9522fb, mac_address=fa:16:3e:97:a2:37, name=, network_id=6abf6249-2c8f-467f-b56d-d426dcdae6f1, port_security_enabled=True, project_id=8e13cb3b05ec4c7d87bac8ffe9f2bd19, qos_policy_id=None, revision_number=3, security_groups=[u'479b2ddc-3de3-43e6-b501-f05d009894d0'], status=DOWN, tags=[], tenant_id=8e13cb3b05ec4c7d87bac8ffe9f2bd19, updated_at=2017-11-16T11:34:39Z
+Nov 16 17:04:45 neutron1-neutron-agents-container-f6882a35 neutron-dhcp-agent: 2017-11-16 17:04:42.171 4886 INFO neutron.agent.dhcp.agent [req-60056d84-834e-48bb-8f57-071e09392f3b 49659e0aa5f94358a843b8968ecd87a3 7bb422c109ed49108919341d4bbb7e33 - - -] Trigger reload_allocations for port admin_state_up=True, allowed_address_pairs=[], binding:host_id=kvm1, binding:profile=, binding:vif_details=, binding:vif_type=unbound, binding:vnic_type=normal, created_at=2017-11-16T11:34:39Z, description=, device_id=e7cc4603-e3eb-45b4-992c-f1de2f9bbb57, device_owner=compute:nova, dns_assignment=[{u'hostname': u'cirrosk1', u'ip_address': u'30.1.1.13', u'fqdn': u'cirrosk1.itc.in.'}], dns_name=cirrosk1, extra_dhcp_opts=[], fixed_ips=[{u'subnet_id': u'26ad78d6-25e2-4f4b-bd8d-3469fae3e989', u'ip_address': u'30.1.1.13'}], id=916f615d-bb3c-4dbf-8a0a-ae4feb9522fb, mac_address=fa:16:3e:97:a2:37, name=, network_id=6abf6249-2c8f-467f-b56d-d426dcdae6f1, port_security_enabled=True, project_id=8e13cb3b05ec4c7d87bac8ffe9f2bd19, qos_policy_id=None, revision_number=4, security_groups=[u'479b2ddc-3de3-43e6-b501-f05d009894d0'], status=DOWN, tags=[], tenant_id=8e13cb3b05ec4c7d87bac8ffe9f2bd19, updated_at=2017-11-16T11:34:41Z
+Nov 16 17:04:45 neutron1-neutron-agents-container-f6882a35 neutron-dhcp-agent: 2017-11-16 17:04:43.304 4886 INFO neutron.agent.dhcp.agent [req-60056d84-834e-48bb-8f57-071e09392f3b 49659e0aa5f94358a843b8968ecd87a3 7bb422c109ed49108919341d4bbb7e33 - - -] Trigger reload_allocations for port admin_state_up=True, allowed_address_pairs=[], binding:host_id=kvm1, binding:profile=, binding:vif_details=port_filter=True, binding:vif_type=bridge, binding:vnic_type=normal, created_at=2017-11-16T11:34:39Z, description=, device_id=e7cc4603-e3eb-45b4-992c-f1de2f9bbb57, device_owner=compute:nova, dns_assignment=[{u'hostname': u'cirrosk1', u'ip_address': u'30.1.1.13', u'fqdn': u'cirrosk1.itc.in.'}], dns_name=cirrosk1, extra_dhcp_opts=[], fixed_ips=[{u'subnet_id': u'26ad78d6-25e2-4f4b-bd8d-3469fae3e989', u'ip_address': u'30.1.1.13'}], id=916f615d-bb3c-4dbf-8a0a-ae4feb9522fb, mac_address=fa:16:3e:97:a2:37, name=, network_id=6abf6249-2c8f-467f-b56d-d426dcdae6f1, port_security_enabled=True, project_id=8e13cb3b05ec4c7d87bac8ffe9f2bd19, qos_policy_id=None, revision_number=6, security_groups=[u'479b2ddc-3de3-43e6-b501-f05d009894d0'], status=DOWN, tags=[], tenant_id=8e13cb3b05ec4c7d87bac8ffe9f2bd19, updated_at=2017-11-16T11:34:42Z
+ 
+
+
+root@neutron1-neutron-agents-container-f6882a35:~# cat /var/lib/neutron/dhcp/6abf6249-2c8f-467f-b56d-d426dcdae6f1/host
+fa:16:3e:67:34:53,host-30-1-1-10.itc.in.,30.1.1.10
+fa:16:3e:b2:00:0d,host-30-1-1-1.itc.in.,30.1.1.1
+fa:16:3e:98:f2:de,ten1.itc.in.,30.1.1.15
+fa:16:3e:09:e2:5f,vm1-kvm3.itc.in.,30.1.1.20
+fa:16:3e:97:a2:37,cirrosk1.itc.in.,30.1.1.13
+
+
+
+
+root@kvm1:~# virsh list
+ Id    Name                           State
+----------------------------------------------------
+ 5     instance-00000127              running
+ 6     instance-0000012d              running
+
+root@kvm1:~# virsh console 6
+Connected to domain instance-0000012d
+Escape character is ^]
+
+cirros-ds 'local' up at 13.13
+found datasource (configdrive, local)
+cirros-apply-local already run per instance
+Starting network...
+udhcpc (v1.20.1) started
+Sending discover...
+Sending discover...
+Sending discover...
+Usage: /sbin/cirros-dhcpc <up|down>
+No lease, failing
+WARN: /etc/rc3.d/S40-network failed
+check-version already run per instance
+
+
+login as 'cirros' user. default password: 'cubswin:)'. use 'sudo' for root.
+cirrosk1 login: cirros
+Password:
+$
+$
+$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 16436 qdisc noqueue
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast qlen 1000
+    link/ether fa:16:3e:97:a2:37 brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::f816:3eff:fe97:a237/64 scope link
+       valid_lft forever preferred_lft forever
+
+
+
+root@neutron1-neutron-agents-container-f6882a35:~# ip netns exec qdhcp-6abf6249-2c8f-467f-b56d-d426dcdae6f1  ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: ns-757634f1-60: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UP group default qlen 1000
+    link/ether fa:16:3e:67:34:53 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 169.254.169.254/16 brd 169.254.255.255 scope global ns-757634f1-60
+       valid_lft forever preferred_lft forever
+    inet 30.1.1.10/24 brd 30.1.1.255 scope global ns-757634f1-60
+       valid_lft forever preferred_lft forever
+    inet6 fe80::f816:3eff:fe67:3453/64 scope link
+       valid_lft forever preferred_lft forever
+root@neutron1-neutron-agents-container-f6882a35:~#
+
+
+
+
+openstack server create --nic net-id=fb143a1f-d84b-4650-8e52-b369810f4190  --image cirrosraw --flavor small --key-name k2 --security-group ssh-ping cirrosk1-provider
+
+*** /var/log/log-storage/neutron1-neutron-agents-container-f6882a35/neutron-dhcp-agent.log ***
+Nov 16 17:15:25 neutron1-neutron-agents-container-f6882a35 neutron-dhcp-agent: 2017-11-16 17:15:20.103 4886 INFO neutron.agent.dhcp.agent [req-927c6e50-ff1a-4dcb-bbe8-9530034df4ce 30313bbe61fe452680c6c2ee9d8475fc 8e13cb3b05ec4c7d87bac8ffe9f2bd19 - - -] Trigger reload_allocations for port admin_state_up=True, allowed_address_pairs=[], binding:host_id=, binding:profile=, binding:vif_details=, binding:vif_type=unbound, binding:vnic_type=normal, created_at=2017-11-16T11:45:18Z, description=, device_id=34884ab3-3473-4db1-9221-47929bde57ca, device_owner=, dns_assignment=[{u'hostname': u'host-2-2-2-14', u'ip_address': u'2.2.2.14', u'fqdn': u'host-2-2-2-14.itc.in.'}], dns_name=, extra_dhcp_opts=[], fixed_ips=[{u'subnet_id': u'54e0f637-1235-4a35-aaed-7e49f8fb68f5', u'ip_address': u'2.2.2.14'}], id=50872ef4-9fcf-4700-9e69-7cf8228759bd, mac_address=fa:16:3e:e9:9f:38, name=, network_id=fb143a1f-d84b-4650-8e52-b369810f4190, port_security_enabled=True, project_id=8e13cb3b05ec4c7d87bac8ffe9f2bd19, qos_policy_id=None, revision_number=3, security_groups=[u'479b2ddc-3de3-43e6-b501-f05d009894d0'], status=DOWN, tags=[], tenant_id=8e13cb3b05ec4c7d87bac8ffe9f2bd19, updated_at=2017-11-16T11:45:19Z
+Nov 16 17:15:25 neutron1-neutron-agents-container-f6882a35 neutron-dhcp-agent: 2017-11-16 17:15:21.606 4886 INFO neutron.agent.dhcp.agent [req-62acae7d-7671-4dab-9d5a-1d9a90431fa6 49659e0aa5f94358a843b8968ecd87a3 7bb422c109ed49108919341d4bbb7e33 - - -] Trigger reload_allocations for port admin_state_up=True, allowed_address_pairs=[], binding:host_id=kvm1, binding:profile=, binding:vif_details=, binding:vif_type=unbound, binding:vnic_type=normal, created_at=2017-11-16T11:45:18Z, description=, device_id=34884ab3-3473-4db1-9221-47929bde57ca, device_owner=compute:nova, dns_assignment=[{u'hostname': u'cirrosk1-provider', u'ip_address': u'2.2.2.14', u'fqdn': u'cirrosk1-provider.itc.in.'}], dns_name=cirrosk1-provider, extra_dhcp_opts=[], fixed_ips=[{u'subnet_id': u'54e0f637-1235-4a35-aaed-7e49f8fb68f5', u'ip_address': u'2.2.2.14'}], id=50872ef4-9fcf-4700-9e69-7cf8228759bd, mac_address=fa:16:3e:e9:9f:38, name=, network_id=fb143a1f-d84b-4650-8e52-b369810f4190, port_security_enabled=True, project_id=8e13cb3b05ec4c7d87bac8ffe9f2bd19, qos_policy_id=None, revision_number=4, security_groups=[u'479b2ddc-3de3-43e6-b501-f05d009894d0'], status=DOWN, tags=[], tenant_id=8e13cb3b05ec4c7d87bac8ffe9f2bd19, updated_at=2017-11-16T11:45:20Z
+Nov 16 17:15:25 neutron1-neutron-agents-container-f6882a35 neutron-dhcp-agent: 2017-11-16 17:15:22.803 4886 INFO neutron.agent.dhcp.agent [req-62acae7d-7671-4dab-9d5a-1d9a90431fa6 49659e0aa5f94358a843b8968ecd87a3 7bb422c109ed49108919341d4bbb7e33 - - -] Trigger reload_allocations for port admin_state_up=True, allowed_address_pairs=[], binding:host_id=kvm1, binding:profile=, binding:vif_details=port_filter=True, binding:vif_type=bridge, binding:vnic_type=normal, created_at=2017-11-16T11:45:18Z, description=, device_id=34884ab3-3473-4db1-9221-47929bde57ca, device_owner=compute:nova, dns_assignment=[{u'hostname': u'cirrosk1-provider', u'ip_address': u'2.2.2.14', u'fqdn': u'cirrosk1-provider.itc.in.'}], dns_name=cirrosk1-provider, extra_dhcp_opts=[], fixed_ips=[{u'subnet_id': u'54e0f637-1235-4a35-aaed-7e49f8fb68f5', u'ip_address': u'2.2.2.14'}], id=50872ef4-9fcf-4700-9e69-7cf8228759bd, mac_address=fa:16:3e:e9:9f:38, name=, network_id=fb143a1f-d84b-4650-8e52-b369810f4190, port_security_enabled=True, project_id=8e13cb3b05ec4c7d87bac8ffe9f2bd19, qos_policy_id=None, revision_number=6, security_groups=[u'479b2ddc-3de3-43e6-b501-f05d009894d0'], status=DOWN, tags=[], tenant_id=8e13cb3b05ec4c7d87bac8ffe9f2bd19, updated_at=2017-11-16T11:45:22Z
+
+
+*** /var/log/log-storage/kvm1/neutron-linuxbridge-agent.log ***
+Nov 16 17:16:23 kvm1 neutron-linuxbridge-agent: 2017-11-16 17:16:17.171 12764 INFO neutron.agent.securitygroups_rpc [req-1d5dbebc-4c47-4637-ae4d-13841b8b0810 - - - - -] Preparing filters for devices set(['tap50872ef4-9f'])
+Nov 16 17:16:23 kvm1 neutron-linuxbridge-agent: 2017-11-16 17:16:20.306 12764 INFO neutron.plugins.ml2.drivers.agent._common_agent [req-1d5dbebc-4c47-4637-ae4d-13841b8b0810 - - - - -] Port tap50872ef4-9f updated. Details: {u'profile': {}, u'network_qos_policy_id': None, u'qos_policy_id': None, u'allowed_address_pairs': [], u'admin_state_up': True, u'network_id': u'fb143a1f-d84b-4650-8e52-b369810f4190', u'segmentation_id': None, u'mtu': 1500, u'device_owner': u'compute:nova', u'physical_network': u'flat', u'mac_address': u'fa:16:3e:e9:9f:38', u'device': u'tap50872ef4-9f', u'port_security_enabled': True, u'port_id': u'50872ef4-9fcf-4700-9e69-7cf8228759bd', u'fixed_ips': [{u'subnet_id': u'54e0f637-1235-4a35-aaed-7e49f8fb68f5', u'ip_address': u'2.2.2.14'}], u'network_type': u'flat'}
+Nov 16 17:16:23 kvm1 neutron-linuxbridge-agent: 2017-11-16 17:16:20.352 12764 INFO neutron.agent.securitygroups_rpc [req-1d5dbebc-4c47-4637-ae4d-13841b8b0810 - - - - -] Security group member updated [u'479b2ddc-3de3-43e6-b501-f05d009894d0']
+
+
+*** /var/log/log-storage/kvm1/nova-compute.log ***
+Nov 16 17:16:33 kvm1 nova-compute: 2017-11-16 17:16:24.431 1761 WARNING nova.virt.libvirt.driver [req-f381f59c-510d-4064-a1e1-d534febc1a2a 30313bbe61fe452680c6c2ee9d8475fc 8e13cb3b05ec4c7d87bac8ffe9f2bd19 - default default] [instance: 34884ab3-3473-4db1-9221-47929bde57ca] Timeout waiting for vif plugging callback for instance with vm_state building and task_state spawning.: Timeout: 10 seconds
+Nov 16 17:16:33 kvm1 nova-compute: 2017-11-16 17:16:24.437 1761 INFO nova.compute.manager [req-1a2168cf-e17f-49b0-a476-1eb64f21bda4 - - - - -] [instance: 34884ab3-3473-4db1-9221-47929bde57ca] VM Resumed (Lifecycle Event)
+Nov 16 17:16:33 kvm1 nova-compute: 2017-11-16 17:16:24.451 1761 INFO nova.virt.libvirt.driver [-] [instance: 34884ab3-3473-4db1-9221-47929bde57ca] Instance spawned successfully.
+Nov 16 17:16:33 kvm1 nova-compute: 2017-11-16 17:16:24.452 1761 INFO nova.compute.manager [req-f381f59c-510d-4064-a1e1-d534febc1a2a 30313bbe61fe452680c6c2ee9d8475fc 8e13cb3b05ec4c7d87bac8ffe9f2bd19 - default default] [instance: 34884ab3-3473-4db1-9221-47929bde57ca] Took 24.62 seconds to spawn the instance on the hypervisor.
+Nov 16 17:16:33 kvm1 nova-compute: 2017-11-16 17:16:24.879 1761 INFO nova.compute.manager [req-1a2168cf-e17f-49b0-a476-1eb64f21bda4 - - - - -] [instance: 34884ab3-3473-4db1-9221-47929bde57ca] During sync_power_state the instance has a pending task (spawning). Skip.
+Nov 16 17:16:33 kvm1 nova-compute: 2017-11-16 17:16:24.881 1761 INFO nova.compute.manager [req-1a2168cf-e17f-49b0-a476-1eb64f21bda4 - - - - -] [instance: 34884ab3-3473-4db1-9221-47929bde57ca] VM Resumed (Lifecycle Event)
+Nov 16 17:16:33 kvm1 nova-compute: 2017-11-16 17:16:25.110 1761 INFO nova.compute.manager [req-f381f59c-510d-4064-a1e1-d534febc1a2a 30313bbe61fe452680c6c2ee9d8475fc 8e13cb3b05ec4c7d87bac8ffe9f2bd19 - default default] [instance: 34884ab3-3473-4db1-9221-47929bde57ca] Took 27.74 seconds to build instance.
+
+
+root@neutron1-neutron-agents-container-f6882a35:~# cat /var/lib/neutron/dhcp/fb143a1f-d84b-4650-8e52-b369810f4190/host
+fa:16:3e:e8:83:d0,host-2-2-2-10.itc.in.,2.2.2.10
+fa:16:3e:88:ff:06,host-2-2-2-19.itc.in.,2.2.2.19
+fa:16:3e:e9:9f:38,cirrosk1-provider.itc.in.,2.2.2.14
+root@neutron1-neutron-agents-container-f6882a35:~# ip netns list
+qrouter-69476894-6c9b-4106-8431-e4ef5bfcb14e (id: 3)
+qdhcp-fb143a1f-d84b-4650-8e52-b369810f4190 (id: 2)
+qdhcp-6abf6249-2c8f-467f-b56d-d426dcdae6f1 (id: 1)
+root@neutron1-neutron-agents-container-f6882a35:~# ip netns exec qdhcp-fb143a1f-d84b-4650-8e52-b369810f4190  ping 2.2.2.10
+PING 2.2.2.10 (2.2.2.10) 56(84) bytes of data.
+64 bytes from 2.2.2.10: icmp_seq=1 ttl=64 time=0.055 ms
+64 bytes from 2.2.2.10: icmp_seq=2 ttl=64 time=0.029 ms
+^C
+--- 2.2.2.10 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 999ms
+rtt min/avg/max/mdev = 0.029/0.042/0.055/0.013 ms
+root@neutron1-neutron-agents-container-f6882a35:~# ip netns exec qdhcp-fb143a1f-d84b-4650-8e52-b369810f4190  ping 2.2.2.19
+PING 2.2.2.19 (2.2.2.19) 56(84) bytes of data.
+64 bytes from 2.2.2.19: icmp_seq=1 ttl=64 time=0.144 ms
+64 bytes from 2.2.2.19: icmp_seq=2 ttl=64 time=0.055 ms
+
+root@neutron1-neutron-agents-container-f6882a35:~# ip netns exec qdhcp-fb143a1f-d84b-4650-8e52-b369810f4190  ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: ns-f87a5c9d-11@if3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether fa:16:3e:e8:83:d0 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 169.254.169.254/16 brd 169.254.255.255 scope global ns-f87a5c9d-11
+       valid_lft forever preferred_lft forever
+    inet 2.2.2.10/24 brd 2.2.2.255 scope global ns-f87a5c9d-11
+       valid_lft forever preferred_lft forever
+    inet6 fe80::f816:3eff:fee8:83d0/64 scope link
+       valid_lft forever preferred_lft forever
+root@neutron1-neutron-agents-container-f6882a35:~#
+
+
+
+http://paste.openstack.org/show/626478/
+https://gist.github.com/BhujayKumarBhatta/584bda14710233d7242329d887606053
+
+
+cat /var/lib/neutron/dhcp/6abf6249-2c8f-467f-b56d-d426dcdae6f1//host
+ip netns exec qdhcp-6abf6249-2c8f-467f-b56d-d426dcdae6f1 ping 30.1.1.13
+
+
+
+git clone -b 16.0.2 https://git.openstack.org/openstack/openstack-ansible \
+  /opt/openstack-ansible
+
+
+
+ 
+openstack server create --nic net-id=c3d3abc6-dbd8-44a7-bb02-7f5827b057fb \
+--image cirrosraw --flavor small --availability-zone redhatkvm --key-name k2 --security-group ssh-ping tenant2-kvm3
+
+
+64dbd227-872f-4361-9faf-9d6408a092e8
+
+openstack server create --nic net-id=64dbd227-872f-4361-9faf-9d6408a092e8 \
+--image cirrosraw --flavor small --availability-zone redhatkvm --key-name k2 --security-group ssh-ping cir2
+
+
+openstack server create --nic net-id= c3d3abc6-dbd8-44a7-bb02-7f5827b057fb \
+--image cirrosraw --flavor small  --key-name k2 --security-group ssh-ping  tenant1
+
+
+
+4de3fc33-755d-4f67-9c2f-27695db51ab8 - flat 
+ c3d3abc6-dbd8-44a7-bb02-7f5827b057fb - tnet1
+
+34824656929
+
+
+In neutrona  once provider flat net is created
+
+104: tapba1395c0-d0@if2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master brq4de3fc33-75 state UP group default qlen 1000
+    link/ether 32:32:a4:89:cd:63 brd ff:ff:ff:ff:ff:ff link-netnsid 1
+105: brq4de3fc33-75: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+
+KVM1 is nothing  untill vm is created
+
+
+once VM created
+
+in KVM
+2017-11-13 11:38:35.408 4743 INFO neutron.agent.securitygroups_rpc [req-9d0ceb38-23b0-4446-9567-4687e1417388 - - - - -] Preparing filters for devices set(['tap05eeec92-fd'])
+2017-11-13 11:38:37.797 4743 INFO neutron.agent.securitygroups_rpc [req-9d0ceb38-23b0-4446-9567-4687e1417388 - - - - -] Security group member updated [u'479b2ddc-3de3-43e6-b501-f05d009894d0']
+2017-11-13 11:38:37.826 4743 INFO neutron.plugins.ml2.drivers.agent._common_agent [req-9d0ceb38-23b0-4446-9567-4687e1417388 - - - - -] Port tap05eeec92-fd updated. Details: {u'profile': {}, u'network_qos_policy_id': None, u'qos_policy_id': None, u'allowed_address_pairs': [], u'admin_state_up': True, u'network_id': u'4de3fc33-755d-4f67-9c2f-27695db51ab8', u'segmentation_id': None, u'mtu': 1500, u'device_owner': u'compute:nova', u'physical_network': u'flat', u'mac_address': u'fa:16:3e:33:80:71', u'device': u'tap05eeec92-fd', u'port_security_enabled': True, u'port_id': u'05eeec92-fdfa-42e8-add1-4193906fc427', u'fixed_ips': [{u'subnet_id': u'e133f7ff-9a28-486b-a9a7-d1cbee94961b', u'ip_address': u'2.2.2.62'}], u'network_type': u'flat'}
+
+33: brq4de3fc33-75: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether 00:18:8b:43:53:da brd ff:ff:ff:ff:ff:ff
+34: tap05eeec92-fd: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast master brq4de3fc33-75 state UNKNOWN group default qlen 1000
+    link/ether fe:16:3e:33:80:71 brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::fc16:3eff:fe33:8071/64 scope link
+       valid_lft forever preferred_lft forever
+
+
+After router is created  
+
+IN neutron agent
+104: tapba1395c0-d0@if2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master brq4de3fc33-75 state UP group default qlen 1000
+    link/ether 32:32:a4:89:cd:63 brd ff:ff:ff:ff:ff:ff link-netnsid 1
+105: brq4de3fc33-75: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether 00:16:3e:fa:de:0d brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::a407:51ff:fee6:e198/64 scope link
+       valid_lft forever preferred_lft forever
+106: tap38dd080e-a3@if2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue master brqc3d3abc6-db state UP group default qlen 1000
+    link/ether ba:a1:51:4c:b9:1a brd ff:ff:ff:ff:ff:ff link-netnsid 2
+107: vxlan-65: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue master brqc3d3abc6-db state UNKNOWN group default qlen 1000
+    link/ether 2a:83:5c:d6:71:2d brd ff:ff:ff:ff:ff:ff
+108: brqc3d3abc6-db: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UP group default qlen 1000
+    link/ether 2a:83:5c:d6:71:2d brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::40d0:35ff:fefd:19cd/64 scope link
+       valid_lft forever preferred_lft forever
+109: tapa71f59a9-34@if2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master brq4de3fc33-75 state UP group default qlen 1000
+    link/ether 0a:49:b0:9d:0e:d8 brd ff:ff:ff:ff:ff:ff link-netnsid 3
+110: tap1a8453cb-a1@if3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue master brqc3d3abc6-db state UP group default qlen 1000
+    link/ether 92:d5:7a:b0:fa:91 brd ff:ff:ff:ff:ff:ff link-netnsid 3
+root@neutron1-neutron-agents-container-f6882a35:~# 106: tap38dd080e-a3@if2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue master brqc3d3abc6-db state UP group default qlen 1000
+
+Two tap per network  one for router , another for dhcp 
+vxlan-65 is for tnet1
+
+
+
+
+
+
+
+in neutrona
+2017-11-13 11:14:22.085 7639 INFO neutron.plugins.ml2.drivers.agent._common_agent [req-d400f11b-a878-4ac0-9e60-3a8e48b97fed - - - - -] Port tapba1395c0-d0 updated. Details: {u'profile': {}, u'network_qos_policy_id': None, u'qos_policy_id': None, u'allowed_address_pairs': [], u'admin_state_up': True, u'network_id': u'4de3fc33-755d-4f67-9c2f-27695db51ab8', u'segmentation_id': None, u'mtu': 1500, u'device_owner': u'network:dhcp', u'physical_network': u'flat', u'mac_address': u'fa:16:3e:40:d8:4f', u'device': u'tapba1395c0-d0', u'port_security_enabled': False, u'port_id': u'ba1395c0-d0ad-43c7-ada9-d058ebfa21d2', u'fixed_ips': [{u'subnet_id': u'e133f7ff-9a28-486b-a9a7-d1cbee94961b', u'ip_address': u'2.2.2.56'}], u'network_type': u'flat'}
+
+
+
+After router and tnet1 creation status in neutrona
+
+
+root@neutron1-neutron-agents-container-f6882a35:~# ip netns list
+qrouter-62ae14cd-fb9e-4756-a828-fac29eca3cc1 (id: 3)
+qdhcp-c3d3abc6-dbd8-44a7-bb02-7f5827b057fb (id: 2)
+qdhcp-4de3fc33-755d-4f67-9c2f-27695db51ab8 (id: 1)
+
+root@neutron1-neutron-agents-container-f6882a35:~# ip netns exec qrouter-62ae14cd-fb9e-4756-a828-fac29eca3cc1 ping 50.1.1.1
+PING 50.1.1.1 (50.1.1.1) 56(84) bytes of data.
+64 bytes from 50.1.1.1: icmp_seq=1 ttl=64 time=0.072 ms
+64 bytes from 50.1.1.1: icmp_seq=2 ttl=64 time=0.043 ms
+
+
+VM launched on tnet1 
+
+Status on kvm1
+
+2017-11-13 11:56:35.206 4743 INFO neutron.agent.securitygroups_rpc [req-9d0ceb38-23b0-4446-9567-4687e1417388 - - - - -] Preparing filters for devices set(['tap6acb70e6-af'])
+2017-11-13 11:56:37.601 4743 INFO neutron.agent.securitygroups_rpc [req-9d0ceb38-23b0-4446-9567-4687e1417388 - - - - -] Security group member updated [u'479b2ddc-3de3-43e6-b501-f05d009894d0']
+2017-11-13 11:56:37.631 4743 INFO neutron.plugins.ml2.drivers.agent._common_agent [req-9d0ceb38-23b0-4446-9567-4687e1417388 - - - - -] Port tap6acb70e6-af updated. Details: {u'profile': {}, u'network_qos_policy_id': None, u'qos_policy_id': None, u'allowed_address_pairs': [], u'admin_state_up': True, u'network_id': u'c3d3abc6-dbd8-44a7-bb02-7f5827b057fb', u'segmentation_id': 65, u'mtu': 1450, u'device_owner': u'compute:nova', u'physical_network': None, u'mac_address': u'fa:16:3e:84:a4:d1', u'device': u'tap6acb70e6-af', u'port_security_enabled': True, u'port_id': u'6acb70e6-af5b-4388-81f3-fd4839b95b11', u'fixed_ips': [{u'subnet_id': u'e7f066f8-f6f5-4962-a745-4ce36a3aed2a', u'ip_address': u'50.1.1.14'}], u'network_type': u'vxlan'}
+
+
+
+
+
+
+
+
+root@neutron1-neutron-agents-container-f6882a35:~# ip netns exec qdhcp-c3d3abc6-dbd8-44a7-bb02-7f5827b057fb ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: ns-38dd080e-a3@if3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UP group default qlen 1000
+    link/ether fa:16:3e:8e:12:12 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 50.1.1.10/24 brd 50.1.1.255 scope global ns-38dd080e-a3
+       valid_lft forever preferred_lft forever
+    inet 169.254.169.254/16 brd 169.254.255.255 scope global ns-38dd080e-a3
+       valid_lft forever preferred_lft forever
+    inet6 fe80::f816:3eff:fe8e:1212/64 scope link
+       valid_lft forever preferred_lft forever
+root@neutron1-neutron-agents-container-f6882a35:~#
+
+
+
+
+root@neutron1-neutron-agents-container-f6882a35:~# cat /var/lib/neutron/dhcp/c3d3abc6-dbd8-44a7-bb02-7f5827b057fb/host
+fa:16:3e:41:81:0e,tenant2.itc.in.,50.1.1.15
+fa:16:3e:96:b3:2d,host-50-1-1-1.itc.in.,50.1.1.1
+fa:16:3e:8e:12:12,host-50-1-1-10.itc.in.,50.1.1.10
+fa:16:3e:ab:e9:04,tenant1.itc.in.,50.1.1.20
+fa:16:3e:9b:32:f1,tenant2-kvm3.itc.in.,50.1.1.13
+fa:16:3e:a5:cb:5c,tenant2.itc.in.,50.1.1.22
+
+
+
+
+on VM ip 20 
+
+$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 16436 qdisc noqueue
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast qlen 1000
+    link/ether fa:16:3e:41:81:0e brd ff:ff:ff:ff:ff:ff
+    inet 50.1.1.20/24 scope global eth0
+    inet6 fe80::f816:3eff:fe41:810e/64 scope link
+       valid_lft forever preferred_lft forever
+$
+
+
+
+fa:16:3e:ab:e9:04,tenant1.itc.in.,50.1.1.20
+fa:16:3e:41:81:0e
+
+
+on vm  with ip 22   virsh id 2
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast qlen 1000
+    link/ether fa:16:3e:a5:cb:5c brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::f816:3eff:fea5:cb5c/64 scope link
+       valid_lft forever preferred_lft forever
+$
+
+
+
+on vm  with ip 15   virsh id 3
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast qlen 1000
+    link/ether fa:16:3e:ab:e9:04 brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::f816:3eff:feab:e904/64 scope link
+       valid_lft forever preferred_lft forever
+fa:16:3e:ab:e9:04,tenant1.itc.in.,50.1.1.20
+$
+
+
+ip netns exec qdhcp-c3d3abc6-dbd8-44a7-bb02-7f5827b057fb tcpdump -i ns-38dd080e-a3 -nnvvvNXstcpdump: listening on ns-38dd080e-a3, link-type EN10MB (Ethernet), capture size 512 bytes
+
+ ip netns exec qdhcp-c3d3abc6-dbd8-44a7-bb02-7f5827b057fb tcpdump -i ns-38dd080e-a3 -nnvvvNXs 512 
+
+
+

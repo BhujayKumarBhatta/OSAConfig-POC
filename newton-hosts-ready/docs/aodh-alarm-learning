@@ -1,0 +1,460 @@
+Valid threshold al
+
+arms are: gnocchi_resources_threshold_rule, gnocchi_aggregation_by_metrics_threshold_rule, 
+or gnocchi_aggregation_by_resources_threshold_rule.
+
+
+while true; do n=$(echo |awk '{ print 8079696776*1057574674744.69}');echo $n;done
+
+
+ [--os-alarming-api-version <alarming-api-version>]
+
+[--os-aodh-endpoint <auth-aodh-endpoint>]
+
+
+--os-alarming-api-version <alarming-api-version>
+                        Queues API version, default=2 (Env:
+                        OS_ALARMING_API_VERSION)
+
+ --os-aodh-endpoint <auth-aodh-endpoint>
+                        With aodh-noauth: Aodh endpoint (Env:
+                        OS_AODH_ENDPOINT)
+
+
+https://14.142.104.140:8042/v2/alarms 
+
+
+ alarm create   Create an alarm
+  alarm delete   Delete an alarm
+  alarm list     List alarms
+  alarm show     Show an alarm
+  alarm state get  Get state of an alarm
+  alarm state set  Set state of an alarm
+  alarm update   Update an alarm
+  alarm-history search  Show history for all alarms based on query
+  alarm-history show  Show history for an alarm
+  alarming capabilities list  List capabilities of alarming service
+
+
+https://docs.openstack.org/python-aodhclient/latest/shell.html
+
+
+For example, in Bash you would use:
+export OS_USERNAME=user
+export OS_PASSWORD=pass
+export OS_TENANT_NAME=myproject
+export OS_AUTH_URL=http://auth.example.com:5000/v2.0
+The command line tool will attempt to reauthenticate using your provided credentials for every request. You can override this behavior by manually supplying an auth token using --aodh-endpoint and --os-auth-token. You can alternatively set these environment variables:
+export AODH_ENDPOINT=http://aodh.example.org:8041
+export OS_AUTH_PLUGIN=token
+export OS_AUTH_TOKEN=3bcc3d3a03f44e3d8377f9247b0ad155
+Also, if the server doesn’t support authentication, you can provide --os-auth-plugon aodh-noauth, --aodh-endpoint, --user-id and --project-id. You can alternatively set these environment variables:
+export OS_AUTH_PLUGIN=aodh-noauth
+export AODH_ENDPOINT=http://aodh.example.org:8041
+export AODH_USER_ID=99aae-4dc2-4fbc-b5b8-9688c470d9cc
+export AODH_PROJECT_ID=c8d27445-48af-457c-8e0d-1de7103eae1f
+From there, all shell commands take the form:
+aodh <command> [arguments...]
+Run aodh help to get a full list of all possible commands, and run aodh help <command> to get detailed help for that command.
+Examples¶
+Create an alarm:
+aodh alarm create -t threshold --name alarm1 -m cpu_util --threshold 5
+List alarms:
+aodh alarm list
+List alarm with query parameters:
+aodh alarm list --query "state=alarm and type=threshold"
+Show an alarm’s history:
+aodh alarm-history show <ALARM_ID>
+Search alarm history data:
+aodh --debug alarm-history search --query 'timestamp>"2016-03-09T01:22:35"'
+
+
+
+https://bugs.launchpad.net/openstack-ansible/+bug/1719875  for aodh returing 503 server not found . Haproxy misconfiguration.
+export OS_AUTH_TOKEN=gAAAAABZ5bwI8ht7Fxv5XVAXn7Ncag9Rs4fuENiCwkzWv3FOzpoaaIORTOxDw4Kvysjn4BkFv5CRNZ4PU6CtjtF6qU3Abq4mOXC8EqGz5Hwvx0Dblcy5lXVjW-C5z2IDhuxW4WPv0WF7ygcDkdWTovGc9iD_Qjne01hevB-UqCHx8j_B7eq4s4o
+export OS_AUTH_PLUGIN=token
+export AODH_ENDPOINT=http://10.0.0.14:8041
+export AODH_USER_ID=admin
+export AODH_PROJECT_ID=admin
+
+
+ --os-auth-type <auth-type>
+                        Select an authentication type. Available types:
+                        v2token, none, password, admin_token, v3oidcauthcode,
+                        v2password, gnocchi-noauth, v3password,
+                        v3tokenlessauth, v3oidcaccesstoken, token_endpoint,
+                        token, v3oidcclientcredentials, noauth, v1password,
+                        v3token, v3totp, v3oidcpassword, aodh-noauth, gnocchi-
+                        basic. Default: selected based on --os-username/--os-
+                        token (Env: OS_AUTH_TYPE)
+
+
+
+
+aodh alarm create \
+  --name cpu_hi \
+  --type gnocchi_resources_threshold \
+  --description 'instance running hot' \
+  --metric cpu_util \
+  --threshold 70.0 \
+  --comparison-operator gt \
+  --aggregation-method mean \
+  --granularity 600 \
+  --evaluation-periods 3 \
+  --alarm-action 'log://' \
+  --resource-id bbd87077-6649-4788-b17e-35c12f909bf5 \
+  --resource-type instance
+
+
+ aodh alarm create   --name cpu_hi   --type gnocchi_resources_threshold   --description 'instance running hot'   --metric cpu_util   --threshold 70.0   --comparison-operator gt   --aggregation-method mean   --granularity 600   --evaluation-periods 3   --alarm-action 'log://'   --resource-id bbd87077-6649-4788-b17e-35c12f909bf5   --resource-type instance
+
+
+curl -g -i --insecure -X GET https://10.0.0.14:8042/v2/alarms \
+-H "User-Agent: osc-lib/1.7.0 keystoneauth1/3.1.0 python-requests/2.18.2 CPython/2.7.12" \
+-H "Accept: application/json, */*" -H "X-Auth-Token: $OS_AUTH_TOKEN" \
+-d 
+
+
+
+curl -g -i  -X GET http://10.0.0.14:8042/v2/alarms -H "User-Agent: osc-lib/1.7.0 keystoneauth1-requests/2.18.2 CPython/2.7.12" -H "Accept: application/json, */*" -H "X-Auth-Token: $OS_AUTH_TOKEN"
+HTTP/1.1 200 OK
+Date: Tue, 17 Oct 2017 09:02:03 GMT
+Server: Apache
+x-openstack-request-id: req-181d82d6-4673-41e7-8bba-23b2ef7a7adf
+Content-Length: 2
+Content-Type: application/json
+
+
+
+============================================================================================
+
+
+root@infra2-utility-container-9040c8e7:~# aodh  alarm create   --name cpu_hi   --type gnocchi_resources_threshold   --description 'insta             nce running hot'   --metric cpu_util   --threshold 70.0   --comparison-operator gt   --aggregation-method mean   --granularity 300   --e             valuation-periods 3   --alarm-action 'log://'   --resource-id bbd87077-6649-4788-b17e-35c12f909bf5   --resource-type  instance
+<html><body><h1>503 Service Unavailable</h1>
+No server is available to handle this request.
+</body></html>
+ (HTTP 503)
+
+
+goes away after a   service haproxy restart
+
+
+root@infra2-utility-container-9040c8e7:~# aodh --debug alarm create   --name cpu_hi   --type gnocchi_resources_threshold   --description 'instance running hot'   --metric cpu_util   --threshold 70.0   --comparison-operator gt   --aggregation-method mean   --granularity 600   --evaluation-periods 3   --alarm-action 'log://'   --resource-id bbd87077-6649-4788-b17e-35c12f909bf5   --resource-type  instance
+No valid authentication is available
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/cliff/app.py", line 400, in run_subcommand
+    result = cmd.run(parsed_args)
+  File "/usr/local/lib/python2.7/dist-packages/cliff/display.py", line 113, in run
+    column_names, data = self.take_action(parsed_args)
+  File "/usr/local/lib/python2.7/dist-packages/aodhclient/v2/alarm_cli.py", line 435, in take_action
+    alarm=self._alarm_from_args(parsed_args))
+  File "/usr/local/lib/python2.7/dist-packages/aodhclient/v2/alarm.py", line 100, in create
+    data=jsonutils.dumps(alarm)).json()
+  File "/usr/local/lib/python2.7/dist-packages/aodhclient/v2/base.py", line 41, in _post
+    return self.client.api.post(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/keystoneauth1/adapter.py", line 294, in post
+    return self.request(url, 'POST', **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/aodhclient/client.py", line 35, in request
+    **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/keystoneauth1/adapter.py", line 192, in request
+    return self.session.request(url, method, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/positional/__init__.py", line 108, in inner
+    return wrapped(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/keystoneauth1/session.py", line 582, in request
+    raise exceptions.AuthorizationFailure(msg)
+AuthorizationFailure: No valid authentication is available
+Traceback (most recent call last):
+  File "/usr/local/bin/aodh", line 11, in <module>
+    sys.exit(main())
+  File "/usr/local/lib/python2.7/dist-packages/aodhclient/shell.py", line 183, in main
+    return AodhShell().run(args)
+  File "/usr/local/lib/python2.7/dist-packages/cliff/app.py", line 279, in run
+    result = self.run_subcommand(remainder)
+  File "/usr/local/lib/python2.7/dist-packages/cliff/app.py", line 400, in run_subcommand
+    result = cmd.run(parsed_args)
+  File "/usr/local/lib/python2.7/dist-packages/cliff/display.py", line 113, in run
+    column_names, data = self.take_action(parsed_args)
+  File "/usr/local/lib/python2.7/dist-packages/aodhclient/v2/alarm_cli.py", line 435, in take_action
+    alarm=self._alarm_from_args(parsed_args))
+  File "/usr/local/lib/python2.7/dist-packages/aodhclient/v2/alarm.py", line 100, in create
+    data=jsonutils.dumps(alarm)).json()
+  File "/usr/local/lib/python2.7/dist-packages/aodhclient/v2/base.py", line 41, in _post
+    return self.client.api.post(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/keystoneauth1/adapter.py", line 294, in post
+    return self.request(url, 'POST', **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/aodhclient/client.py", line 35, in request
+    **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/keystoneauth1/adapter.py", line 192, in request
+    return self.session.request(url, method, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/positional/__init__.py", line 108, in inner
+    return wrapped(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/keystoneauth1/session.py", line 582, in request
+    raise exceptions.AuthorizationFailure(msg)
+keystoneauth1.exceptions.auth.AuthorizationFailure: No valid authentication is available
+
+
+tried with all the following env vars :
+
+export OS_AUTH_TOKEN=gAAAAABZ5bwI8ht7Fxv5XVAXn7Ncag9Rs4fuENiCwkzWv3FOzpoaaIORTOxDw4Kvysjn4BkFv5CRNZ4PU6CtjtF6qU3Abq4mOXC8EqGz5Hwvx0Dblcy5lXVjW-C5z2IDhuxW4WPv0WF7ygcDkdWTovGc9iD_Qjne01hevB-UqCHx8j_B7eq4s4o
+export OS_AUTH_PLUGIN=token
+export AODH_ENDPOINT=http://10.0.0.14:8041
+export AODH_USER_ID=admin
+export AODH_PROJECT_ID=admin
+
+only the  error message changes :
+
+
+root@infra2-utility-container-9040c8e7:~# aodh  alarm create   --name cpu_hi   --type gnocchi_resources_threshold   --description 'instance running hot'   --metric cpu_util   --threshold 70.0   --comparison-operator gt   --aggregation-method mean   --granularity 300   --evaluation-periods 3   --alarm-action 'log://'   --resource-id bbd87077-6649-4788-b17e-35c12f909bf5   --resource-type  instance
+Invalid input for field 'identity/token/id': None is not of type 'string'
+
+Failed validating 'type' in schema['properties']['identity']['properties']['token']['properties']['id']:
+    {'type': 'string'}
+
+On instance['identity']['token']['id']:
+    None (HTTP 400) (Request-ID: req-ad398237-5c6e-47e8-925e-106402ee5f12)
+
+
+
+finally   changed 
+
+[service_credentials]
+auth_type = password
+#os_auth_url = http://10.0.0.14:5000/v3
+auth_url = http://10.0.0.14:5000/v3
+project_domain_id = default
+user_domain_id = default
+project_name = service
+
+#os_username = aodh
+username = aodh
+#os_tenant_name = service
+tenant_name = service
+#os_password = 24ab0cb184c005272eb606b60d46fc5dabb60e855d5fa70a785
+password = 24ab0cb184c005272eb606b60d46fc5dabb60e855d5fa70a785
+region_name = RegionOne
+interface = internalURL
+region_name = RegionOne
+
+ 
+root@infra1-aodh-container-8c112542:/etc/aodh# service apache2 restart
+root@infra1-aodh-container-8c112542:/etc/aodh# service aodh-evaluator restart
+root@infra1-aodh-container-8c112542:/etc/aodh# service aodh-notifier restart
+root@infra1-aodh-container-8c112542:/etc/aodh# service aodh-listener restart
+
+
+now it works 
+
+root@infra2-utility-container-9040c8e7:~# aodh  alarm create   --name cpu_hi   --type gnocchi_resources_threshold   --description 'insta             nce running hot'   --metric cpu_util   --threshold 70.0   --comparison-operator gt   --aggregation-method mean   --granularity 300   --e             valuation-periods 3   --alarm-action 'log://'   --resource-id bbd87077-6649-4788-b17e-35c12f909bf5   --resource-type  instance
++---------------------------+--------------------------------------+
+| Field                     | Value                                |
++---------------------------+--------------------------------------+
+| aggregation_method        | mean                                 |
+| alarm_actions             | [u'log://']                          |
+| alarm_id                  | 4e6e95d7-85f6-421e-9291-264200883fcf |
+| comparison_operator       | gt                                   |
+| description               | instance running hot                 |
+| enabled                   | True                                 |
+| evaluation_periods        | 3                                    |
+| granularity               | 300                                  |
+| insufficient_data_actions | []                                   |
+| metric                    | cpu_util                             |
+| name                      | cpu_hi                               |
+| ok_actions                | []                                   |
+| project_id                | 8e13cb3b05ec4c7d87bac8ffe9f2bd19     |
+| repeat_actions            | False                                |
+| resource_id               | bbd87077-6649-4788-b17e-35c12f909bf5 |
+| resource_type             | instance                             |
+| severity                  | low                                  |
+| state                     | insufficient data                    |
+| state_reason              | Not evaluated yet                    |
+| state_timestamp           | 2017-10-17T14:12:52.491693           |
+| threshold                 | 70.0                                 |
+| time_constraints          | []                                   |
+| timestamp                 | 2017-10-17T14:12:52.491693           |
+| type                      | gnocchi_resources_threshold          |
+| user_id                   | 30313bbe61fe452680c6c2ee9d8475fc     |
++---------------------------+--------------------------------------+
+
+
+my env vars now as follows:
+
+
+root@infra2-utility-container-9040c8e7:~# set |grep OS_
+OS_AODH_ENDPOINT=http://10.0.0.14:8042/v2
+OS_AUTH_URL=http://10.0.0.14:5000/v3
+OS_AUTH_VERSION=3
+OS_ENDPOINT_TYPE=internalURL
+OS_IDENTITY_API_VERSION=3
+OS_INTERFACE=internalURL
+OS_NO_CACHE=1
+OS_PASSWORD=welcome@123
+OS_PROJECT_DOMAIN_NAME=Default
+OS_PROJECT_NAME=admin
+OS_REGION_NAME=RegionOne
+OS_TENANT_NAME=admin
+OS_USERNAME=admin
+OS_USER_DOMAIN_NAME=Default
+root@infra2-utility-container-
+root@infra2-utility-container-9040c8e7:~# set |grep AODH
+AODH_ENDPOINT_TYPE=internalURL
+OS_AODH_ENDPOINT=http://10.0.0.14:8042/v2
+root@infra2-utility-container-9040c8e7:~#
+
+
+This when you comapre with the ansible template you see the missing  configurations in the [service_credentials] section 
+
+https://github.com/openstack/openstack-ansible-os_aodh/blob/stable/pike/templates/aodh.conf.j2
+
+[service_credentials]
+
+os_auth_url = {{ keystone_service_internalurl }}
+
+os_username = {{ aodh_service_user_name }}
+
+os_tenant_name = {{ aodh_service_tenant_name }}
+
+os_password = {{ aodh_service_password }}
+
+region_name = {{ aodh_service_region }}
+
+interface = {{ aodh_service_endpoint_type }}
+
+
+The changes that are required in this section is as follows :
+
+[service_credentials]
+
+auth_type = {{ aodh_keystone_auth_plugin }}
+auth_url = {{ keystone_service_internalurl }}
+project_domain_id = {{ aodh_service_project_domain_id }}
+user_domain_id = {{ aodh_service_user_domain_id }}
+project_name = {{ aodh_service_project_name }}
+username = {{ aodh_service_user_name }}
+tenant_name = {{ aodh_service_tenant_name }}
+password = {{ aodh_service_password }}
+region_name = {{ aodh_service_region }}
+interface = {{ aodh_service_endpoint_type }}
+
+
+
+openstack server create --nic net-id=d0e05670-56dc-4bcd-8fb9-ef5ff7105987 \
+--image cirrosraw --flavor small --availability-zone redhatkvm --key-name k2 --security-group ssh-ping cir2
+
+
+64dbd227-872f-4361-9faf-9d6408a092e8  is the physical - 303
+
+openstack server create --nic net-id=64dbd227-872f-4361-9faf-9d6408a092e8 \
+--image cirrosraw --flavor small --availability-zone redhatkvm --key-name k2 --security-group ssh-ping cir2
+
+openstack server create --nic net-id=d0e05670-56dc-4bcd-8fb9-ef5ff7105987 \
+--image cirrosraw --flavor small  --key-name k2 --security-group ssh-ping cir3
+
+openstack server create --nic net-id=64dbd227-872f-4361-9faf-9d6408a092e8 \
+--image cirrosraw --flavor small  --key-name k2 --security-group ssh-ping cir4
+
+
+
+
+tail -f /var/log/gnocchi/gnocchi-access.log
+
+.0.0.51 - - [08/Nov/2017:15:03:41 +0530] "POST /v1/batch/resources/metrics/measures?create_metrics=True HTTP/1.1" 202 152 "-" "ceilometer-agent-notification keystoneauth1/3.1.0 python-requests/2.18.2 CPython/2.7.12"
+
+.0.0.51 - - [08/Nov/2017:15:03:46 +0530] "PATCH /v1/resource/instance_network_interface/instance-00000097-4526aada-6abb-44cf-8158-93150a144e28-tap242518ca-b1 HTTP/1.1" 200 1710 "-" "ceilometer-agent-notification keystoneauth1/3.1.0 python-requests/2.18.2 CPython/2.7.12"
+
+.0.0.51 - - [08/Nov/2017:15:03:56 +0530] "GET /v1/resource/generic/bbd87077-6649-4788-b17e-35c12f909bf5/metric/cpu_util/measures?start=2017-11-08T09%3A13%3A56.869060&stop=2017-11-08T09%3A33%3A56.869060&aggregation=mean&refresh=False HTTP/1.1" 200 144 "-" "aodh-evaluator keystoneauth1/3.1.0 python-requests/2.18.2 CPython/2.7.12"
+
+
+
+tail -f /var/log/gnocchi/gnocchi-metricd.log
+
+17-11-08 14:44:43,919 [10530] INFO     gnocchi.cli: 189524 measurements bundles across 303 metrics wait to be processed.
+
+
+ot@infra1-ceilometer-central-container-5424ee97:~# tail -f /var/log/ceilometer/ceilometer-polling.log
+2017-11-08 15:03:43.968 358 INFO ceilometer.agent.manager [-] Skip pollster hardware.memory.buffer, no resources found this cycle
+2017-11-08 15:03:43.968 358 INFO ceilometer.agent.manager [-] Skip pollster hardware.memory.cached, no resources found this cycle
+
+ tail -f /var/log/ceilometer/ceilometer-agent-notification.log
+2017-11-08 15:03:21.850 360 WARNING ceilometer.transformer.conversions [-] dropping sample with no predecessor: (<name: disk.read.requests, volume: 1046, resource_id: 47fb956a-d996-451b-887e-d3f21a3a1a8f, timestamp: 2017-11-08T09:35:54.445994>,)
+
+ tail -f /var/log/aodh/aodh-evaluator.log
+
+
+some time gnochii metric may not show the measures 
+
+openstack metric measures show --resource-id 0f79fbe7-99b3-419e-bb8f-e680044119c6 cpu_util
+
+Then see of measures are pending for processing 
+
+root@infra2-utility-container-9040c8e7:~# openstack metric status
++-----------------------------------------------------+--------+
+| Field                                               | Value  |
++-----------------------------------------------------+--------+
+| storage/number of metric having measures to process | 330    |
+| storage/total number of measures to process         | 190770 |
++-----------------------------------------------------+--------+
+  
+To clear this restart metircd 
+
+service gnocchi-metricd restart     
+
+
+2017-11-08 16:09:43,721 [9768] WARNING  gnocchi.cli: Coordinator does not support partitioning. Worker will battle against other workers for jobs.
+2017-11-08 16:09:43,810 [9775] WARNING  gnocchi.cli: Coordinator does not support partitioning. Worker will battle against other workers for jobs.
+2017-11-08 16:09:45,347 [9783] INFO     gnocchi.cli: 191793 measurements bundles across 362 metrics wait to be processed.
+2017-11-08 16:11:35,719 [9783] INFO     gnocchi.cli: 0 measurements bundles across 0 metrics wait to be processed.
+2017-11-08 16:13:35,360 [9783] INFO     gnocchi.cli: 151 measurements bundles across 151 metrics wait to be processed.
+
+root@infra2-utility-container-9040c8e7:~# openstack metric status
++-----------------------------------------------------+-------+
+| Field                                               | Value |
++-----------------------------------------------------+-------+
+| storage/number of metric having measures to process | 0     |
+| storage/total number of measures to process         | 0     |
++-----------------------------------------------------+-------+
+
+
+And now the metrci measures command for a resource to see the full  datewise list
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

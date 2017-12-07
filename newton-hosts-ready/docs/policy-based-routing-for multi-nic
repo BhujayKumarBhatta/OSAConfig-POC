@@ -34,8 +34,14 @@ ip rule add to 20.0.1.31/32 table br-storage_net_routing
 ============%%%%%%%%%%%%%%%%%%%%%%=====================
 permanent-routing to /etc/network/interfaces   -- 
 
-
-
+The section below for vxlan  was not required 
+============================
+echo "1 vxlan_routing" >> /etc/iproute2/rt_tables
+ip route add 30.0.1.0/24 dev br-vxlan src 30.0.1.31 table vxlan_routing
+ip route add default via 30.0.1.1 dev br-vxlan table vxlan_routing
+ip rule add from 30.0.1.31/32 table vxlan_routing
+ip rule add to 30.0.1.31/32 table vxlan_routing
+============================================================
 
 Next step..
 case-neutron only in pod2

@@ -278,11 +278,12 @@ compute-infra_hosts:
 #  infra3:
 #    ip: 10.0.0.23  
 # heat
-#Xorchestration_hosts:
-#X  infra1:
-#X    ip: 10.0.0.21
+orchestration_hosts:
+  infra3:
+    ip: 10.0.0.23
 #X  infra2:
 #X    ip: 10.0.0.22
+
 # horizon
 dashboard_hosts:
 #  infra1:
@@ -294,19 +295,19 @@ dashboard_hosts:
 
    
 # ceilometer (telemetry API)
-#Xmetering-infra_hosts:
-#X  infra1:
-#X    ip: 10.0.0.21
+metering-infra_hosts:
+  infra1:
+    ip: 10.0.0.21
   
 # aodh (telemetry alarm service)
-#Xmetering-alarm_hosts:
-#X  infra2:
-#X    ip: 10.0.0.22
+metering-alarm_hosts:
+  infra2:
+    ip: 10.0.0.22
   
 # gnocchi (telemetry metrics storage)
-#Xmetrics_hosts:
-#X  infra3:
-#X    ip: 10.0.0.23
+Xmetrics_hosts:
+  infra3:
+    ip: 10.0.0.23
 
 # neutron server, agents (L3, etc)
 network_hosts:
@@ -324,9 +325,9 @@ compute_hosts:
   kvm3:
     ip: 10.0.1.33
 # ceilometer compute agent (telemetry)
-#@metering-compute_hosts:
-#@  kvm1:
-#@    ip: 10.0.1.31
+metering-compute_hosts:
+  kvm1:
+    ip: 10.0.1.31
 
 ##########################CEPH STORAGE#############CEPH STORGE####################################
 # The infra nodes where the Ceph mon services will run
