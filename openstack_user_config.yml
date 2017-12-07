@@ -307,7 +307,7 @@ metering-alarm_hosts:
     ip: 10.0.0.22
   
 # gnocchi (telemetry metrics storage)
-Xmetrics_hosts:
+metrics_hosts:
   infra3:
     ip: 10.0.0.23
 
