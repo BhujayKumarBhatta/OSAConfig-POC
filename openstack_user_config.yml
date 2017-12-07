@@ -46,6 +46,8 @@ pod2_hosts:
     ip: 10.0.1.33   
    neutron1:
     ip: 10.0.1.41
+   kvm1:
+    ip: 10.0.1.31
     
 
 global_overrides:
