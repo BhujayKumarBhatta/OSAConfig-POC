@@ -1,0 +1,37 @@
+How do I determine if a specific commit for a bug is running in an upstream OpenStack Installation?
+
+To determine if a given commit appears in an upstream installation, or a .whl archive deployed upstream, use the SHA identifier of the specific commit and the SHA identifier of the target installation. Find and confirm the commit SHA, and then compare it to the upstream installation SHA history, as follows:
+
+Record the SHA of the commit, which is 9ff5bb967105451a1c3c1a6dbeb0ec979afaeb in this example.
+
+Log into the container where the OpenStack service resides. This example retrieves information about neutron:
+
+# lxc-attach -n aio1_neutron_agents_container28d6792d
+# pbr info neutron
+neutron 2015.2.4dev9   pre-release 1fafe42
+The seven character entry that appears last on the line is the SHA of the commit used to build neutron in this OpenStack installation.
+
+Confirm whether the SHA in question appears inside the upstream OpenStack installation. On any Linux installation, clone the upstream repository and examine the commit history:
+
+# git clone https://github.com/openstack/neutron.git
+# cd neutron
+Search the cloned repository for the SHA identifier, referencing the OpenStack service SHA:
+
+# git rev-list 1fafe42 | grep 9ff5bb967105451a1c3c1a6dbeb0ec979afaeb
+The git rev-list command lists all ancestor commits of the commit object 1fafe42 in this git repository, and the | grep <SHA> option searches for the commit SHA.Replace 1fafe42 with the SHA obtained from the pbr info command, and 9ff5bb967105451a1c3c1a6dbeb0ec979afaeb with the specific commit SHA. If the command returns the commit SHA, the OpenStack installation contains the commit:
+
+# git rev-list 1fafe42 | grep 9ff5bb967105451a1c3c1a6dbeb0ec979afaeb
+9ff5bb967105451a1c3c1a6dbeb0ec979afaeb
+
+
+
+
+source /openstack/venvs/neutron-15.1.3/bin/activate
+(neutron-15.1.3) root@infra1-neutron-server-container-ff502660:~# pbr info neutron
+neutron 10.0.2.dev22    pre-release     085afaa
+
+then go to repo container :
+
+lxc-attach -n infra1_repo_container-bd374f0f
+cd /var/www/repo/openstackgit/neutron
+root@infra1-repo-container-bd374f0f:/var/www/repo/openstackgit/neutron# git rev-list  085afaa |grep < the SHA for openstack bug commit >

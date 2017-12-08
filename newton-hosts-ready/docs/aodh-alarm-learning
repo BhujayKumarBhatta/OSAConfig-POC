@@ -1,3 +1,13 @@
+tail -f /var/log/gnocchi/gnocchi-access.log
+
+10.0.0.52 - - [07/Dec/2017:15:33:37 +0530] "POST /v1/resource/instance HTTP/1.1" 404 241 "-" "ceilometer-agent-notification keystoneauth1/3.1.0 python-requests/2.18.2 CPython/2.7.12"
+10.0.0.52 - - [07/Dec/2017:15:33:37 +0530] "POST /v1/batch/resources/metrics/measures?create_metrics=True HTTP/1.1" 202 152 "-" "ceilometer-agent-notification keystoneauth1/3.1.0 python-requests/2.18.2 CPython/2.7.12"
+
+ ceilometer.dispatcher.gnocchi  Error creating resource  Resource type instance does not exist (HTTP 404): ResourceTypeNotFound: Reso
+
+
+
+
 Valid threshold al
 
 arms are: gnocchi_resources_threshold_rule, gnocchi_aggregation_by_metrics_threshold_rule, 

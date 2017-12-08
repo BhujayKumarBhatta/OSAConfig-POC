@@ -1,0 +1,237 @@
+when gnocchi metric list returns nothing and gnocchi access log shows 404 also ceilomehter-agent log shows 404 error as below
+
+(ceilometer-16.0.4) root@infra1-ceilometer-central-container-4b6a8494:~# tail -f /var/log/ceilometer/ceilometer-agent-notification.log 
+
+2017-12-08 09:38:29.325 2800 ERROR ceilometer.dispatcher.gnocchi [-] Error creating resource 0d5c6e8a-1d5b-45fb-af19-a2bc7cc7b              ecc: Resource type instance does not exist (HTTP 404): ResourceTypeNotFound: Resource type instance does not exist (HTTP 404)
+
+
+In this case 
+
+source /openstack/venvs/ceilometer-16.0.4/bin/activate
+
+cat /etc/ceilometer/gnocchi_resources.yaml
+
+ceilometer-upgrade –skip-metering-database
+
+
+
+root@ansiblenew:/opt/openstack-ansible/playbooks# gnocchi metric  list
++--------------------------------------+---------------------+--------------------------------+-----------+---------------------------------         -----+
+| id                                   | archive_policy/name | name                           | unit      | resource_id                                   |
++--------------------------------------+---------------------+--------------------------------+-----------+---------------------------------         -----+
+| 001604b4-bdf1-4d5c-9130-5a87213a02dc | low                 | disk.allocation                | None      | d00c27f0-303f-4fc1-bfc9-18819a13         2d23 |
+| 0038c358-6467-4348-a882-1002dd090788 | low                 | network.incoming.packets.rate  | packet/s  | 0e694db4-319c-5421-ac5b-c5408a16         15a0 |
+| 003b4b6f-519a-4103-b254-db0911605ae0 | low                 | perf.cache.misses              | None      | 0d5c6e8a-1d5b-45fb-af19-a2bc7cc7         becc |
+| 00d01d1d-142c-4d7a-864e-b4b1ec378a3b | low                 | memory                         | MB        | 5e707910-f164-44e5-81c5-d1e66186         902d |
+| 0108e6aa-1604-4cd5-8986-2c75ba94c9cb | low                 | perf.cpu.cycles                | None      | d00c27f0-303f-4fc1-bfc9-18819a13         2d23 |
+| 01c1fedc-38d1-427c-8cb4-1318f5ec4543 | low                 | compute.instance.booting.time  | None      | d00c27f0-303f-4fc1-bfc9-18819a13         2d23 |
+| 02e32dc3-adb0-4a1c-86d4-60b6d4104741 | low                 | network.outgoing.packets.error | None      | c1333345-9f1b-5c1e-ad52-
+
+
+Once a new servefr is created the agent log  shows 
+
+2017-12-08 09:53:24.417 2800 ERROR ceilometer.dispatcher.gnocchi [-] Error creating resource 22511506-8232-4aff-8faf-0dc01f8e529a: Invalid i         nput: required key not provided @ data[u'host'] (HTTP 400): BadRequest: Invalid input: required key not provided @ data[u'host'] (HTTP 400)
+
+
+however , the resource has been created  and  measures are showing 
+
+
+root@ansiblenew:/opt/openstack-ansible/playbooks# gnocchi resource list | grep 22511506-8232-4aff-8faf-0dc01f8e529a
+| 22511506-8232-4aff-8faf-0dc01f8e529a | instance                   | 373b270dc9a649d0b36671bdeec1e7e9 | 4a3c972a86564a4784bf4f0ba77b4b49 |          22511506-8232-4aff-8faf-0dc01f8e529a                                  | 2017-12-08T04:23:24.738276+00:00 | None     | 2017-12-08T04:23:24.73         8317+00:00 | None         | 0989ff0ef2954f50b8edb60dc9644bbd:88f85332ac8b43d7b125fda6915b741c |
+
+
+
+root@ansiblenew:/opt/openstack-ansible/playbooks# gnocchi measures show --resource-id 22511506-8232-4aff-8faf-0dc01f8e529a cpu
++---------------------------+-------------+---------------+
+| timestamp                 | granularity |         value |
++---------------------------+-------------+---------------+
+| 2017-12-08T15:20:00+05:30 |       300.0 | 43228212160.0 |
++---------------------------+-------------+---------------+
+
+
+To check that gnocchi is working ok we can do these steps manually
+
+gnocchi metric create --archive-policy-name low  bhujay
+root@ansiblenew:/opt/openstack-ansible/playbooks# gnocchi metric list
++--------------------------------------+---------------------+--------+------+-------------+
+| id                                   | archive_policy/name | name   | unit | resource_id |
++--------------------------------------+---------------------+--------+------+-------------+
+| 1b4ac0b6-8929-4a3a-a2be-f33d2e0152a1 | low                 | bhujay | None | None        |
++--------------------------------------+---------------------+--------+------+-------------+
+
+gnocchi measures add -m 2017-12-07T16:49:00@01 -m 2017-12-07T16:50:00@02 -m 2017-12-07T16:49:00@02  1b4ac0b6-8929-4a3a-a2be-f33d2e0152a1
+gnocchi measures show 1b4ac0b6-8929-4a3a-a2be-f33d2e0152a1
+root@ansiblenew:/opt/openstack-ansible/playbooks# gnocchi measures show 1b4ac0b6-8929-4a3a-a2be-f33d2e0152a1
++---------------------------+-------------+-------+
+| timestamp                 | granularity | value |
++---------------------------+-------------+-------+
+| 2017-12-07T16:45:00+05:30 |       300.0 |   2.0 |
+| 2017-12-07T16:50:00+05:30 |       300.0 |   2.0 |
++---------------------------+-------------+-------+
+
+
+gnocchi measures show --aggregation 95pct  9cc8d20a-8475-4048-815a-0fd9d76cef00
+gnocchi measures show --aggregation max  9cc8d20a-8475-4048-815a-0fd9d76cef00
+gnocchi measures show --aggregation min  9cc8d20a-8475-4048-815a-0fd9d76cef00
+Do not create resource type since this is already cerated for us during installation
+gnocchi resource-type create --attribute name:string --attribute host:string server
+gnocchi resource-type create --attribute name:string --attribute host:string instance
+
+root@ansible:/opt/openstack-ansible/playbooks# openstack server list
++--------------------------------------+------+--------+-------------------------+------------+
+| ID                                   | Name | Status | Networks                | Image Name |
++--------------------------------------+------+--------+-------------------------+------------+
+| 63180470-5775-490d-9f96-5e7331c9c699 | v1   | ACTIVE | Provider-303=191.1.1.16 |            |
++--------------------------------------+------+--------+-------------------------+------------+
+root@ansible:/opt/openstack-ansible/playbooks# gnocchi resource show 63180470-5775-490d-9f96-5e7331c9c699
+Resource 63180470-5775-490d-9f96-5e7331c9c699 does not exist (HTTP 404)
+
+This should have been created automatically by openstack - need to check why not and  who is responseible , probably ceilometer
+
+add the new sever  manually 
+gnocchi resource create   --attribute display_name:v1 --attribute host:kvm2 --attribute flavor_id:tiny --create-metric cpu:high --create-metric memory:high --type instance 63180470-5775-490d-9f96-5e7331c9c69
++-----------------------+----------------------------------------------+
+| Field                 | Value                                        |
++-----------------------+----------------------------------------------+
+| created_by_project_id | 81f17853ede54d7780307b94fa55c135             |
+| created_by_user_id    | 84ef45b581364b979eb5302fe8f1e639             |
+| display_name          | v1                                           |
+| ended_at              | None                                         |
+| flavor_id             | tiny                                         |
+| host                  | kvm2                                         |
+| id                    | 63180470-5775-490d-9f96-5e7331c9c699         |
+| image_ref             | None                                         |
+| metrics               | cpu: 651bf6bf-1c22-45b4-908f-b5f5f0ee93a6    |
+|                       | memory: 86bf9560-c79d-4c42-a124-62295aa069b2 |
+| original_resource_id  | 63180470-5775-490d-9f96-5e7331c9c699         |
+| project_id            | None                                         |
+| revision_end          | None                                         |
+| revision_start        | 2017-05-13T15:56:05.738919+00:00             |
+| server_group          | None                                         |
+| started_at            | 2017-05-13T15:56:05.738851+00:00             |
+| type                  | instance                                     |
+| user_id               | None                                         |
++-----------------------+----------------------------------------------+
+
+
+gnocchi resource update --attribute host:kvm2 --type instance 63180470-5775-490d-9f96-5e7331c9c699
++-----------------------+----------------------------------------------+
+| Field                 | Value                                        |
++-----------------------+----------------------------------------------+
+| created_by_project_id | 81f17853ede54d7780307b94fa55c135             |
+| created_by_user_id    | 84ef45b581364b979eb5302fe8f1e639             |
+| display_name          | v1                                           |
+| ended_at              | None                                         |
+| flavor_id             | tiny                                         |
+| host                  | kvm2                                         |
+| id                    | 63180470-5775-490d-9f96-5e7331c9c699         |
+| image_ref             | None                                         |
+| metrics               | cpu: 651bf6bf-1c22-45b4-908f-b5f5f0ee93a6    |
+|                       | memory: 86bf9560-c79d-4c42-a124-62295aa069b2 |
+| original_resource_id  | 63180470-5775-490d-9f96-5e7331c9c699         |
+| project_id            | None                                         |
+| revision_end          | None                                         |
+| revision_start        | 2017-05-13T15:56:05.738919+00:00             |
+| server_group          | None                                         |
+| started_at            | 2017-05-13T15:56:05.738851+00:00             |
+| type                  | instance                                     |
+| user_id               | None                                         |
++-----------------------+----------------------------------------------+
+
+root@ansible:/opt/openstack-ansible/playbooks# gnocchi resource history --format json --details 63180470-5775-490d-9f96-5e7331c9c699
+[
+  {
+    "created_by_user_id": "84ef45b581364b979eb5302fe8f1e639", 
+    "started_at": "2017-05-13T15:56:05.738851+00:00", 
+    "user_id": null, 
+    "revision_end": null, 
+    "revision_start": "2017-05-13T15:56:05.738919+00:00", 
+    "created_by_project_id": "81f17853ede54d7780307b94fa55c135", 
+    "metrics": {
+      "cpu": "651bf6bf-1c22-45b4-908f-b5f5f0ee93a6", 
+      "memory": "86bf9560-c79d-4c42-a124-62295aa069b2"
+    }, 
+    "host": "kvm2", 
+    "image_ref": null, 
+    "flavor_id": "tiny", 
+    "server_group": null, 
+    "original_resource_id": "63180470-5775-490d-9f96-5e7331c9c699", 
+    "ended_at": null, 
+    "project_id": null, 
+    "type": "instance", 
+    "id": "63180470-5775-490d-9f96-5e7331c9c699", 
+    "display_name": "v1"
+  }
+
+gnocchi measures add -m 2017-05-16T21:00:00@42 -m 2017-05-16T21:01:03@45 -m 2017-05-16T21:06:07@22 --resource-id 63180470-5775-490d-9f96-5e7331c9c699 cpu
+
+gnocchi measures show --resource-id 63180470-5775-490d-9f96-5e7331c9c699 cpu
+
+root@ansible:/opt/openstack-ansible/playbooks# gnocchi measures show 651bf6bf-1c22-45b4-908f-b5f5f0ee93a6
+
+root@ansible:/opt/openstack-ansible/playbooks# gnocchi measures show --resource-id 63180470-5775-490d-9f96-5e7331c9c699 cpu
++---------------------------+-------------+---------------+
+| timestamp                 | granularity |         value |
++---------------------------+-------------+---------------+
+| 2017-05-16T21:00:00+00:00 |      3600.0 | 36.3333333333 |
+| 2017-05-16T21:00:00+00:00 |        60.0 |          42.0 |
+| 2017-05-16T21:01:00+00:00 |        60.0 |          45.0 |
+| 2017-05-16T21:06:00+00:00 |        60.0 |          22.0 |
+| 2017-05-16T21:00:00+00:00 |         1.0 |          42.0 |
+| 2017-05-16T21:01:03+00:00 |         1.0 |          45.0 |
+| 2017-05-16T21:06:07+00:00 |         1.0 |          22.0 |
++---------------------------+-------------+---------------+
+
+gnocchi resource search --type instance host=kvm2
+
+
+============================
+
+
+Openstack-ansible version 16.0.4  , pike  . 
+
+Operating system : Ubuntu Xenial 16.04
+
+Gnocchi backend storage : ceph , rbd 
+
+Multi node set up with  two haproxy , three controllers on pod1 , one kvm and  one separate newtron on pod2 
+
+ceilometer was deployed only on controller1 and gnocchi was installed in controller 3  
+
+Problem :  after installation is over I  ran  'gnocchi metric list'  and it returns nothing
+Checked the log in ceilometer agent and it shows 
+(ceilometer-16.0.4) root@infra1-ceilometer-central-container-4b6a8494:~# tail -f /var/log/ceilometer/ceilometer-agent-notification.log 
+2017-12-08 09:38:29.325 2800 ERROR ceilometer.dispatcher.gnocchi [-] Error creating resource 0d5c6e8a-1d5b-45fb-af19-a2bc7cc7b              ecc: Resource type instance does not exist (HTTP 404): ResourceTypeNotFound: Resource type instance does not exist (HTTP 404)
+
+Solution: 
+
+on the ceilometer-central-container run ceilometer-upgrade --skip-metering-database to create the resources in gnocchi . This is as per the installation document https://docs.openstack.org/ceilometer/pike/contributor/install/manual.html
+
+Result :
+
+Immediately after running ceilometer-upgrade we can observer from gnocchi-access.log that resources are getting posted 
+now running metric list we  can see all the resources 
+
+root@ansiblenew:/opt/openstack-ansible/playbooks# gnocchi metric  list
++--------------------------------------+---------------------+--------------------------------+-----------+---------------------------------         -----+
+| id                                   | archive_policy/name | name                           | unit      | resource_id                                   |
++--------------------------------------+---------------------+--------------------------------+-----------+---------------------------------         -----+
+| 001604b4-bdf1-4d5c-9130-5a87213a02dc | low                 | disk.allocation                | None      | d00c27f0-303f-4fc1-bfc9-18819a13         2d23 |
+| 0038c358-6467-4348-a882-1002dd090788 | low                 | network.incoming.packets.rate  | packet/s  | 0e694db4-319c-5421-ac5b-c5408a16         15a0 |
+| 003b4b6f-519a-4103-b254-db0911605ae0 | low                 | perf.cache.misses              | None      | 0d5c6e8a-1d5b-45fb-af19-a2bc7cc7         becc |
+| 00d01d1d-142c-4d7a-864e-b4b1ec378a3b | low                 | memory                         | MB        | 5e707910-f164-44e5-81c5-d1e66186         902d |
+| 0108e6aa-1604-4cd5-8986-2c75ba94c9cb | low                 | perf.cpu.cycles                | None      | d00c27f0-303f-4fc1-bfc9-18819a13         2d23 |
+| 01c1fedc-38d1-427c-8cb4-1318f5ec4543 | low                 | compute.instance.booting.time  | None      | d00c27f0-303f-4fc1-bfc9-18819a13         2d23 |
+| 02e32dc3-adb0-4a1c-86d4-60b6d4104741 | low                 | network.outgoing.packets.error | None      | c1333345-9f1b-5c1e-ad52-
+
+
+I am filing a pull request soon to include this step in gnocchi role . 
+https://bugs.launchpad.net/openstack-ansible/+bug/1737096
+
+
+
+
+
+
+
+
