@@ -34,7 +34,7 @@ resources:
       key_name: {get_param: key_name}
       metadata: {get_param: metadata}
       user_data: {get_param: user_data}
-      availability_zone: redhatkvm
+      availability_zone: nova
       user_data_format: RAW
       networks: [{network: {get_param: network} }]
   member:
