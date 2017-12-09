@@ -1,3 +1,14 @@
+Aodh related 
+https://bugs.launchpad.net/openstack-ansible/+bug/1719875  for aodh returing 503 server not found . Haproxy misconfiguration.
+
+https://etherpad.openstack.org/p/osa-telemetry-stack-fixing
+
+https://review.openstack.org/#/c/512972/
+         
+
+
+Gnocchi
+===============
 when gnocchi metric list returns nothing and gnocchi access log shows 404 also ceilomehter-agent log shows 404 error as below
 
 (ceilometer-16.0.4) root@infra1-ceilometer-central-container-4b6a8494:~# tail -f /var/log/ceilometer/ceilometer-agent-notification.log 
@@ -229,9 +240,47 @@ I am filing a pull request soon to include this step in gnocchi role .
 https://bugs.launchpad.net/openstack-ansible/+bug/1737096
 
 
+root@ansiblenew:/etc/ansible/roles/os_ceilometer/tasks# vi ceilometer_post_install.yml
+
+- name: check for gnocchi resource file
+  stat:
+    path: "/etc/ceilometer/gnocchi_resources.yaml"
+  register: gnocchi_resource_file
+
+- name: Initialize Gnocchi database by creating ceilometer resources
+  command: "{{ ceilometer_bin }}/ceilometer-upgrade --skip-metering-database"
+  become: yes
+  become_user: "{{ ceilometer_system_user_name }}"
+  changed_when: false
+  when: gnocchi_resource_file.stat.exists
 
 
 
+TASK [os_ceilometer : check for gnocchi resource file] ********************************************************************
+task path: /etc/ansible/roles/os_ceilometer/tasks/ceilometer_post_install.yml:98
+Friday 08 December 2017  15:58:11 +0530 (0:00:02.533)       0:02:52.935 *******
+ok: [kvm1] => {"changed": false, "stat": {"atime": 1512748399.428898, "attr_flags": "e", "attributes": ["extents"], "block_                          size": 4096, "blocks": 24, "charset": "us-ascii", "checksum": "c61e5603967361560c61da6f33d688a115f7ff4c", "ctime": 15126532                          30.7964942, "dev": 64512, "device_type": 0, "executable": false, "exists": true, "gid": 997, "gr_name": "ceilometer", "inod                          e": 2359562, "isblk": false, "ischr": false, "isdir": false, "isfifo": false, "isgid": false, "islnk": false, "isreg": true                          , "issock": false, "isuid": false, "md5": "181a8b645db996011295f7412f5b58df", "mimetype": "text/plain", "mode": "0644", "mt                          ime": 1512653230.5364847, "nlink": 1, "path": "/etc/ceilometer/gnocchi_resources.yaml", "pw_name": "ceilometer", "readable"                          : true, "rgrp": true, "roth": true, "rusr": true, "size": 8977, "uid": 997, "version": "18446744071985389687", "wgrp": fals                          e, "woth": false, "writeable": true, "wusr": true, "xgrp": false, "xoth": false, "xusr": false}}
+ok: [infra1_ceilometer_central_container-4b6a8494] => {"changed": false, "stat": {"atime": 1512647787.2659726, "attr_flags"                          : "e", "attributes": ["extents"], "block_size": 4096, "blocks": 24, "charset": "us-ascii", "checksum": "c61e5603967361560c6                          1da6f33d688a115f7ff4c", "ctime": 1512647652.1467304, "dev": 64512, "device_type": 0, "executable": false, "exists": true, "                          gid": 999, "gr_name": "ceilometer", "inode": 4344742, "isblk": false, "ischr": false, "isdir": false, "isfifo": false, "isg                          id": false, "islnk": false, "isreg": true, "issock": false, "isuid": false, "md5": "181a8b645db996011295f7412f5b58df", "mim                          etype": "text/plain", "mode": "0644", "mtime": 1512647651.8267226, "nlink": 1, "path": "/etc/ceilometer/gnocchi_resources.y                          aml", "pw_name": "ceilometer", "readable": true, "rgrp": true, "roth": true, "rusr": true, "size": 8977, "uid": 999, "versi                          on": "512509023", "wgrp": false, "woth": false, "writeable": true, "wusr": true, "xgrp": false, "xoth": false, "xusr": fals                          e}}
+
+TASK [os_ceilometer : Initialize Gnocchi database by creating ceilometer resources] ***************************************
+task path: /etc/ansible/roles/os_ceilometer/tasks/ceilometer_post_install.yml:103
+Friday 08 December 2017  15:58:13 +0530 (0:00:02.036)       0:02:54.972 *******
+ok: [kvm1] => {"changed": false, "cmd": ["/openstack/venvs/ceilometer-16.0.4/bin/ceilometer-upgrade", "--skip-metering-data                          base"], "delta": "0:00:13.432301", "end": "2017-12-08 21:23:44.975117", "rc": 0, "start": "2017-12-08 21:23:31.542816", "st                          derr": "", "stderr_lines": [], "stdout": "2017-12-08 21:23:39.924 9206 WARNING oslo_reports.guru_meditation_report [-] Guru                           meditation now registers SIGUSR1 and SIGUSR2 by default for backward compatibility. SIGUSR1 will no longer be registered i                          n a future release, so please use SIGUSR2 to generate reports.\n2017-12-08 21:23:39.925 9206 INFO ceilometer.cmd.storage [-                          ] Skipping metering database upgrade\n2017-12-08 21:23:41.149 9206 WARNING oslo_config.cfg [-] Option \"os_endpoint_type\"                           from group \"service_credentials\" is deprecated. Use option \"interface\" from group \"service_credentials\".", "stdout_li                          nes": ["2017-12-08 21:23:39.924 9206 WARNING oslo_reports.guru_meditation_report [-] Guru meditation now registers SIGUSR1                           and SIGUSR2 by default for backward compatibility. SIGUSR1 will no longer be registered in a future release, so please use                           SIGUSR2 to generate reports.", "2017-12-08 21:23:39.925 9206 INFO ceilometer.cmd.storage [-] Skipping metering database upg                          rade", "2017-12-08 21:23:41.149 9206 WARNING oslo_config.cfg [-] Option \"os_endpoint_type\" from group \"service_credentia                          ls\" is deprecated. Use option \"interface\" from group \"service_credentials\"."]}
+ok: [infra1_ceilometer_central_container-4b6a8494] => {"changed": false, "cmd": ["/openstack/venvs/ceilometer-16.0.4/bin/ce                          ilometer-upgrade", "--skip-metering-database"], "delta": "0:00:18.444517", "end": "2017-12-08 15:58:33.494740", "rc": 0, "s                          tart": "2017-12-08 15:58:15.050223", "stderr": "", "stderr_lines": [], "stdout": "2017-12-08 15:58:24.810 8727 WARNING oslo                          _reports.guru_meditation_report [-] Guru meditation now registers SIGUSR1 and SIGUSR2 by default for backward compatibility                          . SIGUSR1 will no longer be registered in a future release, so please use SIGUSR2 to generate reports.\n2017-12-08 15:58:24                          .812 8727 INFO ceilometer.cmd.storage [-] Skipping metering database upgrade\n2017-12-08 15:58:27.198 8727 WARNING oslo_con                          fig.cfg [-] Option \"os_endpoint_type\" from group \"service_credentials\" is deprecated. Use option \"interface\" from gro                          up \"service_credentials\".", "stdout_lines": ["2017-12-08 15:58:24.810 8727 WARNING oslo_reports.guru_meditation_report [-                          ] Guru meditation now registers SIGUSR1 and SIGUSR2 by default for backward compatibility. SIGUSR1 will no longer be regist                          ered in a future release, so please use SIGUSR2 to generate reports.", "2017-12-08 15:58:24.812 8727 INFO ceilometer.cmd.st                          orage [-] Skipping metering database upgrade", "2017-12-08 15:58:27.198 8727 WARNING oslo_config.cfg [-] Option \"os_endpoi                          nt_type\" from group \"service_credentials\" is deprecated. Use option \"interface\" from group \"service_credentials\"."]}
 
 
+Run ceilometer-upgrade task  post ceiloemeter installation
+to create the resources in gnocchi'
+
+
+Closes-Bug:: 1737096
+
+Done
+
+Participants:
+     name -irc nick bhujay
+     Working on :  https://review.openstack.org/526655
+     https://bugs.launchpad.net/openstack-ansible/+bug/1737096
+     
+     Does it seem more logical  to install  gnocchi before ceilometer  in  setup-openstack.yml ?  Without this ceilometer-agent log shows error  while trying to connect to gnocchi database .  After installation is completed often I found gnocchi metric list returns nothing. While the above patch set proposed is one of the reason , the order of installation cloud be still contribute to this . 
 

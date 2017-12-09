@@ -1,0 +1,295 @@
+ stack abandon
+  stack adopt
+  stack cancel
+  stack check
+  stack create
+  stack delete
+  stack environment show
+  stack event list
+  stack event show
+  stack export
+  stack failures list
+  stack file list
+  stack hook clear
+  stack hook poll
+  stack list
+  stack output list
+  stack output show
+  stack resource list
+  stack resource mark unhealthy
+  stack resource metadata
+  stack resource show
+  stack resource signal
+  stack resume
+  stack show
+  stack snapshot create
+  stack snapshot delete
+  stack snapshot list
+  stack snapshot restore
+  stack snapshot show
+  stack suspend
+  stack template show
+  stack update
+  task execution list
+  task execution published show
+  task execution rerun
+  task execution result show
+  task execution show
+
+
+http://superuser.openstack.org/articles/simple-auto-scaling-environment-with-heat/
+http://git.openstack.org/cgit/openstack/heat-templates/tree/hot/autoscaling.yaml
+https://keithtenzer.com/2015/09/02/auto-scaling-instances-with-openstack/
+https://www.ibm.com/support/knowledgecenter/en/SST55W_4.3.0/liaca/liaca_example_service_files.html
+
+
+
+openstack stack create AutoscalingWordpress -t autoscaling.yaml \
+--Parameter image=centos \
+--parameter  key=k2 \
+--parameter flavor=s2 \
+--parameter network=64dbd227-872f-4361-9faf-9d6408a092e8 \
+--parameter subnet_id=d20afc72-ef4c-413e-a0c7-ee4f252e1d9d \
+--parameter external_network_id=64dbd227-872f-4361-9faf-9d6408a092e8 \
+--parameter database_flavor=s2 \
+--parameter database_name=wordpress \
+--parameter database_user=wordpress
+
+
+root@infra2-utility-container-9040c8e7:~# openstack stack create asg-wp -t autoscalling.yml --parameter image=centos --parameter key=k2 \
+> --parameter flavor=centos\
+> --parameter network=64dbd227-872f-4361-9faf-9d6408a092e8 \
+> --parameter subnet_id=d20afc72-ef4c-413e-a0c7-ee4f252e1d9d \
+> --parameter external_network_id=64dbd227-872f-4361-9faf-9d6408a092e8 \
+> --parameter database_flavor=s2 \
+> --parameter database_name=wordpress \
+> --parameter database_user=wordpress \
+> --parameter database_password=welcome@123
+
+
+
+
+ERROR: HEAT-E99001 Service neutron is not available for resource type OS::Neutron::HealthMonitor, reason: Required extension lbaas in neutron service is not available.
+
+
+
+Configuring LBaaS v2 with an agent¶
+Add the LBaaS v2 service plug-in to the service_plugins configuration directive in /etc/neutron/neutron.conf. The plug-in list is comma-separated:
+service_plugins = [existing service plugins],neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2
+Add the LBaaS v2 service provider to the service_provider configuration directive within the [service_providers] section in /etc/neutron/neutron_lbaas.conf:
+service_provider = LOADBALANCERV2:Haproxy:neutron_lbaas.drivers.haproxy.plugin_driver.HaproxyOnHostPluginDriver:default
+If you have existing service providers for other networking service plug-ins, such as VPNaaS or FWaaS, add the service_provider line shown above in the [service_providers] section as a separate line. These configuration directives are repeatable and are not comma-separated.
+Select the driver that manages virtual interfaces in /etc/neutron/lbaas_agent.ini:
+[DEFAULT]
+interface_driver = INTERFACE_DRIVER
+Replace INTERFACE_DRIVER with the interface driver that the layer-2 agent in your environment uses. For example, openvswitch for Open vSwitch or linuxbridge for Linux bridge.
+Run the neutron-lbaas database migration:
+neutron-db-manage --subproject neutron-lbaas upgrade head
+
+
+
+lbaas_agent.ini
+====================
+interface_driver = linuxbridge
+
+# Use veth for an OVS interface or not.
+# Support kernels with limited namespace support
+# (e.g. RHEL 6.5) so long as ovs_use_veth is set to True.
+# ovs_use_veth = False
+
+# The agent requires drivers to manage the loadbalancer.  HAProxy is the opensource version.
+# Multiple device drivers reflecting different service providers could be specified:
+# device_driver = path.to.provider1.driver.Driver
+# device_driver = path.to.provider2.driver.Driver
+# Default is:
+device_driver = neutron_lbaas.drivers.haproxy.namespace_driver.HaproxyNSDriver
+
+[haproxy]
+# Location to store config and state files
+# loadbalancer_state_path = $state_path/lbaas
+
+# The user group
+user_group = nogroup
+
+# When delete and re-add the same vip, send this many gratuitous ARPs to flush
+# the ARP cache in the Router. Set it below or equal to 0 to disable this feature.
+send_gratuitous_arp = 3
+
+
+
+root@neutron1-neutron-agents-container-f6882a35:/etc/neutron# ls -l  /var/log/neutron/neutron-lbaasv2-agent.log
+-rw-r--r-- 1 neutron neutron 0 Oct 16 12:49 /var/log/neutron/neutron-lbaasv2-agent.log
+
+
+openstack server create --nic net-id=64dbd227-872f-4361-9faf-9d6408a092e8 --flavor s2 --image centos --key-name k2 --security-group ssh-ping bb1
+
+
+
+10.0.0.181 
+10.0.0.237 
+10.0.0.218  
+
+
+neutron security-group-create lbaas
+
+neutron security-group-rule-create \
+  --direction ingress \
+  --protocol tcp \
+  --port-range-min 80 \
+  --port-range-max 80 \
+  --remote-ip-prefix 0.0.0.0/0 \
+  lbaas
+
+
+neutron security-group-rule-create \
+  --direction ingress \
+  --protocol tcp \
+  --port-range-min 443 \
+  --port-range-max 443 \
+  --remote-ip-prefix 0.0.0.0/0 \
+  lbaas
+
+
+neutron security-group-rule-create \
+  --direction ingress \
+  --protocol icmp \
+  lbaas
+
+
+
+neutron port-update \
+  --security-group lbaas \
+061731eb-b7d6-4187-8f63-90dc809be791
+
+root@infra2-utility-container-9040c8e7:~# neutron port-update \
+>   --security-group lbaas \
+> 061731eb-b7d6-4187-8f63-90dc809be791
+neutron CLI is deprecated and will be removed in the future. Use openstack CLI instead.
+Updated port: 061731eb-b7d6-4187-8f63-90dc809be791
+root@infra2-utility-container-9040c8e7:~#
+
+
+neutron lbaas-loadbalancer-stats test-lb
+
+
+
+
+
+OS::Neutron::LBaaS::HealthMonitor
+
+updated template 
+https://git.openstack.org/cgit/openstack/heat-templates/tree/hot?id=2823fcafdc66d384a5d8207966a5e797ae466403
+
+
+openstack keypair create k2 >k2.pem
+qemu-img convert -f qcow2 -O raw CentOS-7-x86_64-GenericCloud-1503.qcow2  centos.raw
+openstack image create --disk-format raw --file centos.raw --public centos7
+openstack flavor create --vcpu 1 --ram 1024 --disk 20 s2
+root@ansiblenew:~# openstack network list
++--------------------------------------+---------------+--------------------------------------+
+| ID                                   | Name          | Subnets                              |
++--------------------------------------+---------------+--------------------------------------+
+| 0b21aa63-dfc7-4050-881e-12cc1b70b76c | Provider-Flat | 9504b136-4e82-4e8e-9981-32117af570e1 |
+| c969c0e1-5dc8-48f4-ae3f-b550bd543c17 | pocnet        | 46cb1f18-3430-42c6-ac78-75b04e9113dd |
++--------------------------------------+---------------+--------------------------------------+
+
+
+
+
+
+openstack stack create asg-wp -t autoscalling.yaml --parameter image=centos --parameter key=k2 --parameter flavor=centos7 --parameter network=391b54d7-2777-43a0-bec7-f0aef3b30cc4 --parameter subnet_id=81f71015-0ff8-40d5-bf10-5a53aefc306d  --parameter external_network_id=64dbd227-872f-4361-9faf-9d6408a092e8 --parameter database_flavor=s2 --parameter database_name=wordpress --parameter database_user=wordpress --parameter database_password=welcome@123
+
+openstack stack create asg-wp -t autoscalling.yaml --parameter image=centos7 --parameter key=k2 --parameter flavor=s2 --parameter network=391b54d7-2777-43a0-bec7-f0aef3b30cc4 --parameter subnet_id=46cb1f18-3430-42c6-ac78-75b04e9113dd  --parameter external_network_id=0b21aa63-dfc7-4050-881e-12cc1b70b76c --parameter database_flavor=s2 --parameter database_name=wordpress --parameter database_user=wordpress
+
+
+
+
+stack_status_reason   | Resource CREATE failed: ClientException: resources.cpu_alarm_high: <html><body><h1>504 Gateway Time-out</h1>                                                                                                                                                                                                                                                                                            |
+|                       | The server didn't respond in time.                                                                                                                                                                                                                                                                                                                                                                      |
+|                       | </body></html>                                                                                                                                                                                                                                                                                                                                                                                          |
+|                       |  (HTTP 504)        
+
+
+
+===================================================================================================
+
+
+
+root@infra2-utility-container-9040c8e7:~/heat-templates# openstack stack show asg-wp
++-----------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Field                 | Value                                                                                                                                                                                                                                                                                                                                                                                                     |
++-----------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| id                    | 1034fb17-aa12-41c9-9ec6-b18d8391824b                                                                                                                                                                                                                                                                                                                                                                      |
+| stack_name            | asg-wp                                                                                                                                                                                                                                                                                                                                                                                                    |
+| description           | AutoScaling Wordpress                                                                                                                                                                                                                                                                                                                                                                                     |
+| creation_time         | 2017-10-23T06:59:59Z                                                                                                                                                                                                                                                                                                                                                                                      |
+| updated_time          | None                                                                                                                                                                                                                                                                                                                                                                                                      |
+| stack_status          | CREATE_COMPLETE                                                                                                                                                                                                                                                                                                                                                                                           |
+| stack_status_reason   | Stack CREATE completed successfully                                                                                                                                                                                                                                                                                                                                                                       |
+| parameters            | OS::project_id: 8e13cb3b05ec4c7d87bac8ffe9f2bd19                                                                                                                                                                                                                                                                                                                                                          |
+|                       | OS::stack_id: 1034fb17-aa12-41c9-9ec6-b18d8391824b                                                                                                                                                                                                                                                                                                                                                        |
+|                       | OS::stack_name: asg-wp                                                                                                                                                                                                                                                                                                                                                                                    |
+|                       | database_flavor: s2                                                                                                                                                                                                                                                                                                                                                                                       |
+|                       | database_name: wordpress                                                                                                                                                                                                                                                                                                                                                                                  |
+|                       | database_user: wordpress                                                                                                                                                                                                                                                                                                                                                                                  |
+|                       | external_network_id: 64dbd227-872f-4361-9faf-9d6408a092e8                                                                                                                                                                                                                                                                                                                                                 |
+|                       | flavor: s2                                                                                                                                                                                                                                                                                                                                                                                                |
+|                       | image: centos7                                                                                                                                                                                                                                                                                                                                                                                            |
+|                       | key: k2                                                                                                                                                                                                                                                                                                                                                                                                   |
+|                       | network: 391b54d7-2777-43a0-bec7-f0aef3b30cc4                                                                                                                                                                                                                                                                                                                                                             |
+|                       | subnet_id: 81f71015-0ff8-40d5-bf10-5a53aefc306d                                                                                                                                                                                                                                                                                                                                                           |
+|                       |                                                                                                                                                                                                                                                                                                                                                                                                           |
+| outputs               | - description: The IP address of the load balancing pool                                                                                                                                                                                                                                                                                                                                                  |
+|                       |   output_key: pool_ip_address                                                                                                                                                                                                                                                                                                                                                                             |
+|                       |   output_value: 30.1.1.12                                                                                                                                                                                                                                                                                                                                                                                 |
+|                       | - description: 'This URL is the webhook to scale down the autoscaling group. You can                                                                                                                                                                                                                                                                                                                      |
+|                       |     invoke the scale-down operation by doing an HTTP POST to this URL; no body nor                                                                                                                                                                                                                                                                                                                        |
+|                       |     extra headers are needed.                                                                                                                                                                                                                                                                                                                                                                             |
+|                       |                                                                                                                                                                                                                                                                                                                                                                                                           |
+|                       |     '                                                                                                                                                                                                                                                                                                                                                                                                     |
+|                       |   output_key: scale_dn_url                                                                                                                                                                                                                                                                                                                                                                                |
+|                       |   output_value: https://14.142.104.140:8000/v1/signal/arn%3Aopenstack%3Aheat%3A%3A8e13cb3b05ec4c7d87bac8ffe9f2bd19%3Astacks/asg-wp/1034fb17-aa12-41c9-9ec6-b18d8391824b/resources/web_server_scaledown_policy?Timestamp=2017-10-23T07%3A00%3A02Z&SignatureMethod=HmacSHA256&AWSAccessKeyId=a9a14a59a5364d4e821ce19a520c0414&SignatureVersion=2&Signature=2LC%2BcoC3AtbG3Ggqih2fO6Ku5dIGAUkzeZImdJQcf5c%3D |
+|                       | - description: 'This URL is the webhook to scale up the autoscaling group.  You can                                                                                                                                                                                                                                                                                                                       |
+|                       |     invoke the scale-up operation by doing an HTTP POST to this URL; no body nor extra                                                                                                                                                                                                                                                                                                                    |
+|                       |     headers are needed.                                                                                                                                                                                                                                                                                                                                                                                   |
+|                       |                                                                                                                                                                                                                                                                                                                                                                                                           |
+|                       |     '                                                                                                                                                                                                                                                                                                                                                                                                     |
+|                       |   output_key: scale_up_url                                                                                                                                                                                                                                                                                                                                                                                |
+|                       |   output_value: https://14.142.104.140:8000/v1/signal/arn%3Aopenstack%3Aheat%3A%3A8e13cb3b05ec4c7d87bac8ffe9f2bd19%3Astacks/asg-wp/1034fb17-aa12-41c9-9ec6-b18d8391824b/resources/web_server_scaleup_policy?Timestamp=2017-10-23T07%3A00%3A02Z&SignatureMethod=HmacSHA256&AWSAccessKeyId=e62f8fc935344aeaae7c0b39d15ada10&SignatureVersion=2&Signature=l40pRkTZjXPfBAIoOcEfnmbUwdY4RfHS4l8Sp3MPS2U%3D     |
+|                       | - description: This is a Gnocchi query for statistics on the cpu_util measurements                                                                                                                                                                                                                                                                                                                        |
+|                       |     about OS::Nova::Server instances in this stack. The --resource-type select the                                                                                                                                                                                                                                                                                                                        |
+|                       |     type of Gnocchi resource. The --query parameter filters resources according to                                                                                                                                                                                                                                                                                                                        |
+|                       |     its attributes. When a VM's metadata includes an item of the form metering.server_group=X,                                                                                                                                                                                                                                                                                                            |
+|                       |     the corresponding Gnocchi resource has a attribute named server_group that can                                                                                                                                                                                                                                                                                                                        |
+|                       |     queried with 'server_group="X"' In this case the nested stacks give their VMs                                                                                                                                                                                                                                                                                                                         |
+|                       |     metadata that is passed as a nested stack parameter, and this stack passes a metadata                                                                                                                                                                                                                                                                                                                 |
+|                       |     of the form metering.server_group=X, where X is this stack's ID.                                                                                                                                                                                                                                                                                                                                      |
+|                       |   output_key: gnocchi_query                                                                                                                                                                                                                                                                                                                                                                               |
+|                       |   output_value: 'gnocchi measures aggregation --resource-type instance --query ''server_group="1034fb17-aa12-41c9-9ec6-b18d8391824b"''                                                                                                                                                                                                                                                                    |
+|                       |     --granularity 300 --aggregation mean -m cpu_util                                                                                                                                                                                                                                                                                                                                                      |
+|                       |                                                                                                                                                                                                                                                                                                                                                                                                           |
+|                       |     '                                                                                                                                                                                                                                                                                                                                                                                                     |
+|                       | - description: 'This URL is the "external" URL that can be used to access the Wordpress                                                                                                                                                                                                                                                                                                                   |
+|                       |     site.                                                                                                                                                                                                                                                                                                                                                                                                 |
+|                       |                                                                                                                                                                                                                                                                                                                                                                                                           |
+|                       |     '                                                                                                                                                                                                                                                                                                                                                                                                     |
+|                       |   output_key: website_url                                                                                                                                                                                                                                                                                                                                                                                 |
+|                       |   output_value: http://191.1.1.13/wordpress/                                                                                                                                                                                                                                                                                                                                                              |
+|                       |                                                                                                                                                                                                                                                                                                                                                                                                           |
+| links                 | - href: http://10.0.0.14:8004/v1/8e13cb3b05ec4c7d87bac8ffe9f2bd19/stacks/asg-wp/1034fb17-aa12-41c9-9ec6-b18d8391824b                                                                                                                                                                                                                                                                                      |
+|                       |   rel: self                                                                                                                                                                                                                                                                                                                                                                                               |
+|                       |                                                                                                                                                                                                                                                                                                                                                                                                           |
+| parent                | None                                                                                                                                                                                                                                                                                                                                                                                                      |
+| disable_rollback      | True                                                                                                                                                                                                                                                                                                                                                                                                      |
+| deletion_time         | None                                                                                                                                                                                                                                                                                                                                                                                                      |
+| stack_user_project_id | 4e0a941d45b64592b304d546ad79cb69                                                                                                                                                                                                                                                                                                                                                                          |
+| capabilities          | []                                                                                                                                                                                                                                                                                                                                                                                                        |
+| notification_topics   | []                                                                                                                                                                                                                                                                                                                                                                                                        |
+| stack_owner           | None                                                                                                                                                                                                                                                                                                                                                                                                      |
+| timeout_mins          | None                                                                                                                                                                                                                                                                                                                                                                                                      |
+| tags                  | None                                                                                                                                                                                                                                                                                                                                                                                                      |
++-----------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
+
+
